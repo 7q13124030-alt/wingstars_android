@@ -58,4 +58,9 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation ("com.github.lihangleo2:ShadowLayout:3.3.3")
+    //沉浸式状态栏 基础依赖包，必须要依赖
+    implementation("com.geyifeng.immersionbar:immersionbar:3.2.2")
+    //kotlin扩展（可选）
+    implementation("com.geyifeng.immersionbar:immersionbar-ktx:3.2.2")
 }

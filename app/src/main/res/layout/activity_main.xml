@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_DFE0E2">
+    <FrameLayout
+        android:id="@+id/fragment_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="-4dp"
+        android:layout_marginBottom="4dp" />
+
+
+
+    <com.lihang.ShadowLayout
+        app:hl_cornerRadius_rightTop="@dimen/dp_30"
+        app:hl_cornerRadius_leftTop="@dimen/dp_30"
+        android:id="@+id/bottom"
+        android:layout_width="match_parent"
+        android:layout_height="66dp"
+        android:background="@color/white"
+        android:layout_alignParentBottom="true">
+
+
+
+
+        <com.company.wingstars.TabButtonGroup
+            android:layout_gravity="bottom"
+            android:background="@color/white"
+            android:id="@+id/tab_group"
+            android:layout_width="match_parent"
+            android:layout_height="66dp"
+            android:orientation="horizontal">
+
+            <com.company.wingstars.TabButton
+                android:id="@+id/home"
+                android:layout_marginTop="5dp"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:tbn_checked="true"
+                app:tbn_icon_array_id="@array/main_tab_home"
+                app:tbn_icon_size="@dimen/dp_20"
+                app:tbn_text_color_checked="@color/color_E2518D"
+                app:tbn_text_color_unchecked="@color/color_D1D5DC"
+                app:tbn_text_size="12sp"
+                app:tbn_tip="@string/main_home" />
+
+            <com.company.wingstars.TabButton
+                android:id="@+id/count"
+                android:layout_marginTop="5dp"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="70dp"
+                android:layout_weight="1"
+                app:tbn_icon_array_id="@array/main_tab_count"
+                app:tbn_icon_size="@dimen/dp_20"
+                app:tbn_text_color_checked="@color/color_E2518D"
+                app:tbn_text_color_unchecked="@color/color_D1D5DC"
+                app:tbn_text_size="12sp"
+                app:tbn_tip="@string/count" />
+
+            <com.company.wingstars.TabButton
+                android:id="@+id/ticket"
+                android:layout_marginTop="5dp"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:tbn_icon_array_id="@array/main_tab_calendar"
+                app:tbn_icon_size="@dimen/dp_20"
+                app:tbn_text_color_checked="@color/color_E2518D"
+                app:tbn_text_color_unchecked="@color/color_D1D5DC"
+                app:tbn_text_size="12sp"
+                app:tbn_tip="@string/calendar" />
+
+            <com.company.wingstars.TabButton
+                android:id="@+id/user"
+                android:layout_marginTop="5dp"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:tbn_icon_array_id="@array/main_tab_member"
+                app:tbn_icon_size="@dimen/dp_20"
+                app:tbn_text_color_checked="@color/color_E2518D"
+                app:tbn_text_color_unchecked="@color/color_D1D5DC"
+                app:tbn_text_size="12sp"
+                app:tbn_tip="@string/member" />
+
+        </com.company.wingstars.TabButtonGroup>
+
+
+    </com.lihang.ShadowLayout>
+
+
+    <com.lihang.ShadowLayout
+        android:id="@+id/food"
+        app:hl_shadowHidden="false"
+        app:hl_cornerRadius="50dp"
+        android:layout_marginBottom="@dimen/dp_15"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_width="@dimen/dp_75"
+        android:layout_height="@dimen/dp_75"
+        android:orientation="vertical">
+
+
+        <ImageView
+            android:layout_gravity="center"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/icon_main_member" />
+
+    </com.lihang.ShadowLayout>
+</RelativeLayout>
