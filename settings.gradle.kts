@@ -27,4 +27,9 @@ dependencyResolutionManagement {
 
 rootProject.name = "Wing stars"
 include(":app")
- 
+include(":home")
+include(":own")
+include(":count")
+include(":calendar")
+include(":user")
+include(":member")
