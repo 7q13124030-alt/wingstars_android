@@ -31,6 +31,7 @@ class MMKVManagement {
         private val CRM_CLIENT_ID = "crm_client_id"
 
         private val CRM_CLIENT_REFRESH_TOKEN="crm_client_refresh_token"
+        //---------------------------请西安同事在下面新增MMKV相关set/get方法---------------------
 
         public fun  init(context: Context){
             MMKV.initialize(context)
@@ -180,4 +181,7 @@ class MMKVManagement {
             MMKV.defaultMMKV().encode(MEMBER_PSD,member_psd)
         }
     }
+    //---------------------------请台湾同事在下面新增MMKV相关set/get方法---------------------
+
+
 }
