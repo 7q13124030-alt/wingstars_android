@@ -51,4 +51,12 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.15.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.15.0")
     implementation ("com.github.lihangleo2:ShadowLayout:3.3.3")
+
+    implementation("androidx.viewpager2:viewpager2:1.0.0")
+    implementation("com.google.android.material:material:1.6.0") // 包含 TabLayout
+
+
+    implementation("io.github.scwang90:refresh-layout-kernel:3.0.0-alpha")    //核心必须依赖
+    implementation("io.github.scwang90:refresh-header-classics:3.0.0-alpha")    //经典刷新头
+    implementation("io.github.scwang90:refresh-footer-classics:3.0.0-alpha")    //经典加载
 }
