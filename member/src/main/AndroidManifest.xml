@@ -5,6 +5,8 @@
         <activity
             android:name=".activity.PopularityRankingActivity"
             android:exported="false" />
+        <activity
+            android:name=".activity.EventHighlightsActivity"
+            android:exported="false" />
     </application>
-
 </manifest>
