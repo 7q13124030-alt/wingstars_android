@@ -26,7 +26,10 @@ class TitleView(context: Context,  attrs: AttributeSet) : RelativeLayout(context
         val show_back = attr.getBoolean(R.styleable.DoraTitleBar_show_back,true)
         val icon_right = attr.getResourceId(R.styleable.DoraTitleBar_icon_right,0)
         if (icon_right!=0){
-            binding.rightIcon.setImageResource(icon_right)
+            binding.rightIcon.visibility = VISIBLE
+            binding.rightIconImage.setImageResource(icon_right)
+        }else{
+            binding.rightIcon.visibility = GONE
         }
         if (!show_back){
             binding.imageBack.visibility = GONE
@@ -45,5 +48,8 @@ class TitleView(context: Context,  attrs: AttributeSet) : RelativeLayout(context
      */
     fun setBackClickListener(listener: OnClickListener){
         binding.backs.setOnClickListener(listener)
+    }
+    fun setRightIconClickListener(listener: OnClickListener){
+        binding.rightIcon.setOnClickListener(listener)
     }
 }

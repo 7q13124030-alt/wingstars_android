@@ -1,5 +1,6 @@
 package com.wingstars.member.activity
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
@@ -55,6 +56,8 @@ class PopularityRankingActivity : BaseActivity(), View.OnClickListener,
             .transform(CircleWithBorderTransformation(toInt1, borderColor2))
             .into(binding.three)
         binding.title.setBackClickListener { finish() }
+        binding.title.setRightIconClickListener { startActivity(Intent(this,
+            RankExplanationActivity::class.java)) }
         binding.sort.setOnClickListener(this)
     }
 
