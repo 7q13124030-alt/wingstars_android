@@ -30,13 +30,24 @@
             android:textColor="@color/color_101828"
             android:textSize="@dimen/sp_16"/>
 
-        <ImageView
-            android:id="@+id/right_icon"
+        <RelativeLayout
             android:layout_marginRight="@dimen/dp_20"
+            android:layout_alignParentRight="true"
+            android:id="@+id/right_icon"
+            android:layout_width="@dimen/dp_70"
+            android:orientation="horizontal"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true">
+        <ImageView
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:id="@+id/right_icon_image"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             />
+        </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>
