@@ -19,6 +19,7 @@
                  <com.wingstars.base.view.TitleView
                      android:id="@+id/title"
                      app:title="@string/photo_frame"
+                     app:text_right="@string/album"
                      android:layout_width="match_parent"
                      android:layout_height="wrap_content"/>
 
