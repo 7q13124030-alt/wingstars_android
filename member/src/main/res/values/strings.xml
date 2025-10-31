@@ -27,6 +27,7 @@
     <string name="exclusive_songs">專屬歌曲</string>
     <string name="none_songs">您尚未有專屬歌曲</string>
     <string name="play_now">…現在播放</string>
+    <string name="album">相簿</string>
 
     <string-array name="rank_list">
         <item>應援人氣榜</item>
