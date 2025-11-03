@@ -14,26 +14,30 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.wingstars.base.utils.DPUtils
+import com.wingstars.base.utils.ScreenUtils
 import com.wingstars.member.R
 import com.wingstars.member.adapter.RankListAdapter
+import com.wingstars.member.adapter.TakePhotoMemberListAdapter
+import com.wingstars.member.bean.TakePhotosMembersListBean
 import com.wingstars.member.databinding.PopupPopularityViewBinding
+import com.wingstars.member.databinding.PopupTakePhotoMemberViewBinding
 
 
-class PopularityPopupView(
+class TakePhotosMemberPopupView(
     var activity: Activity,
-    var onPopupConfirm: OnPopupConfirm,
-    var navigationBarHeight: Int
+    var navigationBarHeight: Int,
+    var takePhotoList: MutableList<TakePhotosMembersListBean>
 ) {
     private lateinit var popupWindow: PopupWindow
-    private lateinit var binding: PopupPopularityViewBinding
+    private lateinit var binding: PopupTakePhotoMemberViewBinding
 
     init {
         initView(activity)
     }
 
     private fun initView(mContext: Context) {
-        Log.e("navigationBarHeight", "$navigationBarHeight")
-        binding = PopupPopularityViewBinding.inflate(LayoutInflater.from(mContext))
+        binding = PopupTakePhotoMemberViewBinding.inflate(LayoutInflater.from(mContext))
         popupWindow = PopupWindow(
             binding.root,
             ViewGroup.LayoutParams.MATCH_PARENT,
@@ -46,32 +50,20 @@ class PopularityPopupView(
         popupWindow.animationStyle = R.style.PopupWindowAnimation;
         popupWindow.isOutsideTouchable = false
         popupWindow.isFocusable = true
-        var stringArray = activity.resources.getStringArray(R.array.rank_list)
-        var adapter = RankListAdapter(activity, stringArray.toMutableList())
+        setHeight(binding.shadow)
+
+        var adapter = TakePhotoMemberListAdapter(activity, takePhotoList)
         binding.rankList.layoutManager =
             LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         binding.rankList.adapter = adapter
         binding.exit.setOnClickListener {
             popupWindow.dismiss()
         }
-        /*  binding.circle.setCircle(dpToPx(24f).toFloat())
-          binding.cancel.setOnClickListener {
-              popupWindow.dismiss()
-          }
-          if (sure.isNotEmpty()){
-              binding.sure.text = sure
-          }
-          if (cancel.isNotEmpty()){
-              binding.cancel.text = cancel
-          }
-          binding.confirm.setOnClickListener {
-              popupWindow.dismiss()
-              onPopupConfirm.onPopupConfirm()
-          }*/
+
         popupWindow.setOnDismissListener {
             setActivityBackgroundDim(activity, 1f)
         }
-        //    popupWindow.setAnimationStyle(R.style.PopupWindowAnimation)
+
 
     }
 
@@ -100,23 +92,16 @@ class PopularityPopupView(
         window.attributes = params
     }
 
-
-    fun ptToPx(pt: Float): Float {
-        val metrics: DisplayMetrics = activity.resources.displayMetrics
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PT, pt, metrics)
-    }
-
-    fun dpToPx(dp: Float): Int {
-        return TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            dp,
-            activity.resources.displayMetrics
-        ).toInt()
-    }
-
     fun show(view: View?) {
         popupWindow.showAtLocation(view, Gravity.BOTTOM, 0, 0)
         setActivityBackgroundDim(activity, 0.5f)
+    }
+
+    fun setHeight(view: View) {
+        var params = view.layoutParams as LinearLayout.LayoutParams
+        params.width = LinearLayout.LayoutParams.MATCH_PARENT
+        params.height = ScreenUtils.getHeight(activity) - DPUtils.dpToPx(50f,activity).toInt()
+        view.layoutParams = params
     }
 
     interface OnPopupConfirm {

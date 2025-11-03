@@ -14,5 +14,12 @@ class ScreenUtils {
             val width = displayMetrics.widthPixels
             return width
         }
+
+        fun  getHeight( activity: Activity):Int{
+            val displayMetrics = DisplayMetrics()
+            activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
+            val height = displayMetrics.heightPixels
+            return height
+        }
     }
 }
