@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
+    android:id="@+id/main"
     tools:context=".activity.FanInteractionActivity">
 
     <LinearLayout
@@ -63,6 +64,7 @@
                 android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/select_member"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -80,6 +82,9 @@
                         android:textStyle="bold" />
 
                     <ImageView
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"

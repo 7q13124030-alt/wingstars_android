@@ -45,5 +45,6 @@
     <dimen name="dp_421">421dp</dimen>
     <dimen name="dp_40">40dp</dimen>
     <dimen name="dp_75">75dp</dimen>
+    <dimen name="dp_55">55dp</dimen>
 
 </resources>
