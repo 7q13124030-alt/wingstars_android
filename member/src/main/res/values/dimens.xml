@@ -57,5 +57,6 @@
     <dimen name="dp_22">22dp</dimen>
     <dimen name="dp_21">21dp</dimen>
     <dimen name="dp_9">9dp</dimen>
+    <dimen name="dp_123">123dp</dimen>
 
 </resources>
