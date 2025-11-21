@@ -8,15 +8,18 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wingstars.base.base.BaseActivity
+import com.wingstars.base.utils.DPUtils
 import com.wingstars.base.utils.ScreenUtils
 import com.wingstars.member.R
 import com.wingstars.member.adapter.ActivityImagesAdapter
 import com.wingstars.member.adapter.GuideAdapter
+import com.wingstars.member.adapter.ProductListAdapter
 import com.wingstars.member.adapter.SmallCommodityAdapter
+import com.wingstars.member.adapter.SupportSuitAdapter
 import com.wingstars.member.databinding.ActivityAtmosphereFashionDetailsBinding
 import com.youth.banner.listener.OnPageChangeListener
 
-class AtmosphereFashionDetailsActivity : BaseActivity() {
+class AtmosphereFashionDetailsActivity : BaseActivity(), SupportSuitAdapter.OnItemListener {
     private lateinit var binding: ActivityAtmosphereFashionDetailsBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +60,17 @@ class AtmosphereFashionDetailsActivity : BaseActivity() {
         })
         var image = mutableListOf(R.mipmap.ic_demo2,R.mipmap.ic_demo2)
         binding.smallCommodityList.adapter  = SmallCommodityAdapter(this,image)
+        var image1 = mutableListOf(R.mipmap.ic_demo2,R.mipmap.ic_demo2,R.mipmap.ic_demo2)
+        binding.productList.adapter  = ProductListAdapter(this, image1)
+
+
+        val list = mutableListOf("1","2")
+        var width = ScreenUtils.getWidth(this)
+        var smallwidth  = width - DPUtils.dpToPx(50f,this).toInt()
+        var smallwidths = smallwidth/2
+        var smallhight = smallwidths.toInt()*1.585
+        binding.list.adapter = SupportSuitAdapter(this, list,smallwidths.toInt()
+            ,smallhight.toInt(),this)
     }
 
 
@@ -67,6 +81,10 @@ class AtmosphereFashionDetailsActivity : BaseActivity() {
         params?.width = width
         params?.height = hight.toInt()
         v?.layoutParams = params
+    }
+
+    override fun onItemClick(position: Int) {
+
     }
 
 
