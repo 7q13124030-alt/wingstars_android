@@ -36,6 +36,10 @@
     <string name="event_uniform">活動服</string>
     <string name="basic_information">基本資料</string>
     <string name="personal_schedule">個人班表</string>
+    <string name="member_about_me">關於我</string>
+    <string name="member_motto">想說的話</string>
+    <string name="member_hobby">興趣喜好</string>
+    <string name="member_basic_introduction">基本介紹</string>
 
     <string-array name="rank_list">
         <item>應援人氣榜</item>
