@@ -1,16 +1,15 @@
 package com.wingstars.member.fragment
 
-
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.wingstars.member.R
 import com.wingstars.member.adapter.BasicIntroductionAdapter
-import com.wingstars.member.adapter.BasicIntroductionFunBean
+import com.wingstars.member.adapter.HobbyAdapter
 import com.wingstars.member.databinding.FragmentBasicInformationBinding
 import com.wingstars.member.viewmodel.BasicInformationViewModel
 
@@ -22,6 +21,8 @@ class BasicInformationFragment : Fragment() {
 
     private lateinit var basicIntroductionAdapter: BasicIntroductionAdapter
 
+    private lateinit var hobbyAdapter: HobbyAdapter
+    private var orgHobbyLists = mutableListOf<String>()
     private var isDataLoaded = false // 标记数据是否加载过
     override fun onResume() {
         super.onResume()
@@ -34,6 +35,7 @@ class BasicInformationFragment : Fragment() {
 
     private fun loadData() {
         viewModel.getBasicIntroductionList()
+        viewModel.getHobbyLists()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,10 +68,49 @@ class BasicInformationFragment : Fragment() {
             LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
         binding.rvIntroduction.adapter = basicIntroductionAdapter
 
-        //set adapter data.
+        //set introduction adapter data.
         viewModel.introductionList.observe(viewLifecycleOwner) {
             basicIntroductionAdapter.setList(it)
         }
+
+
+        //Create hobby adapter
+        hobbyAdapter = HobbyAdapter(mutableListOf())
+        // 获取之前设置的 layoutManager
+        //val layoutManager = binding.rvHobby.layoutManager as GridLayoutManager
+        val layoutManager = GridLayoutManager(requireActivity(), 10)
+        // 设置 SpanSizeLookup
+        layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                // 返回值表示该位置的项目占据多少个连续的网格
+                var nSpanSize = 10
+                if (orgHobbyLists.isNotEmpty() && position < orgHobbyLists.size) {
+                    nSpanSize = when (orgHobbyLists[position].length) {
+                        1 -> 1
+                        2 -> 2
+                        3 -> 3
+                        4 -> 4
+                        5 -> 5
+                        6 -> 6
+                        7 -> 7
+                        8 -> 8
+                        9 -> 9
+                        else -> 10 // 其他项目正常占据整行
+                    }
+                }
+                return nSpanSize
+            }
+        }
+        binding.rvHobby.layoutManager = layoutManager
+        binding.rvHobby.adapter = hobbyAdapter
+
+        //set hobby adapter data.
+        viewModel.hobbyLists.observe(viewLifecycleOwner) { lists ->
+            orgHobbyLists.clear()
+            orgHobbyLists.addAll(lists)
+            hobbyAdapter.setList(lists)
+        }
+
     }
 
     override fun onDestroy() {
