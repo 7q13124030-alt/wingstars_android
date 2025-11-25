@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.wingstars.base.utils.DPUtils
+import com.wingstars.base.utils.ScreenUtils
 import com.wingstars.member.adapter.BasicIntroductionAdapter
 import com.wingstars.member.adapter.HobbyAdapter
 import com.wingstars.member.databinding.FragmentBasicInformationBinding
@@ -78,25 +80,18 @@ class BasicInformationFragment : Fragment() {
         hobbyAdapter = HobbyAdapter(mutableListOf())
         // 获取之前设置的 layoutManager
         //val layoutManager = binding.rvHobby.layoutManager as GridLayoutManager
-        val layoutManager = GridLayoutManager(requireActivity(), 10)
+        val srcWidth =
+            ScreenUtils.getWidth(requireActivity()) - DPUtils.dpToPx(48f, requireActivity()).toInt()
+        val layoutManager = GridLayoutManager(requireActivity(), srcWidth)
         // 设置 SpanSizeLookup
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 // 返回值表示该位置的项目占据多少个连续的网格
-                var nSpanSize = 10
+                var nSpanSize = 0
                 if (orgHobbyLists.isNotEmpty() && position < orgHobbyLists.size) {
-                    nSpanSize = when (orgHobbyLists[position].length) {
-                        1 -> 1
-                        2 -> 2
-                        3 -> 3
-                        4 -> 4
-                        5 -> 5
-                        6 -> 6
-                        7 -> 7
-                        8 -> 8
-                        9 -> 9
-                        else -> 10 // 其他项目正常占据整行
-                    }
+                    nSpanSize =
+                        orgHobbyLists[position].length * DPUtils.sp2px(16f, requireActivity()).toInt() +
+                                DPUtils.dpToPx(34f, requireActivity()).toInt()
                 }
                 return nSpanSize
             }
