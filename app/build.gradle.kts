@@ -75,4 +75,8 @@ dependencies {
     implementation("com.geyifeng.immersionbar:immersionbar-ktx:3.2.2")
 
     implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation("io.github.scwang90:refresh-layout-kernel:3.0.0-alpha")
+    implementation("io.github.scwang90:refresh-header-classics:3.0.0-alpha")
+    implementation("io.github.scwang90:refresh-footer-classics:3.0.0-alpha")
+
 }
