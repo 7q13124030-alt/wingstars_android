@@ -37,6 +37,7 @@ android {
     buildFeatures {
         compose = true
         viewBinding = true
+        dataBinding = true
     }
 }
 
@@ -69,4 +70,8 @@ dependencies {
     implementation("com.geyifeng.immersionbar:immersionbar:3.2.2")
     //kotlin扩展（可选）
     implementation("com.geyifeng.immersionbar:immersionbar-ktx:3.2.2")
+    implementation("io.github.scwang90:refresh-layout-kernel:3.0.0-alpha")
+    implementation("io.github.scwang90:refresh-header-classics:3.0.0-alpha")
+    implementation("io.github.scwang90:refresh-footer-classics:3.0.0-alpha")
+
 }

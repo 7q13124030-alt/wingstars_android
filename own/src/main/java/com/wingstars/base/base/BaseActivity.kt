@@ -19,61 +19,69 @@ import com.wingstars.base.databinding.ActivityBaseBinding
 abstract class BaseActivity : AppCompatActivity()  {
 
     private lateinit var binding: ActivityBaseBinding
-
-
-
+    private var max_nums = 0
     private var navigationBarHeights = 0
     public fun getNavigationBarHeight(): Int{
         return navigationBarHeights
     }
-
-
-
-
-
-
-
-
 
     interface OnInitialization{
         fun onInitializationSuccessful()
     }
     public fun setTitleFoot(
         view1: View,
-        navigationBarColor: Int = R.color.white,
-        statusBarColor: Int = R.color.white,
+//        navigationBarColor: Int = R.color.white,
+//        statusBarColor: Int = R.color.color_E6BCC0,
+        statusBarColor: Int = R.color.black,
         initialization: OnInitialization?=null,
-        setHeadAndFoot: Boolean = true) {
+        setHeadAndFoot: Boolean = true ,
+        isStatusBarDarkFont: Boolean = false,
+        isEdgeToEdge: Boolean = false ) {
         immersionBar {
-            statusBarColor(statusBarColor)
-            navigationBarColor(navigationBarColor)
-            statusBarDarkFont(true)
-            fitsSystemWindows(if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) true else false)
+            if (isEdgeToEdge) {
+                // CHẾ ĐỘ TRÀN MÀN HÌNH (EDGE-TO-EDGE)
+                transparentStatusBar() // Làm cho thanh trạng thái trong suốt
+            } else {
+                // Chế độ bình thường
+                statusBarColor(statusBarColor)
+            }
+            statusBarDarkFont(isStatusBarDarkFont)
+//            navigationBarColor(navigationBarColor)
+            navigationBarDarkIcon(true)
+            fitsSystemWindows(false)
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             binding = ActivityBaseBinding.inflate(LayoutInflater.from(this))
             setContentView(binding.root)
             binding.root.setOnApplyWindowInsetsListener { v, insets ->
                 // 获取状态栏和导航栏高度
+                max_nums = max_nums+1
                 // Log.e("setOnApplyWindowInsetsListener","setOnApplyWindowInsetsListener")
 
                 val statusBarHeight = insets.getInsets(WindowInsets.Type.statusBars()).top
                 val navigationBarHeight =
                     insets.getInsets(WindowInsets.Type.navigationBars()).bottom
 
-                if (setHeadAndFoot){
+//                if (setHeadAndFoot){
+//                    binding.headView.setBackgroundColor(getColor(statusBarColor))
+//                    var params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,statusBarHeight)
+//                    binding.headView?.layoutParams = params
+//                }else{
+//                    binding.headView.visibility = View.GONE
+//                }
+                if (!isEdgeToEdge) {
                     binding.headView.setBackgroundColor(getColor(statusBarColor))
                     var params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,statusBarHeight)
                     binding.headView?.layoutParams = params
-                }else{
+                } else {
+                    // Nếu là edge-to-edge, ẩn view giả đi
                     binding.headView.visibility = View.GONE
                 }
-
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                     getWindow().setDecorFitsSystemWindows(false); // 启用无边框模式‌:ml-citation{ref="4" data="citationList"}
                 }
-                binding.footView.setBackgroundColor(getColor(navigationBarColor))
+//                binding.footView.setBackgroundColor(getColor(navigationBarColor))
                 var params1 = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,navigationBarHeight)
                 navigationBarHeights = navigationBarHeight
                 binding.footView?.layoutParams = params1
@@ -84,7 +92,10 @@ abstract class BaseActivity : AppCompatActivity()  {
                     views.removeView(view1);
                 }
                 binding.middle.addView(view1,params2)
-                binding.root.setOnApplyWindowInsetsListener(null)
+                if (statusBarHeight>0||max_nums>=3){
+                    //   Log.e("statusBarHeight","注销监听了")
+                    binding.root.setOnApplyWindowInsetsListener(null)
+                }
                 if (initialization!=null){
                     initialization.onInitializationSuccessful()
                 }
@@ -120,6 +131,7 @@ abstract class BaseActivity : AppCompatActivity()  {
 
     fun  setStatusBarColor(){
         ImmersionBar.with(this)
+            .statusBarColor(R.color.white)
             .navigationBarColor(R.color.white)
             .statusBarDarkFont(true)
             .init()
