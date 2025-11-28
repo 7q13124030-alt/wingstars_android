@@ -23,6 +23,8 @@ import com.wingstars.member.databinding.ActivityMemberDetailsBinding
 import com.wingstars.member.fragment.BasicInformationFragment
 import com.wingstars.member.fragment.PersonalScheduleFragment
 import com.wingstars.member.viewmodel.MemberDetailsViewModel
+import java.text.SimpleDateFormat
+import java.util.Date
 
 class MemberDetailsActivity : BaseActivity(), BaseActivity.OnInitialization {
 
@@ -49,8 +51,6 @@ class MemberDetailsActivity : BaseActivity(), BaseActivity.OnInitialization {
         } else {
             setTitleFoot(view1 = binding.root, initialization = this, setHeadAndFoot = false)
         }
-
-
     }
 
     fun setMarginTop(view: View, top: Int) {
@@ -76,7 +76,17 @@ class MemberDetailsActivity : BaseActivity(), BaseActivity.OnInitialization {
         tabTitleList.add(getString(R.string.personal_schedule))
         fragmentAdapter = OuterPagerAdapter(supportFragmentManager, lifecycle)
         fragmentAdapter.add(BasicInformationFragment())
-        fragmentAdapter.add(PersonalScheduleFragment())
+
+
+        val personalScheduleFragment = PersonalScheduleFragment()
+        val personalBundle = Bundle()
+            personalBundle.putString(
+                "wing_stars_month",
+                SimpleDateFormat("yyyy/MM").format(Date())
+            )
+        intent.putExtras(personalBundle)
+        personalScheduleFragment.arguments = personalBundle
+        fragmentAdapter.add(personalScheduleFragment)
 
         binding.viewPager.adapter = fragmentAdapter
         binding.viewPager.isUserInputEnabled = true

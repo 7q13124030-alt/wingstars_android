@@ -14,6 +14,8 @@ import com.wingstars.member.adapter.BasicIntroductionAdapter
 import com.wingstars.member.adapter.HobbyAdapter
 import com.wingstars.member.databinding.FragmentBasicInformationBinding
 import com.wingstars.member.viewmodel.BasicInformationViewModel
+import java.math.BigDecimal
+import java.math.RoundingMode
 
 
 class BasicInformationFragment : Fragment() {
@@ -89,9 +91,9 @@ class BasicInformationFragment : Fragment() {
                 // 返回值表示该位置的项目占据多少个连续的网格
                 var nSpanSize = 0
                 if (orgHobbyLists.isNotEmpty() && position < orgHobbyLists.size) {
-                    nSpanSize =
-                        orgHobbyLists[position].length * DPUtils.sp2px(16f, requireActivity()).toInt() +
-                                DPUtils.dpToPx(34f, requireActivity()).toInt()
+                    nSpanSize = sum(orgHobbyLists[position].length, DPUtils.sp2px(16f, requireActivity()),
+                        DPUtils.dpToPx(32f, requireActivity())
+                    )
                 }
                 return nSpanSize
             }
@@ -110,5 +112,12 @@ class BasicInformationFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+    }
+
+    private fun sum(length: Int, textSize: Float, padding: Float): Int {
+        val scale = BigDecimal(length.toString()).multiply(BigDecimal(textSize.toString()))
+            .setScale(0, RoundingMode.UP)
+        val scale1 = scale.add(BigDecimal(padding.toString())).setScale(0, RoundingMode.UP)
+        return scale1.toInt()
     }
 }

@@ -40,6 +40,7 @@
     <string name="member_motto">想說的話</string>
     <string name="member_hobby">興趣喜好</string>
     <string name="member_basic_introduction">基本介紹</string>
+    <string name="member_personal_schedule_none">日前班表尚未公布</string>
 
     <string-array name="rank_list">
         <item>應援人氣榜</item>

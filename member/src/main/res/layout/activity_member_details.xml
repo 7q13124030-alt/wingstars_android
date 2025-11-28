@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@mipmap/ic_member_page_background"
         android:orientation="vertical">
 
@@ -46,7 +46,6 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -99,8 +98,6 @@
                                 android:layout_width="@dimen/dp_35"
                                 android:layout_height="@dimen/dp_35"
                                 android:src="@drawable/ic_facebook" />
-
-
                         </LinearLayout>
 
                         <LinearLayout
@@ -116,10 +113,7 @@
                                 android:layout_width="@dimen/dp_35"
                                 android:layout_height="@dimen/dp_35"
                                 android:src="@drawable/ic_instagram" />
-
-
                         </LinearLayout>
-
                     </LinearLayout>
                 </LinearLayout>
 
@@ -138,15 +132,11 @@
                 </LinearLayout>
             </RelativeLayout>
 
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-                <!--  <androidx.core.widget.NestedScrollView
-                      android:layout_width="match_parent"
-                      android:layout_height="match_parent"
-                      android:fillViewport="true">-->
+
                 <com.lihang.ShadowLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -179,11 +169,7 @@
                             android:layout_height="match_parent" />
                     </LinearLayout>
                 </com.lihang.ShadowLayout>
-
-                <!--       </androidx.core.widget.NestedScrollView>-->
             </LinearLayout>
         </FrameLayout>
     </LinearLayout>
-
-
 </FrameLayout>
