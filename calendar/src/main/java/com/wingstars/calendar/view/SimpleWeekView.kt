@@ -51,11 +51,11 @@ class SimpleWeekView @JvmOverloads constructor(
         setPadding(paddingHorizontal, 0, paddingHorizontal, 0)
 
         setBackgroundColor(Color.TRANSPARENT)
-        background = ContextCompat.getDrawable(context, R.drawable.bg_bottom_radius)
+        background = ContextCompat.getDrawable(context, R.drawable.calendar_bg_bottom_radius)
     }
 
     private val customIcon by lazy {
-        BitmapFactory.decodeResource(resources, R.drawable.ic_birthday_cake)
+        BitmapFactory.decodeResource(resources, R.drawable.calendar_ic_birthday_cake)
     }
 
     // 周历仅显示1行（含星期标题），高度为单行高度

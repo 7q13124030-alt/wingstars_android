@@ -14,7 +14,6 @@
         android:layout_height="wrap_content"
         app:title="活動詳情" />
 
-
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nsv_top"
         android:layout_width="match_parent"
@@ -37,6 +36,7 @@
                 android:layout_marginLeft="@dimen/dp_20"
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginRight="@dimen/dp_20"
+                android:clipChildren="true"
                 app:clickable="false"
                 app:hl_cornerRadius="@dimen/dp_16"
                 app:hl_strokeColor="@color/white"
@@ -46,8 +46,9 @@
                     android:id="@+id/iv_dialog_image"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:scaleType="fitCenter"
                     android:padding="@dimen/dp_1"
-                    android:src="@drawable/ic_xin_dong_shi_ke" />
+                    android:src="@drawable/calendar_ic_xin_dong_shi_ke" />
 
                 <LinearLayout
                     android:id="@+id/ll_page"
@@ -56,7 +57,7 @@
                     android:layout_gravity="bottom|end"
                     android:layout_marginEnd="@dimen/dp_12"
                     android:layout_marginBottom="@dimen/dp_12"
-                    android:background="@drawable/bg_button_radius"
+                    android:background="@drawable/calendar_bg_button_radius"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:paddingStart="@dimen/dp_12"
@@ -76,7 +77,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_8"
-                        android:src="@drawable/ic_bars" />
+                        android:src="@drawable/calendar_ic_bars" />
 
                 </LinearLayout>
             </com.lihang.ShadowLayout>
@@ -95,14 +96,14 @@
                         android:id="@+id/iv_image_type"
                         android:layout_width="@dimen/dp_63"
                         android:layout_height="@dimen/dp_72"
-                        android:src="@drawable/ic_star"
+                        android:src="@drawable/calendar_ic_star"
                         android:translationY="@dimen/dp_neg_24"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -200,7 +201,7 @@
                         android:layout_width="@dimen/dp_20"
                         android:layout_height="@dimen/dp_20"
                         android:layout_marginStart="@dimen/dp_16"
-                        android:src="@drawable/ic_arrow_up" />
+                        android:src="@drawable/calendar_ic_arrow_up" />
                 </LinearLayout>
 
                 <TextView
@@ -210,12 +211,12 @@
                     android:layout_gravity="start"
                     android:layout_marginTop="@dimen/dp_8"
                     android:text=" ＊簽名對象：WS 全員 26 位女孩\n
-                    ＊簽名規範：僅限套組肖像球，需署名（限 5 字以內，也不可以表情符號呈現），不得攜帶其他物品要求簽名\n\n
-                    >> 報到與領取方式\n
-                    ＊時間：2025/9/26（五）14:15–15:00\n（最終須於15:00 前完成領取並進入排隊隊伍，逾時不候，逾時視同放棄，恕不補簽）\n
-                    ＊地點：臺北大巨蛋 G5號門外\n
-                    ＊憑證：本人持「商城訂單畫面」（不得截圖），現場核對姓名＋身分證件後，領取商品＋簽名券\n
-                    ＊提醒：逾時未領取簽名券者，視為放棄簽名資格，商品將於活動後寄送"
+＊簽名規範：僅限套組肖像球，需署名（限 5 字以內，也不可以表情符號呈現），不得攜帶其他物品要求簽名\n\n
+>> 報到與領取方式\n
+＊時間：2025/9/26（五）14:15–15:00\n（最終須於15:00 前完成領取並進入排隊隊伍，逾時不候，逾時視同放棄，恕不補簽）\n
+＊地點：臺北大巨蛋 G5號門外\n
+＊憑證：本人持「商城訂單畫面」（不得截圖），現場核對姓名＋身分證件後，領取商品＋簽名券\n
+＊提醒：逾時未領取簽名券者，視為放棄簽名資格，商品將於活動後寄送"
                     android:textColor="@color/color_6A7282"
                     android:textSize="@dimen/sp_14" />
 
@@ -250,7 +251,7 @@
                         android:layout_width="@dimen/dp_20"
                         android:layout_height="@dimen/dp_20"
                         android:layout_marginStart="@dimen/dp_16"
-                        android:src="@drawable/ic_arrow_up" />
+                        android:src="@drawable/calendar_ic_arrow_up" />
                 </LinearLayout>
 
                 <TextView
@@ -260,10 +261,10 @@
                     android:layout_gravity="start"
                     android:layout_marginTop="@dimen/dp_8"
                     android:text=" ＊活動資格僅限購買人本人使用，禁止轉讓或攜伴。\n
-                    ＊簽名券不得轉讓、兌換現金，遺失恕不補發。\n
-                    ＊請提前報到整隊，逾時或遲到導致活動結束，視同放棄，恕不補辦。\n
-                    ＊簽名僅限本套組商品，不接受其他物品。\n
-                    ＊主辦單位保有活動最終解釋、修改、異動與中止之權利。"
+＊簽名券不得轉讓、兌換現金，遺失恕不補發。\n
+＊請提前報到整隊，逾時或遲到導致活動結束，視同放棄，恕不補辦。\n
+＊簽名僅限本套組商品，不接受其他物品。\n
+＊主辦單位保有活動最終解釋、修改、異動與中止之權利。"
                     android:textColor="@color/color_6A7282"
                     android:textSize="@dimen/sp_14" />
             </LinearLayout>

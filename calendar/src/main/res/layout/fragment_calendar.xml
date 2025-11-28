@@ -36,7 +36,7 @@
                     android:layout_width="@dimen/dp_24"
                     android:layout_height="@dimen/dp_24"
                     android:layout_marginEnd="@dimen/dp_8"
-                    android:src="@drawable/ic_arrow_left" />
+                    android:src="@drawable/calendar_ic_arrow_left" />
 
                 <TextView
                     android:id="@+id/tv_title_date"
@@ -52,7 +52,7 @@
                     android:layout_width="@dimen/dp_24"
                     android:layout_height="@dimen/dp_24"
                     android:layout_marginStart="@dimen/dp_8"
-                    android:src="@drawable/ic_arrow_right" />
+                    android:src="@drawable/calendar_ic_arrow_right" />
             </LinearLayout>
 
             <com.haibin.calendarview.CalendarLayout
@@ -110,35 +110,21 @@
                             android:layout_marginRight="@dimen/dp_20"
                             android:orientation="vertical">
 
-                            <LinearLayout
-                                android:layout_width="wrap_content"
+                            <TextView
+                                android:id="@+id/tv_date_itinerary"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/tv_date_itinerary"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="9/26"
-                                    android:textColor="@color/color_000000"
-                                    android:textSize="@dimen/sp_16"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text=" 行程"
-                                    android:textColor="@color/color_000000"
-                                    android:textSize="@dimen/sp_16"
-                                    android:textStyle="bold" />
-                            </LinearLayout>
+                                android:text="9/26 行程"
+                                android:textColor="@color/color_000000"
+                                android:textSize="@dimen/sp_16"
+                                android:textStyle="bold" />
 
                             <androidx.constraintlayout.widget.ConstraintLayout
                                 android:id="@+id/cl_event_details"
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/dp_211"
                                 android:layout_marginTop="@dimen/dp_20"
-                                android:background="@drawable/bg_radius_white"
+                                android:background="@drawable/calendar_bg_radius_white"
                                 android:orientation="horizontal">
 
                                 <androidx.cardview.widget.CardView
@@ -159,7 +145,7 @@
                                         android:layout_width="@dimen/dp_137"
                                         android:layout_height="@dimen/dp_171"
                                         android:scaleType="centerCrop"
-                                        android:src="@drawable/ic_photo" />
+                                        android:src="@drawable/calendar_ic_photo" />
 
                                 </androidx.cardview.widget.CardView>
 
@@ -196,7 +182,7 @@
                                             android:layout_height="@dimen/dp_72"
                                             android:layout_alignParentEnd="true"
                                             android:layout_alignParentBottom="true"
-                                            android:src="@drawable/ic_star" />
+                                            android:src="@drawable/calendar_ic_star" />
 
                                         <LinearLayout
                                             android:id="@+id/text_container"
@@ -232,7 +218,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/dp_211"
                                 android:layout_marginTop="@dimen/dp_20"
-                                android:background="@drawable/bg_radius_white"
+                                android:background="@drawable/calendar_bg_radius_white"
                                 android:orientation="horizontal">
 
                                 <androidx.cardview.widget.CardView
@@ -253,7 +239,7 @@
                                         android:layout_width="@dimen/dp_137"
                                         android:layout_height="@dimen/dp_171"
                                         android:scaleType="centerCrop"
-                                        android:src="@drawable/ic_jc_birthday_01" />
+                                        android:src="@drawable/calendar_ic_jc_birthday_01" />
 
                                 </androidx.cardview.widget.CardView>
 
@@ -290,7 +276,7 @@
                                             android:layout_height="@dimen/dp_72"
                                             android:layout_alignParentEnd="true"
                                             android:layout_alignParentBottom="true"
-                                            android:src="@drawable/ic_grey_birthday" />
+                                            android:src="@drawable/calendar_ic_grey_birthday" />
 
                                         <LinearLayout
                                             android:id="@+id/text_container_02"
@@ -325,7 +311,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/dp_170"
                                 android:layout_marginTop="@dimen/dp_20"
-                                android:background="@drawable/bg_radius_pink"
+                                android:background="@drawable/calendar_bg_radius_pink"
                                 android:orientation="horizontal">
 
                                 <LinearLayout
@@ -345,7 +331,7 @@
                                             android:id="@+id/iv_baseball"
                                             android:layout_width="@dimen/dp_24"
                                             android:layout_height="@dimen/dp_24"
-                                            android:src="@drawable/ic_baseball"
+                                            android:src="@drawable/calendar_ic_baseball"
                                             app:layout_constraintBottom_toBottomOf="parent"
                                             app:layout_constraintStart_toStartOf="parent"
                                             app:layout_constraintTop_toTopOf="parent" />
@@ -435,7 +421,7 @@
                                             android:id="@+id/iv_friend_type"
                                             android:layout_width="match_parent"
                                             android:layout_height="match_parent"
-                                            android:src="@drawable/ic_tg_xy" />
+                                            android:src="@drawable/calendar_ic_tg_xy" />
 
                                         <TextView
                                             android:layout_width="wrap_content"
@@ -456,7 +442,7 @@
                                         android:layout_alignParentBottom="true"
                                         android:layout_marginEnd="@dimen/dp_16"
                                         android:layout_marginBottom="@dimen/dp_2"
-                                        android:src="@drawable/ic_takoo" />
+                                        android:src="@drawable/calendar_ic_takoo" />
 
                                 </RelativeLayout>
 
@@ -466,7 +452,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/dp_170"
                                 android:layout_marginTop="@dimen/dp_20"
-                                android:background="@drawable/bg_radius_pink"
+                                android:background="@drawable/calendar_bg_radius_pink"
                                 android:orientation="horizontal">
 
                                 <LinearLayout
@@ -485,7 +471,7 @@
                                             android:id="@+id/iv_baseball_05"
                                             android:layout_width="@dimen/dp_24"
                                             android:layout_height="@dimen/dp_24"
-                                            android:src="@drawable/ic_birthdaycake"
+                                            android:src="@drawable/calendar_ic_birthdaycake"
                                             app:layout_constraintBottom_toBottomOf="parent"
                                             app:layout_constraintStart_toStartOf="parent"
                                             app:layout_constraintTop_toTopOf="parent" />
@@ -539,7 +525,7 @@
                                         android:layout_alignParentTop="true"
                                         android:layout_alignParentEnd="true"
                                         android:layout_marginEnd="@dimen/dp_16"
-                                        android:background="@drawable/ic_rectangle"
+                                        android:background="@drawable/calendar_ic_rectangle"
                                         android:gravity="center_horizontal">
 
                                         <TextView
@@ -548,7 +534,7 @@
                                             android:layout_height="@dimen/dp_30"
                                             android:layout_gravity="top|center_horizontal"
                                             android:layout_marginTop="@dimen/dp_6"
-                                            android:background="@drawable/ic_ellipse"
+                                            android:background="@drawable/calendar_ic_ellipse"
                                             android:gravity="center"
                                             android:text="1"
                                             android:textColor="@color/color_DE9DBA"
@@ -580,7 +566,7 @@
                                             android:layout_marginEnd="@dimen/dp_45"
                                             android:layout_marginBottom="@dimen/dp_2"
                                             android:adjustViewBounds="true"
-                                            android:src="@drawable/ic_jc_16" />
+                                            android:src="@drawable/calendar_ic_jc_16" />
 
                                         <ImageView
                                             android:id="@+id/iv_right_image"
@@ -589,7 +575,7 @@
                                             android:layout_gravity="end|bottom"
                                             android:layout_marginEnd="@dimen/dp_16"
                                             android:layout_marginBottom="@dimen/dp_14"
-                                            android:src="@drawable/ic_vector" />
+                                            android:src="@drawable/calendar_ic_vector" />
 
                                     </FrameLayout>
                                 </RelativeLayout>
@@ -600,7 +586,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/dp_170"
                                 android:layout_marginTop="@dimen/dp_20"
-                                android:background="@drawable/bg_radius_pink"
+                                android:background="@drawable/calendar_bg_radius_pink"
                                 android:orientation="horizontal">
 
                                 <LinearLayout
@@ -620,7 +606,7 @@
                                             android:id="@+id/iv_baseball_01"
                                             android:layout_width="@dimen/dp_24"
                                             android:layout_height="@dimen/dp_24"
-                                            android:src="@drawable/ic_volleyball"
+                                            android:src="@drawable/calendar_ic_volleyball"
                                             app:layout_constraintBottom_toBottomOf="parent"
                                             app:layout_constraintStart_toStartOf="parent"
                                             app:layout_constraintTop_toTopOf="parent" />
@@ -677,7 +663,7 @@
                                         <ImageView
                                             android:layout_width="match_parent"
                                             android:layout_height="match_parent"
-                                            android:src="@drawable/ic_tg_ty" />
+                                            android:src="@drawable/calendar_ic_tg_ty" />
 
                                         <TextView
                                             android:layout_width="wrap_content"
@@ -697,7 +683,7 @@
                                         android:layout_alignParentBottom="true"
                                         android:layout_marginEnd="@dimen/dp_16"
                                         android:layout_marginBottom="@dimen/dp_2"
-                                        android:src="@drawable/ic_sky" />
+                                        android:src="@drawable/calendar_ic_sky" />
 
                                 </RelativeLayout>
 
@@ -707,7 +693,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/dp_170"
                                 android:layout_marginTop="@dimen/dp_20"
-                                android:background="@drawable/bg_radius_pink"
+                                android:background="@drawable/calendar_bg_radius_pink"
                                 android:orientation="horizontal">
 
                                 <LinearLayout
@@ -727,7 +713,7 @@
                                             android:id="@+id/iv_baseball_02"
                                             android:layout_width="@dimen/dp_24"
                                             android:layout_height="@dimen/dp_24"
-                                            android:src="@drawable/ic_basketball"
+                                            android:src="@drawable/calendar_ic_basketball"
                                             app:layout_constraintBottom_toBottomOf="parent"
                                             app:layout_constraintStart_toStartOf="parent"
                                             app:layout_constraintTop_toTopOf="parent" />
@@ -785,7 +771,7 @@
                                         <ImageView
                                             android:layout_width="match_parent"
                                             android:layout_height="match_parent"
-                                            android:src="@drawable/ic_tg_ly" />
+                                            android:src="@drawable/calendar_ic_tg_ly" />
 
                                         <TextView
                                             android:layout_width="wrap_content"
@@ -805,7 +791,7 @@
                                         android:layout_alignParentBottom="true"
                                         android:layout_marginEnd="@dimen/dp_16"
                                         android:layout_marginBottom="@dimen/dp_2"
-                                        android:src="@drawable/ic_da_yuan" />
+                                        android:src="@drawable/calendar_ic_da_yuan" />
 
                                 </RelativeLayout>
 
@@ -815,7 +801,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/dp_170"
                                 android:layout_marginTop="@dimen/dp_20"
-                                android:background="@drawable/bg_radius_pink"
+                                android:background="@drawable/calendar_bg_radius_pink"
                                 android:orientation="horizontal">
 
                                 <LinearLayout
@@ -835,7 +821,7 @@
                                             android:id="@+id/iv_baseball_03"
                                             android:layout_width="@dimen/dp_24"
                                             android:layout_height="@dimen/dp_24"
-                                            android:src="@drawable/ic_baseball"
+                                            android:src="@drawable/calendar_ic_baseball"
                                             app:layout_constraintBottom_toBottomOf="parent"
                                             app:layout_constraintStart_toStartOf="parent"
                                             app:layout_constraintTop_toTopOf="parent" />
@@ -893,7 +879,7 @@
                                         <ImageView
                                             android:layout_width="match_parent"
                                             android:layout_height="match_parent"
-                                            android:src="@drawable/ic_tg_xy" />
+                                            android:src="@drawable/calendar_ic_tg_xy" />
 
                                         <TextView
                                             android:layout_width="wrap_content"
@@ -913,7 +899,7 @@
                                         android:layout_alignParentBottom="true"
                                         android:layout_marginEnd="@dimen/dp_16"
                                         android:layout_marginBottom="@dimen/dp_2"
-                                        android:src="@drawable/ic_takamel" />
+                                        android:src="@drawable/calendar_ic_takamel" />
 
                                 </RelativeLayout>
 

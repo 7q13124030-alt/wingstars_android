@@ -39,10 +39,10 @@ class EventDetailsActivity : BaseActivity() {
 
             if (isContentVisible) {
                 binding.tvEventInformationContent.visibility=View.VISIBLE
-                binding.ivEventInformation.setImageResource(R.drawable.ic_arrow_up)
+                binding.ivEventInformation.setImageResource(R.drawable.calendar_ic_arrow_up)
             } else {
                 binding.tvEventInformationContent.visibility=View.GONE
-                binding.ivEventInformation.setImageResource(R.drawable.ic_arrow_down)
+                binding.ivEventInformation.setImageResource(R.drawable.calendar_ic_arrow_down)
             }
         }
 
@@ -51,10 +51,10 @@ class EventDetailsActivity : BaseActivity() {
 
             if (isPrecautionsVisible) {
                 binding.tvPrecautionsContent.visibility=View.VISIBLE
-                binding.ivPrecautions.setImageResource(R.drawable.ic_arrow_up)
+                binding.ivPrecautions.setImageResource(R.drawable.calendar_ic_arrow_up)
             } else {
                 binding.tvPrecautionsContent.visibility=View.GONE
-                binding.ivPrecautions.setImageResource(R.drawable.ic_arrow_down)
+                binding.ivPrecautions.setImageResource(R.drawable.calendar_ic_arrow_down)
             }
         }
 
