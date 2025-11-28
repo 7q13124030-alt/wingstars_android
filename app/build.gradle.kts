@@ -7,6 +7,14 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        create("release") {
+            storeFile = file("..\\doc\\wing_stars.jks")
+            storePassword = "wingstars"
+            keyAlias = "wingstars"
+            keyPassword = "wingstars"
+        }
+    }
     namespace = "com.company.wingstars"
     compileSdk = rootProject.extra["compileSdkVersion"] as Int
 
@@ -22,6 +30,7 @@ android {
 
     buildTypes {
         release {
+            signingConfig = signingConfigs.getByName("release") // 关联release签名
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
