@@ -23,12 +23,8 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/color_F5F5F5"
+            android:background="@color/white"
             tools:context=".count.gift.GiftDetailsActivity">
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
             <LinearLayout
                 android:id="@+id/top_container"
                 android:orientation="vertical"
@@ -122,7 +118,7 @@
             android:layout_height="wrap_content"
             app:cardCornerRadius="@dimen/pt_20">-->
        <com.lihang.ShadowLayout
-           android:layout_marginBottom="@dimen/pt_86"
+           android:layout_marginBottom="@dimen/pt_35"
            android:layout_width="match_parent"
            android:layout_height="wrap_content">
            <FrameLayout
@@ -145,7 +141,6 @@
 <!--                           android:layout_height="wrap_content"-->
 <!--                           android:src="@drawable/home_04"/>-->
                        <FrameLayout
-                           android:layout_marginLeft="@dimen/pt_9"
                            android:layout_width="@dimen/pt_120"
                            android:layout_height="@dimen/pt_120">
                            <com.youth.banner.Banner
@@ -196,6 +191,7 @@
                        android:layout_height="wrap_content"
                        android:textSize="@dimen/sp_20"
                        android:layout_marginTop="@dimen/pt_20"
+                       android:layout_marginStart="@dimen/pt_7"
                        android:textColor="@color/color_101828"
                        android:textStyle="bold"/>
 
@@ -231,8 +227,7 @@
                            android:singleLine="true"
                            android:text="499 點"
                            android:textColor="@color/color_101828"
-                           android:textSize="@dimen/sp_14"
-                           android:textStyle="bold" />
+                           android:textSize="@dimen/sp_14" />
                    </RelativeLayout>
 
                    <LinearLayout
@@ -245,10 +240,11 @@
                        <TextView
                            android:id="@+id/tv_coupon_times"
                            android:textSize="@dimen/sp_14"
-                           android:textColor="@color/color_E2518D"
+                           android:textColor="@color/color_EE97BB"
                            android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
                            android:text="@string/time_points"
+                           android:textStyle="bold"
                            android:layout_marginBottom="@dimen/pt_7"/>
 
                        <TextView
@@ -280,13 +276,13 @@
                        <TextView
                            android:id="@+id/state"
                            android:textSize="@dimen/sp_14"
-                           android:textColor="@color/color_E2518D"
+                           android:textColor="@color/color_EE97BB"
                            android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
                            android:text="@string/usage_status"
+                           android:textStyle="bold"
                            android:layout_marginBottom="@dimen/pt_7"/>
                        <TextView
-                           android:textStyle="bold"
                            android:id="@+id/status"
                            android:ellipsize="end"
                            android:singleLine="true"
@@ -314,14 +310,14 @@
                        <TextView
                            android:id="@+id/points1"
                            android:textSize="@dimen/sp_14"
-                           android:textColor="@color/color_E2518D"
+                           android:textColor="@color/color_EE97BB"
                            android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
                            android:text="@string/exchange_cap"
+                           android:textStyle="bold"
                            android:layout_marginBottom="@dimen/pt_7"/>
                        <TextView
                            android:id="@+id/max_per_member"
-                           android:textStyle="bold"
                            android:ellipsize="end"
                            android:singleLine="true"
                            android:textColor="@color/color_101828"
@@ -413,10 +409,11 @@
                        <TextView
                            android:id="@+id/points2"
                            android:textSize="@dimen/sp_14"
-                           android:textColor="@color/color_E2518D"
+                           android:textColor="@color/color_EE97BB"
                            android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
                            android:text="@string/total_nums"
+                           android:textStyle="bold"
                            android:layout_marginBottom="@dimen/pt_7"/>
 
                        <TextView
@@ -426,8 +423,7 @@
                            android:ellipsize="end"
                            android:singleLine="true"
                            android:textColor="@color/color_101828"
-                           android:textSize="@dimen/sp_14"
-                           android:textStyle="bold" />
+                           android:textSize="@dimen/sp_14" />
                    </LinearLayout>
 
                    <View
@@ -448,14 +444,14 @@
                        <TextView
                            android:id="@+id/points3"
                            android:textSize="@dimen/sp_14"
-                           android:textColor="@color/color_E2518D"
+                           android:textColor="@color/color_EE97BB"
                            android:layout_width="wrap_content"
                            android:layout_height="wrap_content"
                            android:text="@string/exchange_object"
+                           android:textStyle="bold"
                            android:layout_marginBottom="@dimen/pt_7"/>
                        <TextView
                            android:id="@+id/finish_time"
-                           android:textStyle="bold"
                            android:ellipsize="end"
                            android:singleLine="true"
                            android:textColor="@color/color_101828"
@@ -550,7 +546,7 @@
                                android:textColor="@color/color_EE97BB"
                                android:layout_width="wrap_content"
                                android:layout_height="wrap_content"
-                               android:text="@string/usage_rules"
+                               android:text="@string/precautions"
                                android:layout_centerVertical="true"
                                android:textStyle="bold"/>
 
@@ -644,7 +640,6 @@
             app:backgroundTint="@null" />
     </RelativeLayout>
 
-        </RelativeLayout>
         </RelativeLayout>
     </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 </layout>

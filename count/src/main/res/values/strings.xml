@@ -38,6 +38,8 @@
     <string name="count_activate_barcode">開啟條碼</string>
     <string name="gift_details">贈品兌換詳情</string>
     <string name="count_special_offer">特別優惠</string>
+    <string name="count_type_airdrop">即時給點</string>
+    <string name="count_completed">已完成</string>
 
     <string name="exchange_points">兌換點數</string>
     <string name="time_points">兌換期間</string>
@@ -46,7 +48,7 @@
     <string name="total_nums">全站數量</string>
     <string name="exchange_object">兌換地點</string>
     <string name="usage_rules">使用規則</string>
-    <string name="precautions">兌換地點</string>
+    <string name="precautions">注意事項</string>
     <string name="redeem_immediately">立即兌換</string>
 
 

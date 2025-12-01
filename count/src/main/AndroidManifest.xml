@@ -3,6 +3,9 @@
 
     <application>
         <activity
+            android:name=".activity.Count_Item_Activity"
+            android:exported="false" />
+        <activity
             android:name=".activity.ExchangeHistoryActivity"
             android:exported="false" />
         <activity
@@ -17,7 +20,7 @@
             android:exported="false" />
         <activity
             android:name=".activity.GiftDetailsActivity"
-            android:exported="false"/>
+            android:exported="false" />
     </application>
 
 </manifest>
