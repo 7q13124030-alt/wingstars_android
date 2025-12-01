@@ -31,6 +31,7 @@ import android.widget.RadioButton
 import androidx.core.widget.NestedScrollView
 import com.wingstars.count.activity.ActivityExchangeActivity
 import com.wingstars.count.activity.CountHistoryActivity
+import com.wingstars.count.activity.Count_Item_Activity
 import com.wingstars.count.activity.ExchangeHistoryActivity
 import com.wingstars.count.activity.GiftExchangeActivity
 import com.wingstars.count.databinding.DialogPublicPopupBoxBinding
@@ -113,9 +114,12 @@ class CountFragment : BaseFragment(){
             }
         }, 0)
 
-        binding.titleList.adapter = countTitleAdapter
+        adapter = CountSingleAdapter(requireActivity(), ArrayList()) { item ->
+            val intent = Intent(requireActivity(), Count_Item_Activity::class.java)
+            intent.putExtra("EXTRA_ITEM_DATA", item)
+            startActivity(intent)
+        }
 
-        adapter = CountSingleAdapter(requireActivity(), ArrayList())
         binding.girlsList.layoutManager = LinearLayoutManager(
             requireActivity(),
             LinearLayoutManager.VERTICAL, false
@@ -201,11 +205,12 @@ class CountFragment : BaseFragment(){
 
     private fun setupObservers() {
         val testData = mutableListOf(
-            CountSingleItemViewModel("安之軒 10/03 生日留言","到官方FB專頁，在生日貼文留言祝福，... ","2025年10月3日", "10 點", R.drawable.ic_count_im, R.drawable.bg_count_deep),
-            CountSingleItemViewModel("2025 WS LOGO卡冊 Get!","凡購買10月份指定商品即可獲得點數! ","2025年4月2日 ～ 2025年12月31日", "20 點", R.drawable.ic_count_im, R.drawable.bg_count_deep),
-            CountSingleItemViewModel("2025 WS 女孩卡冊 Get!","凡購買11月份指定商品即可獲得點數! ","2025年4月2日 ～ 2025年12月31日", "20 點", R.drawable.ic_count_im, R.drawable.bg_count_deep),
-            CountSingleItemViewModel("YouTube 星迷","訂閱官方 YouTube 頻道","2025年10月3日", "1 點", R.drawable.ic_count_im, R.drawable.bg_count_deep),
-            CountSingleItemViewModel("YouTube 星迷","訂閱官方 YouTube 頻道","2025年10月3日", "1 點", R.drawable.ic_count_im, R.drawable.bg_count_deep)
+            CountSingleItemViewModel(1,"安之軒 10/03 生日留言","到官方FB專頁，在生日貼文留言祝福，... ","2025年10月3日", "10 點", R.drawable.ic_count_im, R.drawable.bg_count_deep,"到官方 Facebook 粉專按讚追蹤","參加資格：官方Facebook按讚即完成任務者。 \n" +
+                    "點數發送：即時完成任務即可獲得該點數，每組帳戶領取以1次為限。"),
+            CountSingleItemViewModel(2,"2025 WS LOGO卡冊 Get!","凡購買10月份指定商品即可獲得點數! ","2025年4月2日 ～ 2025年12月31日", "20 點", R.drawable.ic_count_im, R.drawable.bg_count_deep,"",""),
+            CountSingleItemViewModel(3,"2025 WS 女孩卡冊 Get!","凡購買11月份指定商品即可獲得點數! ","2025年4月2日 ～ 2025年12月31日", "20 點", R.drawable.ic_count_im, R.drawable.bg_count_deep,"",""),
+            CountSingleItemViewModel(4,"YouTube 星迷","訂閱官方 YouTube 頻道","2025年10月3日", "1 點", R.drawable.ic_count_im, R.drawable.bg_count_deep,"",""),
+            CountSingleItemViewModel(5,"YouTube 星迷","訂閱官方 YouTube 頻道","2025年10月3日", "1 點", R.drawable.ic_count_im, R.drawable.bg_count_deep,"","")
         )
         fullDataList = testData
         isExpanded = false

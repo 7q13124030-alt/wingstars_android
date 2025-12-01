@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.wingstars.count.R
 import com.wingstars.count.databinding.ItemGoodsNewDetailBinding
 import com.wingstars.count.viewmodel.CountNewDetailViewModel
 import java.util.ArrayList
@@ -93,6 +94,8 @@ class CountNewDetailAdapter(
 
             Glide.with(context)
                 .load(item.image)
+                .placeholder(R.drawable.gift_details_image_background)
+                .error(R.drawable.gift_details_image_background)
                 .into(binding.ivGoodsImage)
 
             binding.root.setOnClickListener {
