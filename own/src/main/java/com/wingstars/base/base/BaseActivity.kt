@@ -30,23 +30,21 @@ abstract class BaseActivity : AppCompatActivity()  {
     }
     public fun setTitleFoot(
         view1: View,
-//        navigationBarColor: Int = R.color.white,
+        navigationBarColor: Int = R.color.white,
 //        statusBarColor: Int = R.color.color_E6BCC0,
-        statusBarColor: Int = R.color.black,
+        statusBarColor: Int = R.color.white,
         initialization: OnInitialization?=null,
         setHeadAndFoot: Boolean = true ,
         isStatusBarDarkFont: Boolean = false,
         isEdgeToEdge: Boolean = false ) {
         immersionBar {
             if (isEdgeToEdge) {
-                // CHẾ ĐỘ TRÀN MÀN HÌNH (EDGE-TO-EDGE)
-                transparentStatusBar() // Làm cho thanh trạng thái trong suốt
+                transparentStatusBar()
             } else {
-                // Chế độ bình thường
                 statusBarColor(statusBarColor)
             }
             statusBarDarkFont(isStatusBarDarkFont)
-//            navigationBarColor(navigationBarColor)
+            navigationBarColor(navigationBarColor)
             navigationBarDarkIcon(true)
             fitsSystemWindows(false)
         }
@@ -123,24 +121,6 @@ abstract class BaseActivity : AppCompatActivity()  {
         params?.width = width
         params?.height = height
         view.layoutParams = params
-    }
-
-
-
-
-
-    fun  setStatusBarColor(){
-        ImmersionBar.with(this)
-            .statusBarColor(R.color.white)
-            .navigationBarColor(R.color.white)
-            .statusBarDarkFont(true)
-            .init()
-    }
-
-
-
-    fun showToast(tip: String){
-        Toast.makeText(this, tip, Toast.LENGTH_LONG).show()
     }
 
 
