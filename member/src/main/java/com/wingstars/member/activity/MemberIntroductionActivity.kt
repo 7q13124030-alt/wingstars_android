@@ -10,6 +10,7 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.wingstars.base.base.BaseActivity
+import com.wingstars.base.net.beans.WSMemberResponse
 import com.wingstars.base.utils.ItemHotDecoration
 import com.wingstars.base.utils.RecyclerViewScrollHelper
 import com.wingstars.member.R
@@ -77,7 +78,7 @@ class MemberIntroductionActivity : BaseActivity(), RecyclerViewScrollHelper.onSc
         }
     }
 
-    private fun setData(it: MutableList<Int>?) {
+    private fun setData(it: MutableList<WSMemberResponse>?) {
         if (it == null || it.isEmpty()) {
             binding.llEmpty.visibility = View.VISIBLE
             binding.rvMemberIntroduction.visibility = View.GONE

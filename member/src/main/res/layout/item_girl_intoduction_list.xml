@@ -68,8 +68,9 @@
                     android:ellipsize="end"
                     android:singleLine="true"
                     android:text="2"
-                    android:textColor="@color/color_4A5565"
-                    android:textSize="@dimen/sp_16" />
+                    android:textColor="@color/color_E2518D"
+                    android:textSize="@dimen/sp_16"
+                    android:textStyle="bold"/>
             </RelativeLayout>
         </LinearLayout>
     </com.lihang.ShadowLayout>

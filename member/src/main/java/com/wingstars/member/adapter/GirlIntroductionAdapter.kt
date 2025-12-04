@@ -158,7 +158,7 @@ class GirlIntroductionAdapter     // -------------------------------------------
             binding.tvName.text = data.titleF
             binding.nums.text = data.acf.number
 
-            binding.root.setOnClickListener {
+            binding.item.setOnClickListener {
                 listener.onItemClick(data, position)
             }
 
