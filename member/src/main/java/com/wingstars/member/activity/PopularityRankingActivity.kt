@@ -22,6 +22,7 @@ import com.wingstars.member.databinding.ActivityPopularityRankingsBinding
 import com.wingstars.member.view.CircleWithBorderTransformation
 import com.wingstars.member.view.PopularityPopupView
 import com.wingstars.member.viewmodel.PopularityRankingViewModel
+import java.io.Serializable
 
 class PopularityRankingActivity : BaseActivity(), View.OnClickListener,
     PopularityPopupView.OnPopupConfirm {
@@ -58,7 +59,7 @@ class PopularityRankingActivity : BaseActivity(), View.OnClickListener,
             wsNewRankData.addAll(it)
             setScreening(type)
         }
-        viewModel.getRankinglist()
+
         viewModel.getRenderedList()
     }
 
@@ -172,12 +173,9 @@ class PopularityRankingActivity : BaseActivity(), View.OnClickListener,
         type = getString(R.string.support_popularity_list)
         binding.title.setBackClickListener { finish() }
         binding.title.setRightIconClickListener {
-            startActivity(
-                Intent(
-                    this,
-                    RankExplanationActivity::class.java
-                )
-            )
+           var intent =  Intent(this, RankExplanationActivity::class.java)
+            intent.putExtra("data", ArrayList(wsNewRankData) as ArrayList<Serializable>)
+            startActivity(intent)
         }
         binding.sort.setOnClickListener(this)
     }

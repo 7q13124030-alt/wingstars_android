@@ -19,10 +19,7 @@ class PopularityRankingViewModel: ViewModel() {
 
     var wsRankData = MutableLiveData<MutableList<WSRankBean>>()
 
-    public fun  getRankinglist(){
-        var arrayList = mutableListOf(1,2,3,4,5,6,7,8)
-        rankinglist.postValue(arrayList)
-    }
+
 
     public fun getRenderedList(){
         loading.postValue(true)
@@ -39,7 +36,7 @@ class PopularityRankingViewModel: ViewModel() {
                             val content = it.content
                             val acf1 = it.acf
                             var acf = mutableListOf<ACFBean>()
-                            for (i in 0..10){
+                            for (i in 1..10){
                                 val rankBean = acf1.rankBean(i)
                                 if (rankBean!=null){
                                     acf.add(ACFBean(name = rankBean.name, volume = rankBean.volume))
