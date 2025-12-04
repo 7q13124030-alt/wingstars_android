@@ -86,7 +86,7 @@ dependencies {
     implementation(project(":home"))
     implementation(project(":count"))
     implementation(project(":calendar"))
-    implementation(project(":user"))
+    //implementation(project(":user"))
     implementation(project(":member"))
     implementation(project(":login"))
     implementation ("com.github.lihangleo2:ShadowLayout:3.3.3")

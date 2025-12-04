@@ -57,7 +57,7 @@ public interface ApiService {
 
     //人气排行-名次对应成员头贴图片
     @GET(NetBase.HOST_BASE + "/wp-json/wp/v2/member_list?_fields=id,title,yoast_head_json.og_image,acf")
-    Observable<List<WSMemberResponse>> wsPhotos(@Query("per_page") int per_page, @Query("page") int page);
+    Observable<List<WSMemberResponse>> wsPhotos();
 
     //成员 > 拍照图框
     @GET(NetBase.HOST_BASE + "/wp-json/wp/v2/member_list?_fields=id,title,acf.number,acf.photoFrame,acf.photoFrame_image_urls")

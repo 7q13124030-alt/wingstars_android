@@ -60,5 +60,6 @@
     <dimen name="dp_21">21dp</dimen>
     <dimen name="dp_9">9dp</dimen>
     <dimen name="dp_123">123dp</dimen>
+    <dimen name="dp_116">116dp</dimen>
 
 </resources>

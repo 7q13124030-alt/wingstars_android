@@ -29,7 +29,7 @@ import com.wingstars.member.R
 import com.wingstars.member.databinding.ActivityFanInteractionBinding
 import com.wingstars.member.utils.DateUtils
 import com.wingstars.member.view.TakePhotosMemberPopupView
-import com.wingstars.member.view.UpLoadingDialog
+import com.wingstars.base.view.UpLoadingDialog
 import com.wingstars.member.viewmodel.FanInteractionViewModel
 import java.io.File
 import java.io.FileOutputStream
@@ -326,24 +326,7 @@ class FanInteractionActivity : BaseActivity(), View.OnClickListener,
         return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
     }
 
-    fun showLoadingUI(isShow: Boolean, context: Context) {
-        if (isShow) {
-            closeLoadingDialog()
-            if (uploadDialog == null) {
-                uploadDialog = UpLoadingDialog.Builder(context).createDialog(this)
-            }
-            uploadDialog!!.show()
-        } else {
-            closeLoadingDialog()
-        }
-    }
 
-    fun closeLoadingDialog() {
-        if (uploadDialog != null) {
-            uploadDialog!!.dismiss()
-            uploadDialog = null
-        }
-    }
 
 
 

@@ -1,4 +1,4 @@
-package com.wingstars.member.view
+package com.wingstars.base.view
 
 import android.app.Dialog
 import android.content.Context
@@ -6,9 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import com.wingstars.base.R
 import com.wingstars.base.utils.DPUtils
-import com.wingstars.member.R
-
 
 class UpLoadingDialog: Dialog {
 
@@ -35,8 +34,8 @@ class UpLoadingDialog: Dialog {
             val window: Window? = dialog.window
             if (window != null) {
                 val attributes = window.attributes
-                attributes.width = DPUtils.dpToPx(64F, context).toInt()
-                attributes.height = DPUtils.dpToPx(64F, context).toInt()
+                attributes.width = DPUtils.Companion.dpToPx(64F, context).toInt()
+                attributes.height = DPUtils.Companion.dpToPx(64F, context).toInt()
                 window.attributes = attributes
             }
             return dialog

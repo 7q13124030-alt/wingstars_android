@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.wingstars.base.base.BaseActivity
 import com.wingstars.member.R
 import com.wingstars.member.adapter.RankExplanationListAdapter
-import com.wingstars.member.databinding.ActivityPopularityRankingBinding
 import com.wingstars.member.databinding.ActivityRankExplanationBinding
 import com.wingstars.member.viewmodel.PopularityRankingViewModel
 import com.wingstars.member.viewmodel.RankExplanationViewModel

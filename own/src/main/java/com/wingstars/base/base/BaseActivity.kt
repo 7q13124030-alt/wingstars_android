@@ -1,5 +1,6 @@
 package com.wingstars.base.base
 
+import android.content.Context
 import android.os.Build
 
 import android.view.LayoutInflater
@@ -14,10 +15,11 @@ import com.gyf.immersionbar.ImmersionBar
 import com.gyf.immersionbar.ktx.immersionBar
 import com.wingstars.base.R
 import com.wingstars.base.databinding.ActivityBaseBinding
+import com.wingstars.base.view.UpLoadingDialog
 
 
 abstract class BaseActivity : AppCompatActivity() {
-
+    private var uploadDialog: UpLoadingDialog? = null
     private lateinit var binding: ActivityBaseBinding
 
 
@@ -25,6 +27,25 @@ abstract class BaseActivity : AppCompatActivity() {
     private var statusBarHeight = 0
     public fun getNavigationBarHeight(): Int {
         return navigationBarHeights
+    }
+
+    fun showLoadingUI(isShow: Boolean, context: Context) {
+        if (isShow) {
+            closeLoadingDialog()
+            if (uploadDialog == null) {
+                uploadDialog = UpLoadingDialog.Builder(context).createDialog(this)
+            }
+            uploadDialog!!.show()
+        } else {
+            closeLoadingDialog()
+        }
+    }
+
+    fun closeLoadingDialog() {
+        if (uploadDialog != null) {
+            uploadDialog!!.dismiss()
+            uploadDialog = null
+        }
     }
 
 

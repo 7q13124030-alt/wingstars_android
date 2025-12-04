@@ -18,7 +18,7 @@ import com.wingstars.count.fragment.CountFragment
 import com.wingstars.home.fragment.HomeFragment
 import com.wingstars.member.activity.FanInteractionActivity
 import com.wingstars.member.fragment.MemberFragment
-import com.wingstars.user.UserFragment
+
 
 class MainActivity : BaseActivity(), BaseActivity.OnInitialization, View.OnClickListener,
     IPermissionsCallback {
@@ -68,7 +68,7 @@ class MainActivity : BaseActivity(), BaseActivity.OnInitialization, View.OnClick
         fragments.add(HomeFragment())
         fragments.add(CountFragment())
         fragments.add(CalendarFragment())
-        fragments.add(UserFragment())
+        fragments.add(MemberFragment())
         fragments.add(MemberFragment())
     }
 
