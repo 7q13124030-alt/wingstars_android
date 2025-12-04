@@ -34,7 +34,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_10"
-                android:text="擁有最強外掛之稱的安芝儇，不只 是Wing Stars 啦啦隊的首位正式成員，同時也是協助台鋼集團桂田文創導入韓職啦啦隊培訓系統、注入韓式應援風格的培訓指導，逐步形塑出 Wing Stars 的耀眼模型。"
                 android:textColor="@color/color_6A7282"
                 android:textSize="@dimen/sp_14" />
 
@@ -53,7 +52,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_10"
-                android:text="그럼에도 불구하고( 儘管如此，還是很美好 )"
                 android:textColor="@color/color_6A7282"
                 android:textSize="@dimen/sp_14" />
 

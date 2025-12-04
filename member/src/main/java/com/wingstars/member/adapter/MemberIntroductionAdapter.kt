@@ -78,7 +78,7 @@ class MemberIntroductionAdapter     // -----------------------------------------
             var data = dataList!![position]
 
             Glide.with(binding.ivGirlImage.context).clear(binding.ivGirlImage)
-            Log.e("data.urlF","data.urlF=${data.urlF}")
+            Log.e("data.urlF", "data.urlF=${data.urlF}")
             if (data.urlF.isNotEmpty()) {
                 Glide.with(context)
                     .load(data.urlF)
@@ -94,7 +94,7 @@ class MemberIntroductionAdapter     // -----------------------------------------
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .skipMemoryCache(false)
                     .dontAnimate()
-                    .listener(object: RequestListener<Drawable>{
+                    .listener(object : RequestListener<Drawable> {
                         override fun onLoadFailed(
                             e: GlideException?,
                             model: Any?,
@@ -139,7 +139,7 @@ class MemberIntroductionAdapter     // -----------------------------------------
             binding.tvName.text = data.titleF
             binding.tvNumber.text = data.acf.number
             binding.slRoot.setOnClickListener {
-                listener.onItemClick(position)
+                listener.onItemClick(data, position)
             }
         }
 
@@ -148,6 +148,6 @@ class MemberIntroductionAdapter     // -----------------------------------------
     }
 
     interface OnItemListener {
-        fun onItemClick(position: Int)
+        fun onItemClick(data: WSMemberResponse, position: Int)
     }
 }

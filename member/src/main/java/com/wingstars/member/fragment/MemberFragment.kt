@@ -167,6 +167,7 @@ class MemberFragment : BaseFragment(), View.OnClickListener,
                 GirlIntroductionAdapter.onItemListener {
                 override fun onItemClick(data: WSMemberResponse, position: Int) {
                     val intent = Intent(requireActivity(), MemberDetailsActivity::class.java)
+                    intent.putExtra("WSMemberResponse", data)
                     startActivity(intent)
                 }
             })

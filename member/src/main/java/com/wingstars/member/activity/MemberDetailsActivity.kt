@@ -1,6 +1,8 @@
 package com.wingstars.member.activity
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,9 +16,12 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.wingstars.base.base.BaseActivity
+import com.wingstars.base.net.beans.WSMemberResponse
 import com.wingstars.base.view.DynamicWidthIndicatorDrawable
 import com.wingstars.member.R
 import com.wingstars.member.databinding.ActivityMemberDetailsBinding
@@ -64,18 +69,69 @@ class MemberDetailsActivity : BaseActivity(), BaseActivity.OnInitialization {
     }
 
     override fun initView() {
-        initTabLayout(this)
+        var wsMemberResponse: WSMemberResponse
+        var acf: WSMemberResponse.Acf? = null
+        val data = intent.getSerializableExtra("WSMemberResponse")
+        if (data != null) {
+            wsMemberResponse = data as WSMemberResponse
+            acf = wsMemberResponse.acf
+
+            binding.tvTitle.text = wsMemberResponse.titleF
+            binding.tvWingNumber.text = wsMemberResponse.acf.number
+            binding.tvWingNickname.text = wsMemberResponse.titleF
+            //facebook
+            if (wsMemberResponse.acf.fb_link.isNotEmpty()) {
+                binding.llFacebook.visibility = View.VISIBLE
+                binding.llFacebook.setOnClickListener {
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.data = Uri.parse(wsMemberResponse.acf.fb_link)
+                    startActivity(intent)
+                }
+            } else {
+                binding.llFacebook.visibility = View.GONE
+            }
+            //Instagram
+            if (wsMemberResponse.acf.ig_link.isNotEmpty()) {
+                binding.llInstagram.visibility = View.VISIBLE
+                binding.llInstagram.setOnClickListener {
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.data = Uri.parse(wsMemberResponse.acf.ig_link)
+                    startActivity(intent)
+                }
+            } else {
+                binding.llInstagram.visibility = View.GONE
+            }
+
+            Glide.with(binding.ivImage.context).clear(binding.ivImage)
+            if (wsMemberResponse.urlF.isNotEmpty()) {
+                Glide.with(this)
+                    .load(wsMemberResponse.urlF)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .skipMemoryCache(false)
+                    .dontAnimate()
+                    .into(binding.ivImage)
+            }
+        }
+        initTabLayout(this, acf)
         binding.imgBack.setOnClickListener {
             finish()
         }
     }
 
-    private fun initTabLayout(context: Context) {
+    private fun initTabLayout(context: Context, wsMemberAcf: WSMemberResponse.Acf?) {
         tabTitleList.clear()
         tabTitleList.add(getString(R.string.basic_information))
         tabTitleList.add(getString(R.string.personal_schedule))
         fragmentAdapter = OuterPagerAdapter(supportFragmentManager, lifecycle)
-        fragmentAdapter.add(BasicInformationFragment())
+
+
+        val basicInformationFragment = BasicInformationFragment()
+        val basicInformationBundle = Bundle().apply {
+            putSerializable("wsMemberAcf", wsMemberAcf)
+        }
+        intent.putExtras(basicInformationBundle)
+        basicInformationFragment.arguments = basicInformationBundle
+        fragmentAdapter.add(basicInformationFragment)
 
 
         val personalScheduleFragment = PersonalScheduleFragment()

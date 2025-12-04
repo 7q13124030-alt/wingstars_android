@@ -18,9 +18,9 @@ import com.wingstars.member.adapter.MemberIntroductionAdapter
 import com.wingstars.member.databinding.ActivityMemberIntroductionBinding
 import com.wingstars.member.viewmodel.MemberIntroductionViewModel
 
-class MemberIntroductionActivity : BaseActivity(), RecyclerViewScrollHelper.onScrollListener{
+class MemberIntroductionActivity : BaseActivity(), RecyclerViewScrollHelper.onScrollListener {
     private lateinit var binding: ActivityMemberIntroductionBinding
-    private var memberIntroductionAdapter: MemberIntroductionAdapter?=null
+    private var memberIntroductionAdapter: MemberIntroductionAdapter? = null
     private lateinit var viewModel: MemberIntroductionViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,8 +49,10 @@ class MemberIntroductionActivity : BaseActivity(), RecyclerViewScrollHelper.onSc
         memberIntroductionAdapter = MemberIntroductionAdapter(
             this,
             mutableListOf(), object : MemberIntroductionAdapter.OnItemListener {
-                override fun onItemClick(position: Int) {
-                    val intent = Intent(this@MemberIntroductionActivity, MemberDetailsActivity::class.java)
+                override fun onItemClick(data: WSMemberResponse, position: Int) {
+                    val intent =
+                        Intent(this@MemberIntroductionActivity, MemberDetailsActivity::class.java)
+                    intent.putExtra("WSMemberResponse", data)
                     startActivity(intent)
                 }
             }
@@ -75,6 +77,10 @@ class MemberIntroductionActivity : BaseActivity(), RecyclerViewScrollHelper.onSc
 
         binding.top.setOnClickListener {
             binding.rvMemberIntroduction.smoothScrollToPosition(0)
+        }
+
+        viewModel.loading.observe(this) {
+            showLoadingUI(it, this)
         }
     }
 

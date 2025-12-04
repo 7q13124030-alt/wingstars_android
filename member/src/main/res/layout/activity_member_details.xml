@@ -38,7 +38,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="安芝儇"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_16" />
         </RelativeLayout>
@@ -55,7 +54,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginLeft="@dimen/dp_20"
+                    android:layout_marginStart="@dimen/dp_20"
                     android:layout_marginBottom="46dp"
                     android:orientation="vertical">
 
@@ -63,8 +62,7 @@
                         android:id="@+id/tv_wing_number"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:text="2"
+                        android:gravity="center_vertical"
                         android:textColor="@color/color_E2518D"
                         android:textSize="@dimen/sp_24"
                         android:textStyle="bold" />
@@ -76,7 +74,6 @@
                         android:layout_marginTop="@dimen/dp_5"
                         android:layout_marginBottom="@dimen/dp_30"
                         android:gravity="center_vertical"
-                        android:text="安芝儇"
                         android:textColor="@color/color_E2518D"
                         android:textSize="@dimen/sp_24"
                         android:textStyle="bold" />
@@ -90,6 +87,7 @@
                             android:id="@+id/ll_facebook"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/dp_17"
                             android:gravity="center"
                             android:orientation="vertical">
 
@@ -104,7 +102,6 @@
                             android:id="@+id/ll_instagram"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/dp_17"
                             android:gravity="center"
                             android:orientation="vertical">
 
@@ -124,11 +121,10 @@
                     android:layout_alignParentBottom="true">
 
                     <ImageView
-                        android:id="@+id/tv_image"
+                        android:id="@+id/iv_image"
                         android:layout_width="@dimen/dp_236"
                         android:layout_height="@dimen/dp_318"
-                        android:scaleType="fitXY"
-                        android:src="@mipmap/ic_demo4" />
+                        android:scaleType="fitXY" />
                 </LinearLayout>
             </RelativeLayout>
 

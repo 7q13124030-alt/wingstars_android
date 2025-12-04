@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.wingstars.base.net.beans.WSMemberResponse
 import com.wingstars.base.utils.DPUtils
 import com.wingstars.base.utils.ScreenUtils
 import com.wingstars.member.adapter.BasicIntroductionAdapter
@@ -27,20 +28,7 @@ class BasicInformationFragment : Fragment() {
 
     private lateinit var hobbyAdapter: HobbyAdapter
     private var orgHobbyLists = mutableListOf<String>()
-    private var isDataLoaded = false // 标记数据是否加载过
-    override fun onResume() {
-        super.onResume()
 
-        if (!isDataLoaded) {
-            loadData()
-            isDataLoaded = true
-        }
-    }
-
-    private fun loadData() {
-        viewModel.getBasicIntroductionList()
-        viewModel.getHobbyLists()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,6 +54,15 @@ class BasicInformationFragment : Fragment() {
 
     private fun initView() {
 
+        val data = arguments?.getSerializable("wsMemberAcf")
+        if (data != null) {
+            val acf = data as WSMemberResponse.Acf
+            binding.tvAboutMeContent.text = acf.about
+            binding.tvMottoContent.text = acf.say
+
+            viewModel.getHobbyLists(acf.interest)
+            viewModel.getBasicIntroductionList(acf)
+        }
         //create base introduction adapter.
         basicIntroductionAdapter = BasicIntroductionAdapter(mutableListOf())
         binding.rvIntroduction.layoutManager =
@@ -91,7 +88,8 @@ class BasicInformationFragment : Fragment() {
                 // 返回值表示该位置的项目占据多少个连续的网格
                 var nSpanSize = 0
                 if (orgHobbyLists.isNotEmpty() && position < orgHobbyLists.size) {
-                    nSpanSize = sum(orgHobbyLists[position].length, DPUtils.sp2px(16f, requireActivity()),
+                    nSpanSize = sum(
+                        orgHobbyLists[position].length, DPUtils.sp2px(16f, requireActivity()),
                         DPUtils.dpToPx(32f, requireActivity())
                     )
                 }

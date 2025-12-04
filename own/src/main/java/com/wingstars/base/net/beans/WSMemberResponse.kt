@@ -1,12 +1,14 @@
 package com.wingstars.base.net.beans
 
+import java.io.Serializable
+
 
 data class WSMemberResponse(
     val id: Int,
     val title: Title,                   //姓名
     val acf: Acf,                       //资讯
     val yoast_head_json: YoastHeadJson, //圖片
-) {
+): Serializable {
     val titleF: String                  //title format
         get() {
             return title.rendered
