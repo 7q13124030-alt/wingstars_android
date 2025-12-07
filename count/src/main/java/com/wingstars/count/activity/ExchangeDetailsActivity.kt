@@ -1,4 +1,5 @@
 package com.wingstars.count.activity
+
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -17,78 +18,124 @@ import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.wingstars.count.R
-import com.wingstars.count.databinding.ActivityGiftDetailsBinding
+import com.wingstars.count.databinding.ActivityExchangeDetailsBinding
 import com.wingstars.count.databinding.DialogOtpCouponsBinding
 import com.wingstars.count.databinding.DialogPublicPopupBoxBinding
-import com.wingstars.count.viewmodel.CountNewDetailViewModel
+import com.wingstars.count.viewmodel.CountListItemViewModel
+import com.youth.banner.adapter.BannerImageAdapter
+import com.youth.banner.holder.BannerImageHolder
+import com.youth.banner.listener.OnPageChangeListener
 import kotlin.random.Random
 
-class GiftDetailsActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityGiftDetailsBinding
+class ExchangeDetailsActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityExchangeDetailsBinding
     private var currentOtpCode = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        binding = ActivityGiftDetailsBinding.inflate(layoutInflater)
+        binding = ActivityExchangeDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        loadData()
         initView()
+        loadData()
+        initBanner()
     }
 
+    // ===================== DATA =====================
     private fun loadData() {
-
-        val item: CountNewDetailViewModel? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableExtra("EXTRA_GIFT_ITEM", CountNewDetailViewModel::class.java)
-        } else {
-            @Suppress("DEPRECATION")
-            intent.getParcelableExtra("EXTRA_GIFT_ITEM")
-        }
+        val item: CountListItemViewModel? =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                intent.getParcelableExtra("EXTRA_GIFT_ITEM", CountListItemViewModel::class.java)
+            } else {
+                @Suppress("DEPRECATION")
+                intent.getParcelableExtra("EXTRA_GIFT_ITEM")
+            }
 
         item?.let {
-
             binding.couponName.text = it.title
             binding.pointCost.text = "${it.count} 點"
-            binding.tvCouponTime.text = it.expiryDate
+            binding.tvCouponTime.text = it.time
             binding.status.text = it.exitem
             binding.maxPerMember.text = it.limit
             binding.activityTime.text = it.total
             binding.finishTime.text = it.location
             binding.tvUsageRules.text = it.usageRules
+            binding.tvInformation.text = it.information
             binding.tvPrecautions.text = it.description
-
-
-            Glide.with(this)
-                .load(it.image)
-                .placeholder(R.drawable.gift_details_image_background)
-                .into(binding.merchandise)
         }
     }
 
+    // ===================== VIEW =====================
     private fun initView() {
-        binding.imgBack.setOnClickListener {
-            finish()
-        }
+        binding.imgBack.setOnClickListener { finish() }
+
         binding.rlRuleHeader.setOnClickListener {
             toggleSection(binding.tvUsageRules, binding.ivArrow)
         }
+
+        binding.rlInformation.setOnClickListener {
+            toggleSection(binding.tvInformation, binding.ivArrow1)
+        }
+
         binding.rlPrecautions.setOnClickListener {
-            toggleSection(binding.tvPrecautions, binding.ivArrow1)
+            toggleSection(binding.tvPrecautions, binding.ivArrow3)
         }
 
-        binding.btnExchange.setOnClickListener {
-            showOtpDialog()
-        }
-
+//        binding.btnExchange.setOnClickListener {
+//            showOtpDialog()
+//        }
     }
 
+    // ===================== BANNER =====================
+    private fun initBanner() {
+
+        val imageList = listOf(
+            R.drawable.bg_round_image,
+            R.drawable.bg_round_image,
+            R.drawable.bg_round_image
+        )
+
+        val bannerAdapter = object : BannerImageAdapter<Int>(imageList) {
+            override fun onBindView(
+                holder: BannerImageHolder,
+                data: Int,
+                position: Int,
+                size: Int
+            ) {
+                // Load ảnh bằng Glide
+                Glide.with(holder.itemView)
+                    .load(data)
+                    .into(holder.imageView)
+            }
+        }
+
+        binding.bannerUserGuideImage.setAdapter(bannerAdapter)
+        binding.bannerUserGuideImage.addOnPageChangeListener(object : OnPageChangeListener {
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+            }
+
+            override fun onPageSelected(position: Int) {
+                binding.tvIndicator.text = "${position + 1}/${imageList.size}"
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+            }
+        })
+
+        binding.tvIndicator.text = "1/${imageList.size}"
+        binding.bannerUserGuideImage.start()
+    }
+
+    // ===================== OTP =====================
     private fun showOtpDialog() {
         val otpBinding = DialogOtpCouponsBinding.inflate(LayoutInflater.from(this))
         val bottomSheetDialog = BottomSheetDialog(this)
@@ -137,7 +184,7 @@ class GiftDetailsActivity : AppCompatActivity() {
                         bottomSheetDialog.dismiss()
                         showSuccessDialog()
                     } else {
-                        Toast.makeText(this@GiftDetailsActivity, "驗證碼錯誤！", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@ExchangeDetailsActivity, "驗證碼錯誤！", Toast.LENGTH_SHORT).show()
                         otpBinding.etInput.text.clear()
                         refreshOtp()
                     }
@@ -147,6 +194,7 @@ class GiftDetailsActivity : AppCompatActivity() {
         bottomSheetDialog.show()
     }
 
+    // ===================== SUCCESS =====================
     private fun showSuccessDialog() {
         val successBinding = DialogPublicPopupBoxBinding.inflate(LayoutInflater.from(this))
         val bottomSheetDialog = BottomSheetDialog(this)
@@ -169,13 +217,14 @@ class GiftDetailsActivity : AppCompatActivity() {
         bottomSheetDialog.show()
     }
 
-    private fun toggleSection(contentView: View, arrowView: ImageView) {
-        if (contentView.visibility == View.VISIBLE) {
-            contentView.visibility = View.GONE
-            arrowView.animate().rotation(0f).setDuration(200).start()
+    // ===================== TOGGLE =====================
+    private fun toggleSection(content: View, arrow: ImageView) {
+        if (content.visibility == View.VISIBLE) {
+            content.visibility = View.GONE
+            arrow.animate().rotation(0f).setDuration(200).start()
         } else {
-            contentView.visibility = View.VISIBLE
-            arrowView.animate().rotation(180f).setDuration(200).start()
+            content.visibility = View.VISIBLE
+            arrow.animate().rotation(180f).setDuration(200).start()
         }
     }
 }
