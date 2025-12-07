@@ -49,15 +49,6 @@
                       android:textStyle="bold"
                       android:text="@string/count"/>
 
-<!--                     <ImageView-->
-<!--                         android:id="@+id/iv_medal"-->
-<!--                         android:layout_width="wrap_content"-->
-<!--                         android:layout_height="wrap_content"-->
-<!--                         android:layout_gravity="center_vertical"-->
-<!--                         android:gravity="end"-->
-<!--                         android:src="@drawable/ic_medal"-->
-<!--                         android:layout_marginRight="@dimen/dp_20"/>-->
-
                   </LinearLayout>
                </RelativeLayout>
 
