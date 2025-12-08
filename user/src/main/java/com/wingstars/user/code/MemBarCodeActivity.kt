@@ -24,6 +24,23 @@ class MemBarCodeActivity : BaseActivity(){
 
     override fun initView() {
         binding.includeTop.ivClose.setOnClickListener { finish() }
+        binding.ivQrLarger.setOnClickListener {
+            binding.llCodeSmall.visibility = View.GONE
+            binding.llQrLarger.visibility = View.VISIBLE
+        }
+        binding.ivQrSmall.setOnClickListener {
+            binding.llQrLarger.visibility = View.GONE
+            binding.llCodeSmall.visibility = View.VISIBLE
+        }
+        binding.ivBarLager.setOnClickListener {
+            binding.llCodeSmall.visibility = View.GONE
+            binding.llBarLarger.visibility = View.VISIBLE
+        }
+        binding.ivBarSmall.setOnClickListener {
+            binding.llBarLarger.visibility = View.GONE
+            binding.llCodeSmall.visibility = View.VISIBLE
+        }
+
     }
 
 

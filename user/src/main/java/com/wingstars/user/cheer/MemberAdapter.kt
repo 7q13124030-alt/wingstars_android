@@ -15,13 +15,14 @@ data class MemberInfo(
 
 class MemberAdapter(
     private val memberList: List<MemberInfo>,
-    private val onSelect: (MemberInfo) -> Unit,
-    initialSelectedName: String? = null,
+    private val selectedId: String?,
+    private val onSelect: (MemberInfo) -> Unit
 ) : RecyclerView.Adapter<MemberAdapter.MemberViewHolder>() {
 
-    private var selectedPosition = memberList.indexOfFirst { it.name == initialSelectedName }
+    private var selectedPosition =
+        memberList.indexOfFirst { it.number == selectedId }
 
-    class MemberViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class MemberViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val txtNumber: TextView = view.findViewById(R.id.tv_number)
         val txtName: TextView = view.findViewById(R.id.tv_name)
         val imgTick: ImageView = view.findViewById(R.id.img_tick)
@@ -39,20 +40,19 @@ class MemberAdapter(
         holder.txtNumber.text = member.number
         holder.txtName.text = member.name
 
-        // Hiển thị tick nếu item đang được chọn
-        holder.imgTick.visibility = if (position == selectedPosition) View.VISIBLE else View.GONE
+        holder.imgTick.visibility =
+            if (position == selectedPosition) View.VISIBLE else View.GONE
 
         holder.itemView.setOnClickListener {
             val pos = holder.bindingAdapterPosition
             if (pos == RecyclerView.NO_POSITION) return@setOnClickListener
 
-            val oldPos = selectedPosition
+            val old = selectedPosition
             selectedPosition = pos
-
-            if (oldPos != -1) notifyItemChanged(oldPos)
+            if (old != -1) notifyItemChanged(old)
             notifyItemChanged(selectedPosition)
 
-            onSelect(memberList[pos])
+            onSelect(member)
         }
     }
 

@@ -37,10 +37,13 @@ class ChooseMemberDialog(
             MemberInfo("33", "林浠")
         )
 
-        rv.adapter = MemberAdapter(members, { selected ->
-            onMemberSelected("${selected.number}|${selected.name}") // gửi số và tên
+        rv.adapter = MemberAdapter(
+            members,
+            selectedName?.split("|")?.getOrNull(0),
+        ) { selected ->
+            onMemberSelected("${selected.number}|${selected.name}")
             dismiss()
-        }, initialSelectedName = selectedName)
+        }
 
     }
 }
