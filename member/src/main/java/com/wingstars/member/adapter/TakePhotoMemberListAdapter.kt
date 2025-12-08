@@ -12,7 +12,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.wingstars.base.utils.DPUtils
 import com.wingstars.member.R
 import com.wingstars.member.bean.TakePhotosMembersListBean
-import com.wingstars.member.databinding.ItemPoplarityListBinding
+import com.wingstars.member.databinding.ItemPoplarityListsBinding
 import com.wingstars.member.databinding.ItemRankListBinding
 import com.wingstars.member.databinding.ItemTakePhotoMemberListBinding
 

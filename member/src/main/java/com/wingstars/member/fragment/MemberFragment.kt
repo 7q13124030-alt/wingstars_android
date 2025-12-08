@@ -16,6 +16,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.Gson
 import com.wingstars.base.base.BaseFragment
 import com.wingstars.base.utils.DPUtils
 import com.wingstars.base.utils.ScreenUtils
@@ -146,12 +147,7 @@ class MemberFragment : BaseFragment(), View.OnClickListener,
         }
 
         viewModel.popularitylist.observe(viewLifecycleOwner) {
-            var adapter = PopularityAdapter(requireActivity(), it, this)
-            binding.chartList.layoutManager = LinearLayoutManager(
-                requireActivity(),
-                LinearLayoutManager.HORIZONTAL, false
-            )
-            binding.chartList.adapter = adapter
+
 
             var adapter1 = SupportFashionAdapter(requireActivity(), it, this)
             binding.supportFashionList.layoutManager = LinearLayoutManager(
@@ -190,6 +186,19 @@ class MemberFragment : BaseFragment(), View.OnClickListener,
 
         binding.rlMemberIntroduction.setOnClickListener(this)
         binding.atmosphere.setOnClickListener(this)
+        viewModel.loading.observe(viewLifecycleOwner){
+            showLoadingUI(it, requireActivity())
+        }
+        viewModel.wsRankData.observe(viewLifecycleOwner){
+            Log.e("wsRankData","${Gson().toJson(it)}")
+            var adapter = PopularityAdapter(requireActivity(), it, this)
+            binding.chartList.layoutManager = LinearLayoutManager(
+                requireActivity(),
+                LinearLayoutManager.HORIZONTAL, false
+            )
+            binding.chartList.adapter = adapter
+        }
+        viewModel.getRenderedList()
     }
 
 
