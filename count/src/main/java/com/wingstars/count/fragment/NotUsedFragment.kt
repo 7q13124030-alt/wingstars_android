@@ -1,6 +1,7 @@
 package com.wingstars.count.fragment
 
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable // Cần import cái này để vẽ viền
@@ -19,16 +20,18 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.wingstars.count.R
+import com.wingstars.count.activity.ExchangeDetailsActivity
+import com.wingstars.count.adapter.HaveUsedCouponAdapter
 import com.wingstars.count.adapter.UnusedCouponAdapter
 import com.wingstars.count.databinding.FragmentNotUsedBinding
+import com.wingstars.count.viewmodel.CountListItemViewModel
 import com.wingstars.count.viewmodel.CouponViewModel
 
 class NotUsedFragment : Fragment() {
     private var _binding: FragmentNotUsedBinding? = null
     private val binding get() = _binding!!
-
-    private val unusedCouponAdapter = UnusedCouponAdapter()
-    private var currentDataList: List<CouponViewModel> = listOf()
+    private lateinit var unusedCouponAdapter : UnusedCouponAdapter
+    private var currentDataList: List<CountListItemViewModel> = listOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,6 +44,18 @@ class NotUsedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        unusedCouponAdapter = UnusedCouponAdapter(listOf()) { item ->
+            val intent = Intent(requireContext(), ExchangeDetailsActivity::class.java)
+            val listToSend = ArrayList(currentDataList)
+            intent.putParcelableArrayListExtra("EXTRA_LIST_DATA", listToSend)
+            val position = currentDataList.indexOf(item)
+            intent.putExtra("EXTRA_CURRENT_POSITION", position)
+            intent.putExtra("qrCodeButton", 1)
+
+
+            startActivity(intent)
+        }
+
         setupRecyclerView()
         setupRefreshLayout()
         loadData()
@@ -52,7 +67,9 @@ class NotUsedFragment : Fragment() {
             adapter = unusedCouponAdapter
         }
         unusedCouponAdapter.onBarcodeClick = { position ->
-            showBarcodeDialog(position, currentDataList)
+            if (currentDataList.isNotEmpty() && position in currentDataList.indices) {
+                showBarcodeDialog(position, currentDataList)
+            }
         }
     }
 
@@ -65,17 +82,69 @@ class NotUsedFragment : Fragment() {
 
     private fun loadData() {
         val mockData = listOf(
-            CouponViewModel("1", "2025 WS單曲寫真壓克力鑰匙圈", "兌換期間：2025/10/28 ~ 2025/11/09", R.drawable.ic_count_gift_1),
-            CouponViewModel("2", "2025 WS單曲寫真女孩貼紙包", "兌換期間：2025/10/28 ~ 2025/11/09", R.drawable.ic_count_gift_3),
-            CouponViewModel("3", "Wing Stars 簽名會（第三梯次）", "兌換期間：2025/10/28 ~ 2025/11/09", R.drawable.bg_round_image),
-            CouponViewModel("4", "Wing Stars 簽名會（第二梯次）", "兌換期間：2025/10/28 ~ 2025/11/09", R.drawable.bg_round_image),
+            CountListItemViewModel(
+                1,
+                "有鷹來同樂 TSG Party -  Wing Stars 簽名會（第三梯次）",
+                "2025/11/09 (日)", // Trường time
+                "100",
+                R.drawable.bg_round_image,
+                "所有會員皆適用",
+                "1次",
+                "80",
+                "澄清湖棒球場",
+                "Description...",
+                "aa",
+                ""
+            ),
+            CountListItemViewModel(
+                2,
+                "有鷹來同樂 TSG Party -  Wing Stars 簽名會（第二梯次）",
+                "2025/10/28 (二)",
+                "100",
+                R.drawable.bg_round_image,
+                "所有會員皆適用",
+                "1次",
+                "80",
+                "澄清湖棒球場",
+                "Description...",
+                "aa",
+                ""
+            ),
+            CountListItemViewModel(
+                3,
+                "有鷹來同樂 TSG Party -  Wing Stars 簽名會（第二梯次）",
+                "2025/10/28 (二)",
+                "100",
+                R.drawable.bg_round_image,
+                "所有會員皆適用",
+                "1次",
+                "80",
+                "澄清湖棒球場",
+                "Description...",
+                "aa",
+                ""
+            ),
+            CountListItemViewModel(
+                4,
+                "有鷹來同樂 TSG Party -  Wing Stars 簽名會（第二梯次）",
+                "2025/10/28 (二)",
+                "100",
+                R.drawable.bg_round_image,
+                "所有會員皆適用",
+                "1次",
+                "80",
+                "澄清湖棒球場",
+                "Description...",
+                "aa",
+                ""
+            )
         )
 
-        currentDataList = mockData
         updateUI(mockData)
     }
 
-    private fun updateUI(data: List<CouponViewModel>) {
+    private fun updateUI(data: List<CountListItemViewModel>) {
+        currentDataList = data
         if (data.isNotEmpty()) {
             unusedCouponAdapter.setData(data)
             binding.rvNotUsed.visibility = View.VISIBLE
@@ -86,7 +155,7 @@ class NotUsedFragment : Fragment() {
         }
     }
 
-    private fun showBarcodeDialog(startPosition: Int, dataList: List<CouponViewModel>) {
+    private fun showBarcodeDialog(startPosition: Int, dataList: List<CountListItemViewModel>) {
         if (dataList.isEmpty()) return
 
         val context = requireContext()
@@ -145,8 +214,8 @@ class NotUsedFragment : Fragment() {
             val item = dataList[currentDialogPosition]
 
             tvName.text = item.title
-            tvPeriod.text = item.expiryDate
-            Glide.with(context).load(item.imageResId).into(ivImage)
+            tvPeriod.text = item.time
+            Glide.with(context).load(item.leftImageRes).into(ivImage)
 
             if (currentDialogPosition == 0) {
                 btnPrev.isEnabled = false
