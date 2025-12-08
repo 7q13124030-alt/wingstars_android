@@ -9,7 +9,7 @@ import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Glide // Import Glide để load ảnh
 import com.wingstars.base.base.BaseActivity
-import com.wingstars.base.net.beans.IteneraryResponse // Import Model
+import com.wingstars.base.net.beans.WSCalendarResponse // Import Model
 import com.wingstars.home.R
 import com.wingstars.home.databinding.ActivityTodayItineraryDetailsBinding
 
@@ -27,31 +27,28 @@ class TodayItineraryDetailsActivity : BaseActivity() {
     }
 
     override fun initView() {
-        // 1. Mặc định ẩn nội dung chi tiết
         binding.tvEventInfoContent.visibility = View.GONE
         binding.tvNoticeContent.visibility = View.GONE
 
-        // 2. Nhận dữ liệu từ Intent (Key là "DATA" như đã gọi ở HomeFragment)
-        val data = intent.getSerializableExtra("DATA_ITINERARY") as? IteneraryResponse
+        val data = intent.getSerializableExtra("DATA_ITINERARY") as? WSCalendarResponse
 
         if (data != null) {
             bindData(data)
         }
     }
 
-    private fun bindData(data: IteneraryResponse) {
+    private fun bindData(data: WSCalendarResponse) {
         // --- A. Hiển thị thông tin cơ bản ---
         binding.tvEventTitle.text = data.titleF
         binding.tvEventDate.text = data.dateF
-        binding.tvEventLocation.text = data.locationF
-        Log.e("bindData", "bindData=${data.imageF}")
+        binding.tvEventLocation.text = data.mapF
+        Log.e("bindData", "bindData=${data.urlF}")
 
 
         // --- B. Hiển thị Ảnh Banner ---
-        if (data.imageF.isNotEmpty()) {
+        if (data.urlF.isNotEmpty()) {
             Glide.with(this)
-                .load(data.imageF)
-                .centerCrop()
+                .load(data.urlF)
 //                .placeholder(R.drawable.placeholder_banner) // Ảnh chờ
                 .into(binding.imgEventBanner)
         } else {
@@ -72,9 +69,8 @@ class TodayItineraryDetailsActivity : BaseActivity() {
             binding.tvEventInfoContent.text = "暫無資訊"
         }
 
-        // --- D. Hiển thị "Lưu ý" (Lấy từ ACF Precautions) ---
-        if (data.precautionsF.isNotEmpty()) {
-            binding.tvNoticeContent.text = data.precautionsF
+        if (data.PrecautionsF.isNotEmpty()) {
+            binding.tvNoticeContent.text = data.PrecautionsF
             binding.layoutNoticeHeader.visibility = View.VISIBLE
         } else {
             // Nếu không có lưu ý thì ẩn luôn cả mục này đi cho gọn

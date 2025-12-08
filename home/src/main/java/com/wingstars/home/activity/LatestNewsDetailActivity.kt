@@ -5,7 +5,7 @@ import android.text.Html // Import để hiển thị nội dung HTML nếu cầ
 import android.view.View
 import com.bumptech.glide.Glide
 import com.wingstars.base.base.BaseActivity
-import com.wingstars.base.net.beans.LatestNewsResponse
+import com.wingstars.base.net.beans.WSPostResponse
 import com.wingstars.home.R
 import com.wingstars.home.databinding.ActivityNewsDetailBinding
 
@@ -28,7 +28,7 @@ class LatestNewsDetailActivity : BaseActivity() {
         }
 
         // 2. Nhận dữ liệu từ Intent
-        val newsData = intent.getSerializableExtra("NEWS_DATA") as? LatestNewsResponse
+        val newsData = intent.getSerializableExtra("NEWS_DATA") as? WSPostResponse
 
         if (newsData != null) {
             // --- HIỂN THỊ DỮ LIỆU ---
@@ -68,7 +68,6 @@ class LatestNewsDetailActivity : BaseActivity() {
             }
             setupBanner(imageList) // Hàm setup indicator 1/5
 
-            // 3. Set Content (WebView) - Xử lý CSS cho đẹp
             val htmlData = newsData.getContentForWebView()
 
             binding.webViewContent.settings.javaScriptEnabled = true

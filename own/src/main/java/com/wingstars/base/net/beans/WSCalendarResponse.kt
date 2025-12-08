@@ -1,85 +1,73 @@
 package com.wingstars.base.net.beans
 
+import java.io.Serializable
 
 data class WSCalendarResponse(
     val id: Int,
-    val title: Title,                   //活動標題
-    val content: Content,               //活動資訊
-    val calendar_category: List<Int>,   //活動分類. 369:生日, 368:一般活動, 366:啦啦隊, 365:天鷹, 364:獵鷹, 363:雄鷹
-    val acf: Acf,
-    val yoast_head_json: YoastHeadJson  //精選圖片 数据类型有误
-) {
-    val titleF: String                  //title format
-        get() {
-            return title.rendered
-        }
+    val title: Title,                   // 活動標題
+    val content: Content,               // 活動資訊
+    val calendar_category: List<Int>?,  // 活動分類
+    val acf: Acf?,                      // (Nullable)
+    //  改為 Any? 可以同時取得 Object {} 和 Array []
+    val yoast_head_json: Any?
+) : Serializable {
 
-    val contentF: String                //content format
-        get() {
-            return content.rendered
-        }
+    val titleF: String
+        get() = title.rendered
 
-    val calendar_categoryF: Int        //calendar_category format
+    val contentF: String
+        get() = content.rendered
+
+    val calendar_categoryF: Int
         get() {
-            return if(calendar_category.count() > 0) {
+            return if (calendar_category != null && calendar_category.isNotEmpty()) {
                 calendar_category[0]
             } else {
                 0
             }
         }
 
-    val st_dateF: String                   //acf.Activity_time.st_date format
-        get() {
-            return acf.Activity_time.st_date?: ""
-        }
+    val dateF: String
+        get() = acf?.date ?: ""
 
-    val ed_dateF: String                   //acf.Activity_time.ed_date format
-        get() {
-            return acf.Activity_time.ed_date?: ""
-        }
+    val mapF: String
+        get() = acf?.map ?: ""
 
-    val mapF: String                    //acf.map format
-        get() {
-            return acf?.map?: ""
-        }
+    val PrecautionsF: String
+        get() = acf?.Precautions ?: ""
 
-    val PrecautionsF: String            //acf.Precautions format
+    val urlF: String
         get() {
-            return acf?.Precautions?: ""
-        }
+            try {
+                if (yoast_head_json is Map<*, *>) {
+                    val ogImage = yoast_head_json["og_image"]
 
-    val urlF: String                    //yoast_head_json.og_image.url format
-        get() {
-            return yoast_head_json.og_image?.get(0)?.url?: ""
+                    if (ogImage is List<*> && ogImage.isNotEmpty()) {
+                        val firstItem = ogImage[0]
+                        if (firstItem is Map<*, *>) {
+                            return firstItem["url"]?.toString() ?: ""
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            return ""
         }
 
     data class Title(
-        val rendered: String,           //活動標題
-    ) : java.io.Serializable
+        val rendered: String,
+    ) : Serializable
 
     data class Content(
-        val rendered: String,           //活動資訊
-    ) : java.io.Serializable
+        val rendered: String,
+    ) : Serializable
 
     data class Acf(
-        val Activity_time: ActivityTime,    //活動日期
-        val map: String,                //活動地點
-        val Precautions: String,        //注意事項
-    ) : java.io.Serializable {
-        data class ActivityTime(
-            val st_date: String?,           //开始日期时间，如 "2025-12-05 14:00:00"
-            val ed_date: String?,           //结束日期时间，如 "2025-12-05 16:00:00"
-        ) : java.io.Serializable
-    }
-
-    data class YoastHeadJson(
-        val og_image: List<OGImage>?,    //精選圖片
-    ) : java.io.Serializable {
-        data class OGImage(
-            val width: Int,
-            val height: Int,
-            val url: String,            //精選圖片地址
-            val type: String,
-        ) : java.io.Serializable
-    }
+        val date: String?,
+        val map: String?,
+        val Precautions: String?
+    ) : Serializable
+    val contentRaw: String
+        get() = content.rendered
 }

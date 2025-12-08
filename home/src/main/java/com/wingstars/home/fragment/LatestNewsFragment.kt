@@ -10,7 +10,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.wingstars.base.net.beans.LatestNewsResponse
+import com.wingstars.base.net.beans.WSPostResponse
 import com.wingstars.home.activity.LatestNewsDetailActivity
 import com.wingstars.home.adapter.LatestNewsAdapter
 import com.wingstars.home.databinding.FragmentLatestNewsBinding
@@ -45,7 +45,7 @@ class LatestNewsFragment : Fragment() {
     private fun initView() {
         // Khởi tạo Adapter với list rỗng ban đầu
         val newsListener = object : LatestNewsAdapter.onItemListener {
-            override fun onItemClick(data: LatestNewsResponse, position: Int) {
+            override fun onItemClick(data: WSPostResponse, position: Int) {
                 val intent = Intent(requireActivity(), LatestNewsDetailActivity::class.java)
 
                 // 2. Đóng gói dữ liệu vào Intent (key là "NEWS_DATA")
@@ -58,7 +58,7 @@ class LatestNewsFragment : Fragment() {
 
         adapter = LatestNewsAdapter(
             requireContext(),
-            mutableListOf<LatestNewsResponse>(),
+            mutableListOf<WSPostResponse>(),
             newsListener
         )
 

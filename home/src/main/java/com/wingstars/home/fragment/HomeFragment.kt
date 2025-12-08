@@ -14,9 +14,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wingstars.base.base.BaseFragment
-import com.wingstars.base.net.beans.FashionResponse
-import com.wingstars.base.net.beans.LatestNewsResponse
-import com.wingstars.base.net.beans.ProductsResponse
+import com.wingstars.base.net.beans.WSFashionCategoryResponse
+import com.wingstars.base.net.beans.WSFashionResponse
+import com.wingstars.base.net.beans.WSPostResponse
+import com.wingstars.base.net.beans.WSProductResponse
 import com.wingstars.base.utils.ItemHotDecoration
 import com.wingstars.home.R
 import com.wingstars.home.activity.TodayItineraryDetailsActivity
@@ -157,7 +158,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
             requireActivity(),
             mutableListOf(),
             object : ProductAdapter.OnItemListener {
-                override fun onItemClick(data: ProductsResponse, position: Int) {
+                override fun onItemClick(data: WSProductResponse, position: Int) {
 //                    val intent = Intent(
 //                        this@HomeFragment.requireActivity(),
 //                        CommonWebViewActivity::class.java
@@ -184,7 +185,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
             requireActivity(),
             mutableListOf(),
             object : StylistOutfitsAdapter.OnItemListener {
-                override fun onItemClick(data: FashionResponse, position: Int) {
+                override fun onItemClick(data: WSFashionResponse, position: Int) {
 
                 }
             }
@@ -231,9 +232,9 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
         // --- 4. Tin tức (Latest News) ---
         viewModel.newsDataList.observe(viewLifecycleOwner) { dataList ->
             val newsListener = object : NewsAdapter.OnItemListener {
-                override fun onItemClick(data: LatestNewsResponse, position: Int) {
+                override fun onItemClick(data: WSPostResponse, position: Int) {
                     val intent = Intent(requireActivity(), com.wingstars.home.activity.LatestNewsDetailActivity::class.java)
-                    intent.putExtra("NEWS_DATA", data)
+                    intent.putExtra("ITEM_NEWS_DATA", data)
                     startActivity(intent)
                 }
             }

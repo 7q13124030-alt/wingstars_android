@@ -11,16 +11,15 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
-import com.wingstars.base.net.beans.IteneraryResponse
+import com.wingstars.base.net.beans.WSCalendarResponse
 import com.wingstars.home.R
 import com.youth.banner.adapter.BannerAdapter
 import java.nio.charset.StandardCharsets
 
-// Adapter nhận List<IteneraryResponse> từ API
-class ItineraryBannerAdapter(datas: List<IteneraryResponse>) :
-    BannerAdapter<IteneraryResponse, ItineraryBannerAdapter.BannerViewHolder>(datas) {
+class ItineraryBannerAdapter(datas: List<WSCalendarResponse>) :
+    BannerAdapter<WSCalendarResponse, ItineraryBannerAdapter.BannerViewHolder>(datas) {
 
-    var onItemClickListener: ((IteneraryResponse) -> Unit)? = null
+    var onItemClickListener: ((WSCalendarResponse) -> Unit)? = null
 
     // Regex để kiểm tra ký tự đã encode
     private val pctEncoded = Regex("%[0-9a-fA-F]{2}")
@@ -31,7 +30,7 @@ class ItineraryBannerAdapter(datas: List<IteneraryResponse>) :
         return BannerViewHolder(view)
     }
 
-    override fun onBindView(holder: BannerViewHolder, data: IteneraryResponse, position: Int, size: Int) {
+    override fun onBindView(holder: BannerViewHolder, data: WSCalendarResponse, position: Int, size: Int) {
         holder.bind(data, this)
         holder.itemView.setOnClickListener {
             onItemClickListener?.invoke(data)
@@ -45,8 +44,8 @@ class ItineraryBannerAdapter(datas: List<IteneraryResponse>) :
         private val tvTime: TextView = view.findViewById(R.id.tvTime)
         private val tvPlace: TextView = view.findViewById(R.id.tvPlace)
 
-        fun bind(data: IteneraryResponse, adapter: ItineraryBannerAdapter) {
-            val rawUrl = data.imageF
+        fun bind(data: WSCalendarResponse, adapter: ItineraryBannerAdapter) {
+            val rawUrl = data.urlF
 
             // Xóa ảnh cũ để tránh lỗi hiển thị
             Glide.with(itemView.context).clear(imgPoster)
@@ -71,7 +70,7 @@ class ItineraryBannerAdapter(datas: List<IteneraryResponse>) :
             // Gán Text
             tvTitle.text = data.titleF
             tvTime.text = data.dateF
-            tvPlace.text = data.locationF
+            tvPlace.text = data.mapF
         }
     }
 

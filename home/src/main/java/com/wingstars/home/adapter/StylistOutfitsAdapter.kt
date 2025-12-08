@@ -7,19 +7,18 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.wingstars.base.net.beans.FashionResponse
+import com.wingstars.base.net.beans.WSFashionResponse
 import com.wingstars.home.R
-import com.wingstars.home.adapter.ProductAdapter.NormalItemViewHolder
 import com.wingstars.home.databinding.ItemStyleBinding
 
 class StylistOutfitsAdapter(
     private val context: Context,
-    private var dataList: MutableList<FashionResponse>,
+    private var dataList: MutableList<WSFashionResponse>,
     private val listener: OnItemListener
 ) : RecyclerView.Adapter<StylistOutfitsAdapter.NormalItemViewHolder>() {
 
    interface OnItemListener{
-       fun onItemClick(data: FashionResponse, position: Int)
+       fun onItemClick(data: WSFashionResponse, position: Int)
    }
 
     override fun onCreateViewHolder(
@@ -40,7 +39,7 @@ class StylistOutfitsAdapter(
     override fun getItemCount(): Int {
         return dataList?.size?:0
     }
-    fun setList(list: MutableList<FashionResponse>?) {
+    fun setList(list: MutableList<WSFashionResponse>?) {
         dataList = list ?: ArrayList()
         notifyDataSetChanged()
     }
@@ -50,7 +49,7 @@ class StylistOutfitsAdapter(
             if (dataList == null || position >= dataList!!.size) return
             val data = dataList!![position]
             Glide.with(binding.imageStylist.context).clear(binding.imageStylist)
-            val imgUrl = data.imageF
+            val imgUrl = data.urlF
             Log.e("imgUrl", "imgUrl=$imgUrl")
             if (!imgUrl.isNullOrEmpty()) {
                 Glide.with(binding.imageStylist.context)
@@ -62,7 +61,7 @@ class StylistOutfitsAdapter(
             } else {
                 binding.imageStylist.setImageResource(R.drawable.img_style_01)
             }
-            binding.tittleStylist.text = data.yoast_head_json.title
+            binding.tittleStylist.text = data.titleF
             binding.root.setOnClickListener {
                 listener.onItemClick(data, position)
             }

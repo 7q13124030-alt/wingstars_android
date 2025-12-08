@@ -9,13 +9,13 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
-import com.wingstars.base.net.beans.LatestNewsResponse
+import com.wingstars.base.net.beans.WSPostResponse
 import com.wingstars.home.databinding.ItemNewsBinding
 import java.nio.charset.StandardCharsets
 
 class NewsAdapter(
     private val context: Context,
-    private val dataList: MutableList<LatestNewsResponse>,
+    private val dataList: MutableList<WSPostResponse>,
     private val listener: OnItemListener
 ) : RecyclerView.Adapter<NewsAdapter.NormalItemViewHolder>() {
 
@@ -23,7 +23,7 @@ class NewsAdapter(
 
     // 2. Định nghĩa Interface ngay trong class này
     interface OnItemListener {
-        fun onItemClick(data: LatestNewsResponse, position: Int)
+        fun onItemClick(data: WSPostResponse, position: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NormalItemViewHolder {
@@ -97,10 +97,10 @@ class NewsAdapter(
         // 4. Sửa hàm binding: Bỏ tham số listener (vì đã có ở class level)
         fun binding(position: Int) {
             val data = dataList[position] // Bỏ !! vì dataList không nullable
-            val rawUrl = data.imageF
+            val rawUrl = data.urlF
 
             Glide.with(binding.imgNews.context).clear(binding.imgNews)
-            if (!data.imageF.isNullOrEmpty()) {
+            if (!data.urlF.isNullOrEmpty()) {
                 val encodedUrl = rawUrl.encodeBlobLikeUrl()
 
                 Glide.with(binding.imgNews)

@@ -6,18 +6,18 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.wingstars.base.net.beans.ProductsResponse
+import com.wingstars.base.net.beans.WSProductResponse
 import com.wingstars.home.R
 import com.wingstars.home.databinding.ItemProductBinding
 
 class ProductAdapter(
     private val context: Context,
-    private var dataList: MutableList<ProductsResponse>?,
+    private var dataList: MutableList<WSProductResponse>?,
     private val listener: OnItemListener
 ) : RecyclerView.Adapter<ProductAdapter.NormalItemViewHolder>() {
 
     interface OnItemListener {
-        fun onItemClick(data: ProductsResponse, position: Int)
+        fun onItemClick(data: WSProductResponse, position: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NormalItemViewHolder {
@@ -37,7 +37,7 @@ class ProductAdapter(
         return dataList?.size ?: 0
     }
 
-    fun setList(list: MutableList<ProductsResponse>?) {
+    fun setList(list: MutableList<WSProductResponse>?) {
         dataList = list ?: ArrayList()
         notifyDataSetChanged()
     }
@@ -66,7 +66,7 @@ class ProductAdapter(
                 binding.imgProduct.setImageResource(R.drawable.img_product_01)
             }
 
-            binding.tvProductName.text = data.titleF
+            binding.tvProductName.text = data.name
             binding.tvProductPrice.text = "$" + data.price
 
             binding.root.setOnClickListener {

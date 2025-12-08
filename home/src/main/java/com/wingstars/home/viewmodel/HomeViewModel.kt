@@ -4,11 +4,10 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.wingstars.base.net.API
-import com.wingstars.base.net.NetBase
-import com.wingstars.base.net.beans.FashionResponse
-import com.wingstars.base.net.beans.IteneraryResponse
-import com.wingstars.base.net.beans.LatestNewsResponse
-import com.wingstars.base.net.beans.ProductsResponse
+import com.wingstars.base.net.beans.WSCalendarResponse
+import com.wingstars.base.net.beans.WSFashionResponse
+import com.wingstars.base.net.beans.WSPostResponse
+import com.wingstars.base.net.beans.WSProductResponse
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 
@@ -16,11 +15,11 @@ class HomeViewModel : ViewModel() {
 
     // LiveData cũ
     val homeDataList = MutableLiveData<MutableList<Int>>()
-    val newsDataList = MutableLiveData<MutableList<LatestNewsResponse>>()
+    val newsDataList = MutableLiveData<MutableList<WSPostResponse>>()
     val memberDataList = MutableLiveData<MutableList<Int>>()
-    val calendarDataList = MutableLiveData<MutableList<IteneraryResponse>>()
-    val productDataList = MutableLiveData<MutableList<ProductsResponse>>()
-    val fashionDataList = MutableLiveData<MutableList<FashionResponse>>()
+    val calendarDataList = MutableLiveData<MutableList<WSCalendarResponse>>()
+    val productDataList = MutableLiveData<MutableList<WSProductResponse>>()
+    val fashionDataList = MutableLiveData<MutableList<WSFashionResponse>>()
 
 
     var isLoading = MutableLiveData<Boolean>()
@@ -47,19 +46,13 @@ class HomeViewModel : ViewModel() {
     fun getLatestNewsData() {
         isLoading.postValue(true)
         API.shared?.api?.let {
-            val observerT =
-                it.latestNews(
-                    "${NetBase.HOST_HAWKS}/wp-json/wp/v2/posts",
-                    4,
-                    "date",
-                    "desc"
-                )
+            val observerT =it.wsPosts()
             observerT?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
                 AndroidSchedulers.mainThread()
             )?.subscribe(
                 { next ->
                     isLoading.postValue(false)
-                    var itemTypeList: MutableList<LatestNewsResponse> = mutableListOf()
+                    var itemTypeList: MutableList<WSPostResponse> = mutableListOf()
                     itemTypeList.clear()
                     itemTypeList.addAll(next)
                     newsDataList.postValue(itemTypeList)
@@ -80,34 +73,33 @@ class HomeViewModel : ViewModel() {
         //utApi()
     }
     fun getCalendarData() {
-        val fullUrl = "${NetBase.HOST_HAWKS}/wp-json/wp/v2/calendar?_fields=id,title.rendered,acf,content.rendered,yoast_head_json.og_image,calendar_category"
         API.shared?.api?.let { api ->
-            val observer = api.getItineraryList(fullUrl)
+            val observer = api.wsSchedule(3,1)
             observer
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     { next ->
-                        val list = mutableListOf<IteneraryResponse>()
-                        list.addAll(next)
-                        calendarDataList.postValue(list)
+                        Log.d("getWsCalendarsData", next.toString())
+                        calendarDataList.postValue(next)
                     },
                     { error ->
+                        Log.e("getWsCalendarsData", error.toString())
+
                         error.printStackTrace()
                     }
                 )
         }
     }
     fun getProductsData(){
-        val fullUrl = "${NetBase.HOST_HAWKS}/wp-json/wc/v3/products"
         API.shared?.api?.let { api ->
-            val observer = api.getProducts(fullUrl, 4, "desc")
+            val observer = api.wsProducts()
             observer
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     {next ->
-                            val list = mutableListOf<ProductsResponse>()
+                            val list = mutableListOf<WSProductResponse>()
                             list.addAll(next)
                         productDataList.postValue(list)
                     },
@@ -118,15 +110,15 @@ class HomeViewModel : ViewModel() {
         }
     }
     fun getFashionsData(){
-        val fullUrl = "${NetBase.HOST_HAWKS}/wp-json/wp/v2/fashion?_fields=id,title,yoast_head_json.og_image,fashion_category&orderby=date&order=desc"
+        val  params = HashMap<String, Int>()
         API.shared?.api?.let { api ->
-            val observer = api.getFashion(fullUrl)
+            val observer = api.wsFashions(params, 6,1)
             observer
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     {next ->
-                        val list = mutableListOf<FashionResponse>()
+                        val list = mutableListOf<WSFashionResponse>()
                         list.addAll(next)
                         fashionDataList.postValue(list)
                     },

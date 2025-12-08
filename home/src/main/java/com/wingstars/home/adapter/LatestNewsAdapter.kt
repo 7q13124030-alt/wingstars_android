@@ -11,10 +11,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
-import com.wingstars.base.net.beans.LatestNewsResponse
-import com.wingstars.home.R
+import com.wingstars.base.net.beans.WSPostResponse
 import com.wingstars.home.databinding.ItemNewsBinding // Đảm bảo ViewBinding được bật
-import java.io.Serializable
 import java.nio.charset.StandardCharsets
 
 //data class NewsData(
@@ -24,7 +22,7 @@ import java.nio.charset.StandardCharsets
 //) : Serializable
 class LatestNewsAdapter(
     private val context: Context,
-    private var dataList: MutableList<LatestNewsResponse>?,
+    private var dataList: MutableList<WSPostResponse>?,
     private val listener: onItemListener
 ) : RecyclerView.Adapter<LatestNewsAdapter.NormalItemViewHolder>() {
     private val pctEncoded = Regex("%[0-9a-fA-F]{2}")
@@ -106,7 +104,7 @@ class LatestNewsAdapter(
     }
 
     // -------------------------------------------
-    fun setList(list: MutableList<LatestNewsResponse>?) {
+    fun setList(list: MutableList<WSPostResponse>?) {
         if (dataList == null) dataList = ArrayList()             // <-- gán đúng
         else dataList!!.clear()                                   // <-- clear cũ
         if (list != null) {
@@ -117,7 +115,7 @@ class LatestNewsAdapter(
 
 
 
-    fun getData(): MutableList<LatestNewsResponse>? {
+    fun getData(): MutableList<WSPostResponse>? {
         if (dataList == null) {
             return null
         }
@@ -130,12 +128,12 @@ class LatestNewsAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun binding(position: Int, listener: onItemListener) {
             var data = dataList!![position]
-            val rawUrl = data.imageF
+            val rawUrl = data.urlF
 
             Log.d("url img", rawUrl.encodeBlobLikeUrl())
 
             Glide.with(binding.imgNews.context).clear(binding.imgNews)
-            if (!data.imageF.isNullOrEmpty()) {
+            if (!data.urlF.isNullOrEmpty()) {
                 val encodedUrl = rawUrl.encodeBlobLikeUrl()
 
                 Glide.with(binding.imgNews)
@@ -173,6 +171,6 @@ class LatestNewsAdapter(
     }
 
     interface onItemListener {
-        fun onItemClick(data: LatestNewsResponse, position: Int)
+        fun onItemClick(data: WSPostResponse, position: Int)
     }
 }
