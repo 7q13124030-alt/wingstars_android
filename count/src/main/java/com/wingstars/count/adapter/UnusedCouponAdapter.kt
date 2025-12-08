@@ -5,13 +5,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.wingstars.count.databinding.ItemUnusedCouponsBinding
-import com.wingstars.count.viewmodel.CouponViewModel
+import com.wingstars.count.viewmodel.CountListItemViewModel
 
 class UnusedCouponAdapter(
-    private var list: List<CouponViewModel> = listOf()
+    private var list: List<CountListItemViewModel> = listOf() ,
+    private val onItemClick: (CountListItemViewModel) -> Unit
 ) : RecyclerView.Adapter<UnusedCouponAdapter.CouponViewHolder>() {
     var onBarcodeClick: ((Int) -> Unit)? = null
-    fun setData(newList: List<CouponViewModel>) {
+    fun setData(newList: List<CountListItemViewModel>) {
         this.list = newList
         notifyDataSetChanged()
     }
@@ -32,13 +33,16 @@ class UnusedCouponAdapter(
     inner class CouponViewHolder(private val binding: ItemUnusedCouponsBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: CouponViewModel) {
+        fun bind(item: CountListItemViewModel) {
             binding.tvExchangeName.text = item.title
-            binding.tvExchangePeriod1.text = item.expiryDate
+            binding.tvExchangePeriod1.text = item.time
 
             Glide.with(binding.root.context)
-                .load(item.imageResId)
+                .load(item.leftImageRes)
                 .into(binding.ivGoodsImage)
+            binding.root.setOnClickListener {
+                onItemClick(item)
+            }
             binding.llActivityBarcode.setOnClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {

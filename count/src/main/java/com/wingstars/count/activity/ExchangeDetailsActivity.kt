@@ -1,18 +1,26 @@
 package com.wingstars.count.activity
 
+import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.view.Window
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
@@ -32,6 +40,8 @@ class ExchangeDetailsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityExchangeDetailsBinding
     private var currentOtpCode = ""
+    private var dataList: ArrayList<CountListItemViewModel> = arrayListOf()
+    private var currentPosition: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,32 +56,36 @@ class ExchangeDetailsActivity : AppCompatActivity() {
             insets
         }
 
-        initView()
         loadData()
+        initView()
         initBanner()
     }
 
     // ===================== DATA =====================
     private fun loadData() {
-        val item: CountListItemViewModel? =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                intent.getParcelableExtra("EXTRA_GIFT_ITEM", CountListItemViewModel::class.java)
-            } else {
-                @Suppress("DEPRECATION")
-                intent.getParcelableExtra("EXTRA_GIFT_ITEM")
-            }
+        val receivedList = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableArrayListExtra("EXTRA_LIST_DATA", CountListItemViewModel::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getParcelableArrayListExtra("EXTRA_LIST_DATA")
+        }
+        currentPosition = intent.getIntExtra("EXTRA_CURRENT_POSITION", 0)
+        if (receivedList != null) {
+            dataList = receivedList
+            val currentItem = dataList.getOrNull(currentPosition)
 
-        item?.let {
-            binding.couponName.text = it.title
-            binding.pointCost.text = "${it.count} 點"
-            binding.tvCouponTime.text = it.time
-            binding.status.text = it.exitem
-            binding.maxPerMember.text = it.limit
-            binding.activityTime.text = it.total
-            binding.finishTime.text = it.location
-            binding.tvUsageRules.text = it.usageRules
-            binding.tvInformation.text = it.information
-            binding.tvPrecautions.text = it.description
+            currentItem?.let { it ->
+                binding.couponName.text = it.title
+                binding.pointCost.text = "${it.count} 點"
+                binding.tvCouponTime.text = it.time
+                binding.status.text = it.exitem
+                binding.maxPerMember.text = it.limit
+                binding.activityTime.text = it.total
+                binding.finishTime.text = it.location
+                binding.tvUsageRules.text = it.usageRules
+                binding.tvInformation.text = it.information
+                binding.tvPrecautions.text = it.description
+            }
         }
     }
 
@@ -91,9 +105,31 @@ class ExchangeDetailsActivity : AppCompatActivity() {
             toggleSection(binding.tvPrecautions, binding.ivArrow3)
         }
 
-//        binding.btnExchange.setOnClickListener {
-//            showOtpDialog()
-//        }
+
+        val checkTypeButton = intent.getIntExtra("checkButton", 0)
+        val qrCodeButtonState = intent.getIntExtra("qrCodeButton", 0)
+
+        if (checkTypeButton == 2) {
+            binding.btnExchange.visibility = View.GONE
+        } else {
+            binding.btnExchange.visibility = View.VISIBLE
+            if (qrCodeButtonState == 1) {
+                binding.btnExchange.text = "開啟條碼"
+                binding.btnExchange.setOnClickListener {
+                    if (dataList.isNotEmpty()) {
+                        showBarcodeDialog(currentPosition, dataList)
+                    }
+                }
+            }else {
+                setupButtonUI(checkTypeButton)
+
+                binding.btnExchange.setOnClickListener {
+                    if (checkTypeButton == 0) {
+                        showOtpDialog()
+                    }
+                }
+            }
+        }
     }
 
     // ===================== BANNER =====================
@@ -221,6 +257,106 @@ class ExchangeDetailsActivity : AppCompatActivity() {
         }
 
         bottomSheetDialog.show()
+    }
+
+    private fun showBarcodeDialog(startPosition: Int, dataList: List<CountListItemViewModel>) {
+        if (dataList.isEmpty()) return
+        val context = this
+        val dialog = Dialog(context, com.google.android.material.R.style.Theme_MaterialComponents_Light_Dialog)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_exchange_barcode)
+
+        dialog.window?.apply {
+            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            decorView.setPadding(0, 0, 0, 0)
+            setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            setGravity(Gravity.BOTTOM)
+        }
+
+        val btnClose = dialog.findViewById<ImageView>(R.id.iv_close_dialog)
+        val btnNext = dialog.findViewById<AppCompatButton>(R.id.btn_next)
+        val btnPrev = dialog.findViewById<AppCompatButton>(R.id.btn_prev)
+        val tvName = dialog.findViewById<TextView>(R.id.tv_exchange_name)
+        val tvPeriod = dialog.findViewById<TextView>(R.id.tv_exchange_period1)
+        val ivImage = dialog.findViewById<ImageView>(R.id.iv_goods_image)
+        val ivQrCode = dialog.findViewById<ImageView>(R.id.iv_qr_code)
+        val tvQrEnlarge = dialog.findViewById<TextView>(R.id.tv_qr_code)
+
+        var currentDialogPosition = startPosition
+
+        fun zoomQrCode() {
+            val zoomDialog = Dialog(context)
+            zoomDialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            zoomDialog.setContentView(R.layout.dialog_zoom_qr)
+            zoomDialog.window?.apply {
+                setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                decorView.setPadding(0, 0, 0, 0)
+                setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            }
+            val ivZoomedQr = zoomDialog.findViewById<ImageView>(R.id.iv_zoomed_qr)
+            val btnCloseZoom = zoomDialog.findViewById<ImageView>(R.id.iv_close_zoom)
+
+            if (ivQrCode.drawable != null) {
+                ivZoomedQr.setImageDrawable(ivQrCode.drawable.constantState?.newDrawable())
+            }
+            btnCloseZoom.setOnClickListener { zoomDialog.dismiss() }
+            zoomDialog.show()
+        }
+
+        ivQrCode.setOnClickListener { zoomQrCode() }
+        tvQrEnlarge.setOnClickListener { zoomQrCode() }
+
+        fun updateDialogUI() {
+            val item = dataList[currentDialogPosition]
+
+            tvName.text = item.title
+            tvPeriod.text = item.time
+            Glide.with(context).load(item.leftImageRes).into(ivImage)
+            if (currentDialogPosition == 0) {
+                btnPrev.isEnabled = false
+                btnPrev.setTextColor(ContextCompat.getColor(context, R.color.color_101828))
+            } else {
+                btnPrev.isEnabled = true
+                btnPrev.setTextColor(ContextCompat.getColor(context, R.color.color_E2518D))
+            }
+
+            if (currentDialogPosition == dataList.size - 1) {
+                btnNext.isEnabled = false
+                btnNext.alpha = 0.5f
+            } else {
+                btnNext.isEnabled = true
+                btnNext.alpha = 1.0f
+            }
+        }
+
+        updateDialogUI()
+
+        btnClose.setOnClickListener { dialog.dismiss() }
+
+        btnNext.setOnClickListener {
+            if (currentDialogPosition < dataList.size - 1) {
+                currentDialogPosition++
+                updateDialogUI()
+            }
+        }
+
+        btnPrev.setOnClickListener {
+            if (currentDialogPosition > 0) {
+                currentDialogPosition--
+                updateDialogUI()
+            }
+        }
+
+        dialog.show()
+    }
+
+    private fun setupButtonUI(type: Int) {
+        if (type == 0) {
+            binding.btnExchange.text = "立即兌換"
+            binding.btnExchange.isEnabled = true
+        } else {
+            binding.btnExchange.text = "已兌換贈品"
+        }
     }
 
     // ===================== TOGGLE =====================
