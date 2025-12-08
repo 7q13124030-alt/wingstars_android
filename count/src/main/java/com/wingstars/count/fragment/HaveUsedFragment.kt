@@ -32,6 +32,7 @@ class HaveUsedFragment : Fragment() {
         usedCouponAdapter = HaveUsedCouponAdapter(listOf()) { item ->
             val intent = Intent(requireContext(), ExchangeDetailsActivity::class.java)
             intent.putExtra("EXTRA_GIFT_ITEM", item)
+            intent.putExtra("checkButton",2)
             startActivity(intent)
         }
 

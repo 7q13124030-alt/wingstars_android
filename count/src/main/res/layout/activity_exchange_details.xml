@@ -577,24 +577,24 @@
                 </LinearLayout>
             </androidx.core.widget.NestedScrollView>
 
-<!--            <RelativeLayout-->
-<!--                android:id="@+id/button"-->
-<!--                android:layout_alignParentBottom="true"-->
-<!--                android:background="@color/white"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="@dimen/pt_40">-->
-<!--                <androidx.appcompat.widget.AppCompatButton-->
-<!--                    android:layout_centerVertical="true"-->
-<!--                    android:id="@+id/btn_exchange"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:background="@drawable/bg_login_btn_able"-->
-<!--                    android:stateListAnimator="@null"-->
-<!--                    android:textColor="@color/white"-->
-<!--                    android:text="@string/redeem_immediately"-->
-<!--                    android:textSize="@dimen/sp_16"-->
-<!--                    app:backgroundTint="@null" />-->
-<!--            </RelativeLayout>-->
+            <RelativeLayout
+                android:id="@+id/button"
+                android:layout_alignParentBottom="true"
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/pt_40">
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_centerVertical="true"
+                    android:id="@+id/btn_exchange"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_login_btn_able"
+                    android:stateListAnimator="@null"
+                    android:textColor="@color/white"
+                    android:text="@string/redeem_immediately"
+                    android:textSize="@dimen/sp_16"
+                    app:backgroundTint="@null" />
+            </RelativeLayout>
 
         </RelativeLayout>
     </com.scwang.smart.refresh.layout.SmartRefreshLayout>
