@@ -96,7 +96,6 @@ class NotUsedFragment : Fragment() {
 
         dialog.window?.apply {
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            // Quan trọng: xóa padding mặc định để Dialog full width
             decorView.setPadding(0, 0, 0, 0)
             setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             setGravity(Gravity.BOTTOM)

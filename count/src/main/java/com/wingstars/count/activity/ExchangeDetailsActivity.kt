@@ -1,5 +1,6 @@
 package com.wingstars.count.activity
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -212,6 +213,11 @@ class ExchangeDetailsActivity : AppCompatActivity() {
 
         successBinding.tvDialogConfirm.setOnClickListener {
             bottomSheetDialog.dismiss()
+            val intent = Intent(this, ExchangeHistoryActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            intent.putExtra("EXTRA_TARGET_TAB", 0)
+            startActivity(intent)
+            finish()
         }
 
         bottomSheetDialog.show()
