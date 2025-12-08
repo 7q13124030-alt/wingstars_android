@@ -147,10 +147,10 @@
                         android:id="@+id/rvStylistVibe"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:orientation="horizontal"
                         android:layout_marginHorizontal="12dp"
                         android:nestedScrollingEnabled="false"
                         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                        app:spanCount="2"
                         tools:listitem="@layout/item_style"
                         tools:itemCount="2" />
 

@@ -26,19 +26,13 @@ class ItineraryBannerAdapter(datas: List<IteneraryResponse>) :
     private val pctEncoded = Regex("%[0-9a-fA-F]{2}")
 
     override fun onCreateHolder(parent: ViewGroup, viewType: Int): BannerViewHolder {
-        // Sử dụng layout item_today_itinerary (như bạn đã cung cấp trước đó)
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_today_itinerary, parent, false)
         return BannerViewHolder(view)
     }
 
     override fun onBindView(holder: BannerViewHolder, data: IteneraryResponse, position: Int, size: Int) {
-        // Gọi hàm bind và truyền cả đối tượng Adapter vào để dùng hàm encodeBlobLikeUrl
-        // Hoặc bạn có thể copy hàm đó vào trong ViewHolder, hoặc để static.
-        // Ở đây tôi để hàm encode trong Adapter và gọi từ holder.
-
         holder.bind(data, this)
-
         holder.itemView.setOnClickListener {
             onItemClickListener?.invoke(data)
         }

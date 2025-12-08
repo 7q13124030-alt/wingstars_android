@@ -14,7 +14,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wingstars.base.base.BaseFragment
+import com.wingstars.base.net.beans.FashionResponse
 import com.wingstars.base.net.beans.LatestNewsResponse
+import com.wingstars.base.net.beans.ProductsResponse
+import com.wingstars.base.utils.ItemHotDecoration
 import com.wingstars.home.R
 import com.wingstars.home.activity.TodayItineraryDetailsActivity
 import com.wingstars.home.adapter.* // Import hết adapter cho gọn
@@ -27,6 +30,9 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
     private lateinit var viewModel: HomeViewModel
 
     // Adapter cho các banner, khai báo ở đây để dùng chung
+    private lateinit var hotProductAdapter: ProductAdapter
+    private lateinit var  fashionAdapter: StylistOutfitsAdapter
+
     private lateinit var indicatorAdapterItinerary: DotIndicatorAdapter
     private lateinit var indicatorAdapterComingSoon: DotIndicatorAdapter
 
@@ -46,20 +52,11 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
     private fun initView() {
         // 1. Khởi tạo ViewModel
         viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
-
-        // 2. Xử lý Status Bar
         handleStatusBar()
-
-        // 3. Setup UI ban đầu (Tiêu đề, Click Listener...)
         setupUI()
-
-        // 4. Setup Banner "Coming Soon" (Dữ liệu giả - Tĩnh)
         setupComingSoonBanner()
-
-        // 5. Quan sát dữ liệu (LiveData Observer)
         observeData()
 
-        // 6. Gọi API lấy dữ liệu
         viewModel.getCalendarData()
         viewModel.getHomeData()
         viewModel.getLatestNewsData()
@@ -80,24 +77,20 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
     }
 
     private fun setupUI() {
-        // Set text cho các tiêu đề section
         binding.titleProducts.tvSectionTitle.text = "熱銷商品"
         binding.titlePopularRanking.tvSectionTitle.text = "人氣排行"
         binding.titleStylistVibe.tvSectionTitle.text = "氛圍時尚"
         binding.titleHighlights.tvSectionTitle.text = "活動花絮"
         binding.titleNews.tvSectionTitle.text = "最新消息"
 
-        // Set Click Listener
         binding.icNotification.setOnClickListener(this)
         binding.titlePopularRanking.root.setOnClickListener(this)
         binding.titleHighlights.root.setOnClickListener(this)
         binding.titleStylistVibe.root.setOnClickListener(this)
         binding.titleNews.root.setOnClickListener(this)
-        // Các mục khác nếu cần click...
     }
 
     private fun setupComingSoonBanner() {
-        // Dữ liệu giả cho Coming Soon (Vì chưa có API)
         val comingSoonList = mutableListOf(
             ComingSoonData(R.drawable.placeholder_calendar, "25-26 WS女孩應援毛巾｜天鷹款\n", "2025/09/20 (六) 10:00"),
             ComingSoonData(R.drawable.placeholder_calendar, "Event 2 Title", "2025/10/01"),
@@ -105,20 +98,17 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
         )
 
         val bannerAdapter2 = ComingSoonAdapter(comingSoonList)
-        // bannerAdapter2.onItemClickListener = { ... }
 
         binding.bannerComingSoon.apply {
             addBannerLifecycleObserver(this@HomeFragment)
             setAdapter(bannerAdapter2)
         }
 
-        // Setup Indicator cho Coming Soon
         binding.itemComingSoon.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         indicatorAdapterComingSoon = DotIndicatorAdapter(comingSoonList.size)
         binding.itemComingSoon.adapter = indicatorAdapterComingSoon
         binding.itemComingSoon.visibility = if (comingSoonList.size > 1) View.VISIBLE else View.GONE
 
-        // Listener chuyển trang
         binding.bannerComingSoon.addOnPageChangeListener(object : OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
             override fun onPageSelected(position: Int) {
@@ -129,7 +119,6 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
     }
 
     private fun observeData() {
-        // --- 1. Lịch trình (Banner Itinerary) ---
         viewModel.calendarDataList.observe(viewLifecycleOwner) { list ->
             if (list.isNullOrEmpty()) {
                 binding.bannerItinerary.visibility = View.GONE
@@ -141,7 +130,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
                 val bannerAdapter = ItineraryBannerAdapter(list)
                 bannerAdapter.onItemClickListener = { data ->
                     val intent = Intent(requireActivity(), TodayItineraryDetailsActivity::class.java)
-                     intent.putExtra("DATA_ITINERARY", data) // Truyền data nếu cần
+                     intent.putExtra("DATA_ITINERARY", data)
                     startActivity(intent)
                 }
 
@@ -154,7 +143,6 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
                 binding.todayItinerary.adapter = indicatorAdapterItinerary
                 binding.todayItinerary.visibility = if (list.size > 1) View.VISIBLE else View.GONE // Chỉ hiện khi > 1 item
 
-                // Listener chuyển trang
                 binding.bannerItinerary.addOnPageChangeListener(object : OnPageChangeListener {
                     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
                     override fun onPageSelected(position: Int) {
@@ -165,25 +153,67 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
             }
         }
 
-        // --- 2. Home Data (Products, Stylist, Articles...) ---
-        viewModel.homeDataList.observe(viewLifecycleOwner) { dataList ->
-            // Sản phẩm (Products)
-            val productAdapter = ProductAdapter(requireActivity(), dataList)
-            binding.rvProducts.layoutManager = GridLayoutManager(requireActivity(), 2)
-            binding.rvProducts.adapter = productAdapter
+            hotProductAdapter = ProductAdapter(
+            requireActivity(),
+            mutableListOf(),
+            object : ProductAdapter.OnItemListener {
+                override fun onItemClick(data: ProductsResponse, position: Int) {
+//                    val intent = Intent(
+//                        this@HomeFragment.requireActivity(),
+//                        CommonWebViewActivity::class.java
+//                    )
+//                    intent.putExtra(
+//                        "webTitle",
+//                        getResources().getString(R.string.title_hot_product)
+//                    )
+//                    intent.putExtra("webUrl", data.linkF)
+//                    intent.putExtra("isXShow", true)
+//                    startActivity(intent)
+                }
+            })
 
-            // Stylist Vibe
-            val styleList = mutableListOf<StyleOutfitsData>()
-            dataList.forEach { styleList.add(StyleOutfitsData(tittle = "Item $it", isClick = false)) }
+        binding.rvProducts.adapter = hotProductAdapter
 
-            val styleListener = object : StylistOutfitsAdapter.OnItemListener {
-                override fun onItemClick(data: StyleOutfitsData, position: Int) {
-                    // Xử lý click
+
+        viewModel.productDataList.observe(viewLifecycleOwner) {
+            if (!it.isNullOrEmpty())
+                hotProductAdapter.setList(it)
+        }
+
+        fashionAdapter = StylistOutfitsAdapter(
+            requireActivity(),
+            mutableListOf(),
+            object : StylistOutfitsAdapter.OnItemListener {
+                override fun onItemClick(data: FashionResponse, position: Int) {
+
                 }
             }
-            val highlightAdapter = StylistOutfitsAdapter(requireActivity(), styleList, styleListener)
-            binding.rvStylistVibe.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
-            binding.rvStylistVibe.adapter = highlightAdapter
+        )
+        binding.rvStylistVibe.adapter = fashionAdapter
+        viewModel.fashionDataList.observe(viewLifecycleOwner){
+            if (!it.isNullOrEmpty())
+                fashionAdapter.setList(it)
+        }
+
+        // --- 2. Home Data (Products, Stylist, Articles...) ---
+        viewModel.homeDataList.observe(viewLifecycleOwner) { dataList ->
+//            // Sản phẩm (Products)
+//            val productAdapter = ProductAdapter(requireActivity(), dataList)
+//            binding.rvProducts.layoutManager = GridLayoutManager(requireActivity(), 2)
+//            binding.rvProducts.adapter = productAdapter
+
+            // Stylist Vibe
+//            val styleList = mutableListOf<StyleOutfitsData>()
+//            dataList.forEach { styleList.add(StyleOutfitsData(tittle = "Item $it", isClick = false)) }
+//
+//            val styleListener = object : StylistOutfitsAdapter.OnItemListener {
+//                override fun onItemClick(data: StyleOutfitsData, position: Int) {
+//                    // Xử lý click
+//                }
+//            }
+////            val highlightAdapter = StylistOutfitsAdapter(requireActivity(), styleList, styleListener)
+//            binding.rvStylistVibe.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
+//            binding.rvStylistVibe.adapter = highlightAdapter
 
             // Articles (Hoạt động hoa絮)
             val articleAdapter = ArticleAdapter(requireActivity(), dataList)
