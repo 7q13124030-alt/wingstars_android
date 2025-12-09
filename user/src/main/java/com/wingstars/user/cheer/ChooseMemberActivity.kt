@@ -19,10 +19,10 @@ class ChooseMemberActivity : BaseActivity() {
         MemberUI(R.drawable.bg_image_member, R.drawable.ic_02),
         MemberUI(R.drawable.bg_image_member, R.drawable.ic_22),
         MemberUI(R.drawable.bg_image_member, R.drawable.ic_90),
-        MemberUI(R.drawable.bg_image_member, R.drawable.ic_05)
+        MemberUI(R.drawable.bg_image_member, R.drawable.ic_02)
     )
     private val members1 = listOf(
-        MemberUI(R.drawable.bg_image_member, R.drawable.ic_08),
+        MemberUI(R.drawable.bg_image_member, R.drawable.ic_99),
         MemberUI(R.drawable.bg_image_member, R.drawable.ic_39),
         MemberUI(R.drawable.bg_image_member, R.drawable.ic_57),
         MemberUI(R.drawable.bg_image_member, R.drawable.ic_99)
