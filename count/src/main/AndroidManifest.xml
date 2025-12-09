@@ -3,6 +3,9 @@
 
     <application>
         <activity
+            android:name=".activity.ExchangeDetailsActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.Count_Item_Activity"
             android:exported="false" />
         <activity

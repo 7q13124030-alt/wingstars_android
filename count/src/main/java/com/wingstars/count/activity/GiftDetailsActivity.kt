@@ -80,7 +80,7 @@ class GiftDetailsActivity : AppCompatActivity() {
             toggleSection(binding.tvUsageRules, binding.ivArrow)
         }
         binding.rlPrecautions.setOnClickListener {
-            toggleSection(binding.tvPrecautions, binding.ivArrow)
+            toggleSection(binding.tvPrecautions, binding.ivArrow1)
         }
 
         binding.btnExchange.setOnClickListener {
@@ -114,7 +114,6 @@ class GiftDetailsActivity : AppCompatActivity() {
         otpBinding.content.visibility = View.VISIBLE
         otpBinding.title.text = "驗證碼確認"
         otpBinding.content.text = "請輸入驗證碼確認身分。兌換後不可取消，是否繼續？"
-        // Hàm local để tạo mã mới
         fun refreshOtp() {
             val newCode = Random.nextInt(100000, 999999).toString()
             currentOtpCode = newCode
