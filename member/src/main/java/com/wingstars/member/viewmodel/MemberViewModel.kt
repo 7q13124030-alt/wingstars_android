@@ -10,6 +10,7 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.wingstars.base.net.NetBase
 import com.wingstars.base.net.beans.WSFashionCategoryResponse
 import com.wingstars.base.net.beans.WSFashionResponse
 import com.wingstars.base.net.beans.WSMemberResponse

@@ -131,8 +131,7 @@ object NetBase {
 //                    Log.d("API", "[wsSchedule] next.data.size: ${next.size}")
 //
 //                    for (pd in next) {
-//                        println("title: ${pd.titleF}, content: ${pd.contentF}, date: ${pd.dateF}, map: ${pd.mapF}, Precautions: ${pd.PrecautionsF}, category: ${pd.calendar_category[0]}")
-//                        //pd.yoast_head_json类型有误，数组[]还是对象{}？
+//                        println("title: ${pd.titleF}, content: ${pd.contentF}, st_date: ${pd.st_dateF}, map: ${pd.mapF}, Precautions: ${pd.PrecautionsF}, category: ${pd.calendar_categoryF}, urlF: ${pd.urlF}")
 //                    }
 //                },
 //                { error ->
@@ -150,8 +149,8 @@ object NetBase {
 //                    Log.d("API", "[wsProducts] next.data.size: ${next.size}")
 //
 //                    for (rd in next) {
-//                        println("name: ${rd.name}, price: ${rd.price}, url: ${rd.urlF}, permalink: ${rd.permalink}")
-//                        println("image: ${rd.imageF}")
+//                        println("id: ${rd.id}, name: ${rd.name}, price: ${rd.price}, url: ${rd.urlF}, permalink: ${rd.permalink}")
+//                        println("  image: ${rd.imageF}")
 //                    }
 //                },
 //                { error ->
@@ -380,9 +379,8 @@ object NetBase {
             //查询指定客户订单
 //            val consumer_key = NetBase.decrypt(NetBase.CONSUMER_KEY_ENC)
 //            val consumer_secret = NetBase.decrypt(NetBase.CONSUMER_SECRET_ENC)
-//            val status = "completed"
 //            val customer = 961
-//            val observer = it.wsOrders(consumer_key, consumer_secret, customer, status, 100, 1)
+//            val observer = it.wsOrders(consumer_key, consumer_secret, customer, 100, 1)
 //            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
 //                AndroidSchedulers.mainThread())?.subscribe(
 //                { next ->

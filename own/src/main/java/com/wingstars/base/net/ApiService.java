@@ -36,7 +36,7 @@ public interface ApiService {
     Observable<List<WSCalendarResponse>> wsSchedule(@Query("per_page") int per_page, @Query("page") int page);
 
     //热销商品
-    @GET(NetBase.HOST_BASE + "/wp-json/wc/v3/products?per_page=4&order=desc")
+    @GET(NetBase.HOST_BASE + "/wp-json/wc/v3/products?per_page=4&order=desc&status=publish")
     Observable<List<WSProductResponse>> wsProducts();
 
     //最新消息
@@ -85,8 +85,8 @@ public interface ApiService {
     Observable<List<WSCustomerResponse>> wsCustomer(@Query("consumer_key") String consumer_key, @Query("consumer_secret") String consumer_secret, @Query("email") String email);
 
     //查询指定客户订单
-    @GET(NetBase.HOST_BASE + "/wp-json/wc/v3/orders")
-    Observable<List<WSOrderResponse>> wsOrders(@Query("consumer_key") String consumer_key, @Query("consumer_secret") String consumer_secret, @Query("customer") int customer, @Query("status") String status, @Query("per_page") int per_page, @Query("page") int page);
+    @GET(NetBase.HOST_BASE + "/wp-json/wc/v3/orders?status=completed")
+    Observable<List<WSOrderResponse>> wsOrders(@Query("consumer_key") String consumer_key, @Query("consumer_secret") String consumer_secret, @Query("customer") int customer, @Query("per_page") int per_page, @Query("page") int page);
 
 
 }
