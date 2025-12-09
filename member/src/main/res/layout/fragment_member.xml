@@ -229,6 +229,8 @@
             </RelativeLayout>
 
             <androidx.recyclerview.widget.RecyclerView
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:orientation="horizontal"
                 android:id="@+id/support_fashion_list"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_279" />

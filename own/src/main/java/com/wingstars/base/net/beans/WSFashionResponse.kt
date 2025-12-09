@@ -6,6 +6,7 @@ data class WSFashionResponse(
     val title: Title,                   //圖示
     val fashion_category: List<Int>,    //分類
     val yoast_head_json: YoastHeadJson, //圖片
+    var type: Int = 0                   //1 應援服  2 活動服
 ) {
     val titleF: String                  //title format
         get() {

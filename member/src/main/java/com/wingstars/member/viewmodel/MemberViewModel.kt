@@ -10,6 +10,8 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.wingstars.base.net.beans.WSFashionCategoryResponse
+import com.wingstars.base.net.beans.WSFashionResponse
 import com.wingstars.base.net.beans.WSMemberResponse
 import com.wingstars.member.bean.WSMemberRankBean
 import com.wingstars.member.bean.WSRankBean
@@ -22,12 +24,59 @@ class MemberViewModel: ViewModel() {
     var wsMembersData = MutableLiveData<MutableList<WSMemberResponse>>()
     var loading = MutableLiveData<Boolean>()
     var wsRankData = MutableLiveData<MutableList<WSMemberRankBean>>()
+    var wsFashions = MutableLiveData<MutableList<WSFashionResponse>>()
+
+    var wsFashionCategorysData = MutableLiveData<MutableList<WSFashionCategoryResponse>>()
     public fun  getPopularitylist(){
         var arrayList = mutableListOf(1,2,3)
         popularitylist.postValue(arrayList)
 
 //        NetBase.ut()
     }
+
+    public fun wsFashionCategorys(){
+        API.shared?.api?.let {
+            val observer = it.wsFashionCategorys()
+            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
+                AndroidSchedulers.mainThread()
+            )?.subscribe(
+                { next ->
+                    if (!next.isNullOrEmpty()){
+                        wsFashionCategorysData.postValue(next)
+                        wsFashions()
+                    }else{
+                        loading.postValue(false)
+                    }
+                },
+                { error ->
+                    loading.postValue(false)
+                }
+            )
+        }
+    }
+    public fun wsFashions(){
+        API.shared?.api?.let {
+            val emptyHashMap: java.util.HashMap<String?, Int?>? = HashMap()
+            val observer = it.wsFashions(emptyHashMap,3,1)
+            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
+                AndroidSchedulers.mainThread()
+            )?.subscribe(
+                { next ->
+                    if (!next.isNullOrEmpty()){
+                        Log.e("wsFashions","${next}")
+                        wsFashions.postValue(next)
+                    }else{
+                        loading.postValue(false)
+                    }
+                },
+                { error ->
+                    Log.e("wsFashions","error=${error.message}")
+                    loading.postValue(false)
+                }
+            )
+        }
+    }
+
 
     public fun getRenderedList(){
         loading.postValue(true)
@@ -63,6 +112,8 @@ class MemberViewModel: ViewModel() {
                         wsPhotos(data)
 
 
+                    }else{
+                        loading.postValue(false)
                     }
                 },
                 { error ->
@@ -101,6 +152,8 @@ class MemberViewModel: ViewModel() {
                         }
                         wsRankData.postValue(data)
 
+                    }else{
+                        loading.postValue(false)
                     }
                 },
                 { error ->
