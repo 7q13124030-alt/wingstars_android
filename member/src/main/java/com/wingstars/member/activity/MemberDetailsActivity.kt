@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -51,10 +52,11 @@ class MemberDetailsActivity : BaseActivity(), BaseActivity.OnInitialization {
         binding = ActivityMemberDetailsBinding.inflate(layoutInflater)
         viewModel = ViewModelProvider(this)[MemberDetailsViewModel::class.java]
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) {  //小于Android 15
             setContentView(binding.root)
             setStatusBarColor()
-            setMarginTop(binding.rlTop, getStatusBarHeight())
+            //64f标题栏高度
+            setMarginTop(binding.rlTop, getStatusBarHeight() + DPUtils.dpToPx(64f, this).toInt())
             setMarginTops(binding.rlTops, getStatusBarHeight())
             setScrollView(getStatusBarHeight())
             initData()
@@ -64,14 +66,20 @@ class MemberDetailsActivity : BaseActivity(), BaseActivity.OnInitialization {
         }
     }
 
-    fun setScrollView(statusBarHeight:Int){
-        var top = statusBarHeight+ DPUtils.dpToPx(389f,this).toInt()
-        var params = binding.shadow.layoutParams as LinearLayout.LayoutParams
-        params.topMargin = top
-        params.width = ViewGroup.LayoutParams.MATCH_PARENT
-        params.height = ScreenUtils.getHeight(this) - statusBarHeight - DPUtils.dpToPx(84f,this).toInt()
-        binding.shadow.layoutParams = params
-
+    fun setScrollView(statusBarHeight: Int) {
+        binding.main.post {
+            val height = binding.main.height
+            Log.e("height", "height=$height")
+            //64f标题栏高度+325dp(除过标题栏人物背景露在外面的部分)
+            var top = statusBarHeight + DPUtils.dpToPx(389f, this).toInt()
+            var params = binding.shadow.layoutParams as LinearLayout.LayoutParams
+            params.topMargin = top
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT
+            //布局整体的高度 - 64f标题栏高度 - 手机上面的状态栏高度
+            val heights = height - DPUtils.dpToPx(64f, this).toInt() - statusBarHeight
+            params.height = heights
+            binding.shadow.layoutParams = params
+        }
     }
 
 
@@ -80,6 +88,7 @@ class MemberDetailsActivity : BaseActivity(), BaseActivity.OnInitialization {
         params.topMargin = top
         view.layoutParams = params
     }
+
     fun setMarginTop(view: View, top: Int) {
         var params = view.layoutParams as LinearLayout.LayoutParams
         params.topMargin = top
@@ -277,7 +286,8 @@ class MemberDetailsActivity : BaseActivity(), BaseActivity.OnInitialization {
     override fun onInitializationSuccessful() {
         initData()
         initView()
-        setMarginTop(binding.rlTop, getStatusBarHeights())
+        //64f标题栏高度
+        setMarginTop(binding.rlTop, getStatusBarHeights() + DPUtils.dpToPx(64f, this).toInt())
         setMarginTops(binding.rlTops, getStatusBarHeights())
         setScrollView(getStatusBarHeights())
     }
