@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,15 +25,13 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.wingstars.base.base.BaseActivity
 import com.wingstars.base.net.beans.WSMemberResponse
 import com.wingstars.base.utils.DPUtils
-import com.wingstars.base.utils.ScreenUtils
 import com.wingstars.base.view.DynamicWidthIndicatorDrawable
 import com.wingstars.member.R
 import com.wingstars.member.databinding.ActivityMemberDetailsBinding
 import com.wingstars.member.fragment.BasicInformationFragment
 import com.wingstars.member.fragment.PersonalScheduleFragment
 import com.wingstars.member.viewmodel.MemberDetailsViewModel
-import java.text.SimpleDateFormat
-import java.util.Date
+
 
 class MemberDetailsActivity : BaseActivity(), BaseActivity.OnInitialization {
 
@@ -55,44 +52,51 @@ class MemberDetailsActivity : BaseActivity(), BaseActivity.OnInitialization {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) {  //小于Android 15
             setContentView(binding.root)
             setStatusBarColor()
-            //64f标题栏高度
-            setMarginTop(binding.rlTop, getStatusBarHeight() + DPUtils.dpToPx(64f, this).toInt())
-            setMarginTops(binding.rlTops, getStatusBarHeight())
-            setScrollView(getStatusBarHeight())
-            initData()
-            initView()
+            onInitializationSuccessful()
         } else {
             setTitleFoot(view1 = binding.root, initialization = this, setHeadAndFoot = false)
         }
     }
 
-    fun setScrollView(statusBarHeight: Int) {
+    fun initLayoutsMarginTop() {
+        //状态栏高度
+        var nStatusHeight = getStatusBarHeights()
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM)
+            nStatusHeight = getStatusBarHeight()
+
+        //设置标题栏的MarginTop
+        setTitleMarginTop(nStatusHeight)
+
+        //设置成员简介的MarginTop
+        //64f标题栏(rlTitle)高度
+        val nTitleMarginTop = nStatusHeight + DPUtils.dpToPx(64f, this).toInt()
+        setMemerProfileMarginTop(nTitleMarginTop)
+
+        //设置成员详情的MarginTop
+        //325f=人物简介（rlMemberProfile）高度348- slMemberDetail本身高度向上重叠后的高度23
+        val nDetailMarginTop = nTitleMarginTop + DPUtils.dpToPx(325f, this).toInt()
+        setMemberDetailMarginTop(nDetailMarginTop, nStatusHeight)
+    }
+
+
+    private fun setTitleMarginTop(marginTop: Int) {
+        val params = binding.rlTitle.layoutParams as FrameLayout.LayoutParams
+        params.topMargin = marginTop
+    }
+
+    private fun setMemerProfileMarginTop(marginTop: Int) {
+        val params = binding.rlMemberProfile.layoutParams as LinearLayout.LayoutParams
+        params.topMargin = marginTop
+    }
+
+    private fun setMemberDetailMarginTop(marginTop: Int, nStatusHeight: Int) {
         binding.main.post {
-            val height = binding.main.height
-            Log.e("height", "height=$height")
-            //64f标题栏高度+325dp(除过标题栏人物背景露在外面的部分)
-            var top = statusBarHeight + DPUtils.dpToPx(389f, this).toInt()
-            var params = binding.shadow.layoutParams as LinearLayout.LayoutParams
-            params.topMargin = top
+            val params = binding.slMemberDetail.layoutParams as LinearLayout.LayoutParams
+            params.topMargin = marginTop
             params.width = ViewGroup.LayoutParams.MATCH_PARENT
-            //布局整体的高度 - 64f标题栏高度 - 手机上面的状态栏高度
-            val heights = height - DPUtils.dpToPx(64f, this).toInt() - statusBarHeight
-            params.height = heights
-            binding.shadow.layoutParams = params
+            //布局整体的高度 - 64f标题栏高度 - 状态栏高度
+            params.height = binding.main.height - DPUtils.dpToPx(64f, this).toInt() - nStatusHeight
         }
-    }
-
-
-    fun setMarginTops(view: View, top: Int) {
-        var params = view.layoutParams as FrameLayout.LayoutParams
-        params.topMargin = top
-        view.layoutParams = params
-    }
-
-    fun setMarginTop(view: View, top: Int) {
-        var params = view.layoutParams as LinearLayout.LayoutParams
-        params.topMargin = top
-        view.layoutParams = params
     }
 
     private fun initData() {
@@ -284,11 +288,8 @@ class MemberDetailsActivity : BaseActivity(), BaseActivity.OnInitialization {
     }
 
     override fun onInitializationSuccessful() {
+        initLayoutsMarginTop()
         initData()
         initView()
-        //64f标题栏高度
-        setMarginTop(binding.rlTop, getStatusBarHeights() + DPUtils.dpToPx(64f, this).toInt())
-        setMarginTops(binding.rlTops, getStatusBarHeights())
-        setScrollView(getStatusBarHeights())
     }
 }

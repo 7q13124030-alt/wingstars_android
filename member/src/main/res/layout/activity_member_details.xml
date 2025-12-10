@@ -13,9 +13,8 @@
         android:background="@mipmap/ic_member_page_background"
         android:orientation="vertical">
 
-
         <RelativeLayout
-            android:id="@+id/rl_top"
+            android:id="@+id/rl_member_profile"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_348">
 
@@ -86,7 +85,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true">
 
                 <ImageView
@@ -109,7 +108,7 @@
             android:orientation="vertical">
 
             <com.lihang.ShadowLayout
-                android:id="@+id/shadow"
+                android:id="@+id/sl_member_detail"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="400dp"
@@ -143,11 +142,10 @@
                 </LinearLayout>
             </com.lihang.ShadowLayout>
         </LinearLayout>
-
     </androidx.core.widget.NestedScrollView>
 
     <RelativeLayout
-        android:id="@+id/rl_tops"
+        android:id="@+id/rl_title"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_64">
 
