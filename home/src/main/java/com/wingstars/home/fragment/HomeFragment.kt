@@ -52,12 +52,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
 
     private fun initView() {
         viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
-        val window = requireActivity().window
-
-        window.statusBarColor = requireContext().getColor(android.R.color.white)
-
-        androidx.core.view.WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = true
-        handleStatusBar()
+//        handleStatusBar()
         setupUI()
         setupComingSoonBanner()
         observeData()
@@ -67,19 +62,19 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
         viewModel.getLatestNewsData()
     }
 
-    private fun handleStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-            binding.root.setOnApplyWindowInsetsListener { _, insets ->
-                val statusBarHeight = insets.getInsets(WindowInsets.Type.statusBars()).top
-                Log.e("statusBarHeight", "statusBarHeight=$statusBarHeight")
-                setViewTop(binding.title, statusBarHeight)
-                binding.root.setOnApplyWindowInsetsListener(null)
-                insets
-            }
-        } else {
-            setViewTop(binding.title, getStatusBarHeight())
-        }
-    }
+//    private fun handleStatusBar() {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+//            binding.root.setOnApplyWindowInsetsListener { _, insets ->
+//                val statusBarHeight = insets.getInsets(WindowInsets.Type.statusBars()).top
+//                Log.e("statusBarHeight", "statusBarHeight=$statusBarHeight")
+//                setViewTop(binding.title, statusBarHeight)
+//                binding.root.setOnApplyWindowInsetsListener(null)
+//                insets
+//            }
+//        } else {
+//            setViewTop(binding.title, getStatusBarHeight())
+//        }
+//    }
 
     private fun setupUI() {
         binding.titleProducts.tvSectionTitle.text = "熱銷商品"
