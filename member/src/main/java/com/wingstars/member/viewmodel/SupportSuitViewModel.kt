@@ -3,11 +3,15 @@ package com.wingstars.member.viewmodel
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.wingstars.base.net.API
+import com.wingstars.base.net.beans.CRMBaseFailResponse
 import com.wingstars.base.net.beans.WSFashionCategoryResponse
 import com.wingstars.base.net.beans.WSFashionResponse
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
+import retrofit2.HttpException
 
 class SupportSuitViewModel : ViewModel() {
 
@@ -16,6 +20,7 @@ class SupportSuitViewModel : ViewModel() {
     var wsFashions = MutableLiveData<MutableList<WSFashionResponse>>()
     var wsMoreFashions = MutableLiveData<MutableList<WSFashionResponse>>()
     var loading = MutableLiveData<Boolean>()
+    var tip = MutableLiveData<String>()
     var PER_PAGE = 10             //每页条数
     var PAGE = 1                //当前页数
     var fashionIds = 0
@@ -87,6 +92,24 @@ class SupportSuitViewModel : ViewModel() {
                 { error ->
                     if (PAGE>1){
                         PAGE=PAGE-1
+                    }
+                    if (error is HttpException) {
+                        try {
+                            val gson = Gson()
+                            val type = object : TypeToken<CRMBaseFailResponse>() {}.type
+                            val failResponse = gson.fromJson<CRMBaseFailResponse>(
+                                error.response()?.errorBody()?.string(), type
+                            )
+                           if (failResponse.code.trim()=="rest_post_invalid_page_number"){
+                               tip.postValue("rest_post_invalid_page_number")
+                           }else{
+                               tip.postValue("${failResponse.message}")
+                           }
+                        } catch (e: Exception) {
+
+                        }
+                    }else{
+                        tip.postValue("${error.message}")
                     }
                     loading.postValue(false)
                 }

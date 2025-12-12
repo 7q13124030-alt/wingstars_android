@@ -14,6 +14,7 @@ import com.wingstars.base.base.BaseFragment
 import com.wingstars.base.net.beans.WSFashionResponse
 import com.wingstars.base.utils.DPUtils
 import com.wingstars.base.utils.ScreenUtils
+import com.wingstars.member.R
 import com.wingstars.member.activity.AtmosphereFashionDetailsActivity
 import com.wingstars.member.adapter.CategoryAdapter
 import com.wingstars.member.adapter.SupportSuitAdapter
@@ -29,6 +30,8 @@ class EventUniformFragment : BaseFragment(), SupportSuitAdapter.OnItemListener {
 
     private var adapter1: SupportSuitAdapter? = null
     private var dataList: MutableList<WSFashionResponse> = mutableListOf()
+
+    private var loading_completed = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,6 +59,7 @@ class EventUniformFragment : BaseFragment(), SupportSuitAdapter.OnItemListener {
         var smallhight = smallwidths.toInt() * 1.585
         viewModel = ViewModelProvider(this)[SupportSuitViewModel::class.java]
         viewModel.wsFashions.observe(viewLifecycleOwner) {
+            loading_completed = true
             if (it.size == viewModel.PER_PAGE) {
                 isMore = true
             }
@@ -109,6 +113,9 @@ class EventUniformFragment : BaseFragment(), SupportSuitAdapter.OnItemListener {
             adapter1!!.notifyDataSetChanged()
 
         }
+        viewModel.tip.observe(viewLifecycleOwner){
+            showTip(if (it=="rest_post_invalid_page_number") getString(R.string.no_more_data) else it)
+        }
         viewModel.loading.observe(viewLifecycleOwner) {
             showLoadingUI(it, requireActivity())
         }
@@ -117,6 +124,7 @@ class EventUniformFragment : BaseFragment(), SupportSuitAdapter.OnItemListener {
             binding.srlMemberIntroduction.finishRefresh()
             viewModel.PAGE = 1
             isMore = false
+            loading_completed= false
             viewModel.wsFashionCategorys(2)
         }
         binding.srlMemberIntroduction.setOnLoadMoreListener {
@@ -124,6 +132,11 @@ class EventUniformFragment : BaseFragment(), SupportSuitAdapter.OnItemListener {
             Log.e("isMore", "isMore=$isMore")
             if (isMore) {
                 viewModel.wsFashions(isShowLoading = true, isLoadMore = true)
+            }else{
+                if (loading_completed){
+                    showTip(getString(R.string.no_more_data))
+                }
+
             }
         }
         viewModel.wsFashionCategorys(2)

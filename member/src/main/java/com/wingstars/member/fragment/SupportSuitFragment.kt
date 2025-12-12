@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +18,7 @@ import com.wingstars.base.base.BaseFragment
 import com.wingstars.base.net.beans.WSFashionResponse
 import com.wingstars.base.utils.DPUtils
 import com.wingstars.base.utils.ScreenUtils
+import com.wingstars.member.R
 import com.wingstars.member.activity.AtmosphereFashionDetailsActivity
 import com.wingstars.member.adapter.CategoryAdapter
 import com.wingstars.member.adapter.SupportFashionAdapter
@@ -31,6 +33,7 @@ class SupportSuitFragment : BaseFragment(), SupportSuitAdapter.OnItemListener {
     private lateinit var binding: FragmentSupportSuitBinding
     var isMore = false           //是否存在下一页
     private var adapter1: SupportSuitAdapter? = null
+    private var loading_completed = false
     private var dataList: MutableList<WSFashionResponse> = mutableListOf()
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,6 +55,9 @@ class SupportSuitFragment : BaseFragment(), SupportSuitAdapter.OnItemListener {
         var smallhight = smallwidths.toInt() * 1.585
 
         viewModel = ViewModelProvider(this)[SupportSuitViewModel::class.java]
+        viewModel.tip.observe(viewLifecycleOwner){
+            showTip(if (it=="rest_post_invalid_page_number") getString(R.string.no_more_data) else it)
+        }
         viewModel.loading.observe(viewLifecycleOwner) {
             showLoadingUI(it, requireActivity())
         }
@@ -59,6 +65,7 @@ class SupportSuitFragment : BaseFragment(), SupportSuitAdapter.OnItemListener {
             binding.srlMemberIntroduction.finishRefresh()
             viewModel.PAGE = 1
             isMore = false
+            loading_completed = false
             viewModel.wsFashionCategorys()
         }
         binding.srlMemberIntroduction.setOnLoadMoreListener {
@@ -66,9 +73,15 @@ class SupportSuitFragment : BaseFragment(), SupportSuitAdapter.OnItemListener {
             Log.e("isMore", "isMore=$isMore")
             if (isMore) {
                 viewModel.wsFashions(isShowLoading = true, isLoadMore = true)
+            }else{
+                if (loading_completed){
+                    showTip(getString(R.string.no_more_data))
+                }
+
             }
         }
         viewModel.wsFashions.observe(viewLifecycleOwner) {
+            loading_completed = true
             if (it.size == viewModel.PER_PAGE) {
                 isMore = true
             }
@@ -128,6 +141,8 @@ class SupportSuitFragment : BaseFragment(), SupportSuitAdapter.OnItemListener {
         }
         viewModel.getCategoryList()
     }
+
+
 
     override fun onItemClick(memberId: Int) {
         val intent = Intent(

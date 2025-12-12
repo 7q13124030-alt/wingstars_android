@@ -2,6 +2,7 @@ package com.wingstars.base.base
 
 import android.content.Context
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.gyf.immersionbar.ImmersionBar
 import com.wingstars.base.view.UpLoadingDialog
@@ -22,6 +23,11 @@ open class BaseFragment : Fragment(){
         } else {
             closeLoadingDialog()
         }
+    }
+
+
+     fun showTip(tip: String){
+        Toast.makeText(requireActivity(),tip, Toast.LENGTH_SHORT).show()
     }
 
     fun closeLoadingDialog() {
