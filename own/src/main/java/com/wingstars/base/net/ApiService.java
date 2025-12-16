@@ -2,6 +2,7 @@ package com.wingstars.base.net;
 
 
 import com.wingstars.base.net.beans.WSCalendarCategoryResponse;
+import com.wingstars.base.net.beans.WSCalendarNResponse;
 import com.wingstars.base.net.beans.WSCalendarResponse;
 import com.wingstars.base.net.beans.WSCustomerResponse;
 import com.wingstars.base.net.beans.WSFashionCategoryResponse;
@@ -13,6 +14,7 @@ import com.wingstars.base.net.beans.WSPhotoFrameResponse;
 import com.wingstars.base.net.beans.WSPostResponse;
 import com.wingstars.base.net.beans.WSProductResponse;
 import com.wingstars.base.net.beans.WSRankResponse;
+import com.wingstars.base.net.beans.WSScheduleResponse;
 
 import retrofit2.http.Path;
 import retrofit2.http.QueryMap;
@@ -75,9 +77,19 @@ public interface ApiService {
     @GET(NetBase.HOST_BASE + "/wp-json/wp/v2/calendar?_fields=id,title.rendered,acf,content.rendered,yoast_head_json.og_image,calendar_category")
     Observable<List<WSCalendarResponse>> wsCalendar(@Query("per_page") int per_page, @Query("page") int page);
 
+    //日历2（新版）
+    @GET(NetBase.HOST_BASE + "/wp-json/tsg-schedule/v1/calendar")
+    Observable<List<WSCalendarNResponse>> wsCalendarN(@QueryMap HashMap<String, String> param);
+
+
     //日历-分类
     @GET(NetBase.HOST_BASE + "/wp-json/wp/v2/calendar_category?_fields=id,name")
     Observable<List<WSCalendarCategoryResponse>> wsCalendarCategory(@Query("per_page") int per_page, @Query("page") int page);
+
+    //班表
+    @GET(NetBase.HOST_BASE + "/wp-json/tsg-schedule/v1/schedules")
+    Observable<List<WSScheduleResponse>> wsSchedules(@QueryMap HashMap<String, String> param);
+
 
     //商城---
     //查询指定客户 customer_id
