@@ -337,6 +337,28 @@ object NetBase {
 //                }
 //            )
 
+            //日历2（新版）
+//            val  params = HashMap<String, String>()
+//            params.put("ym", "2025-12")
+//            //params.put("date", "2025-12-05")
+//            val observer = it.wsCalendarN(params)
+//            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
+//                AndroidSchedulers.mainThread())?.subscribe(
+//                { next ->
+//                    Log.d("API", "[wsCalendarN] next.data.size: ${next.size}")
+//
+//                    for (pd in next) {
+//                        //println("title: ${pd.titleF}, content: ${pd.contentF}, st_date: ${pd.st_dateF}, ed_date: ${pd.ed_dateF}, map: ${pd.mapF}, Precautions: ${pd.PrecautionsF}, category: ${pd.calendar_categoryF}, url: ${pd.urlF}")
+//                        //println("title: ${pd.title}, content: ${pd.content}, st_date: ${pd.start_date}, ed_date: ${pd.end_date}, map: ${pd.location}, Precautions: ${pd.precautions}, category: ${pd.category}, url: ${pd.image_url}")
+//                    }
+//                },
+//                { error ->
+//                    error.message?.let { it1 ->
+//                        Log.d("API", "[wsCalendarN] error.message: ${it1?.toString()}")
+//                    }
+//                }
+//            )
+
             //日历-分类
 //            val observer = it.wsCalendarCategory(100, 1)
 //            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
@@ -351,6 +373,48 @@ object NetBase {
 //                { error ->
 //                    error.message?.let { it1 ->
 //                        Log.d("API", "[wsCalendarCategory] error.message: ${it1?.toString()}")
+//                    }
+//                }
+//            )
+
+            //班表
+//            val  params = HashMap<String, String>()
+//            params.put("ym", "2025-11") //ym
+//            //params.put("member_number", "90")
+//            //params.put("member_name", "安芝儇")
+//            //params.put("location", "成大")
+//            val observer = it.wsSchedules(params)
+//            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
+//                AndroidSchedulers.mainThread())?.subscribe(
+//                { next ->
+//                    Log.d("API", "[wsSchedules] next.data.size: ${next.size}")
+//
+//                    for (pd in next) {
+//                        println("work_date: ${pd.work_date}, name: ${pd.member_name}, number: ${pd.member_number}, location: ${pd.location}")
+//                    }
+//
+//                    val dateItems = next.groupBy { pd -> pd.work_date } //按日期分组
+//                    dateItems.forEach { (key, value) ->
+//                        println(key)
+//                        value.forEach { di ->
+//                            println("  ${di.work_date}, ${di.member_number}, ${di.member_name}, ${di.location}")
+//                        }
+//                    }
+//
+//                    val dis = dateItems.get("2025-11-01")
+//                    dis?.forEach { di ->
+//                        println("  ${di.work_date}, ${di.member_number}, ${di.member_name}, ${di.location}")
+//                    }
+//
+//                    val dis2 = dateItems.get("2025-11-03")
+//                    dis2?.forEach { di ->
+//                        println("  ${di.work_date}, ${di.member_number}, ${di.member_name}, ${di.location}")
+//                    }
+//
+//                },
+//                { error ->
+//                    error.message?.let { it1 ->
+//                        Log.d("API", "[wsSchedules] error.message: ${it1?.toString()}")
 //                    }
 //                }
 //            )
