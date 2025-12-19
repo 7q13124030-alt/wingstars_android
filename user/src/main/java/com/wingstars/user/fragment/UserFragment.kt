@@ -22,6 +22,7 @@ import androidx.core.content.FileProvider
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter
 import com.journeyapps.barcodescanner.BarcodeEncoder
+import com.tencent.mmkv.MMKV
 import com.wingstars.base.base.BaseFragment
 import com.wingstars.login.LoginActivity
 import com.wingstars.user.R
@@ -277,10 +278,29 @@ class UserFragment : BaseFragment(){
         }
     }
     private fun performLogout() {
-        val sharedPref = requireActivity().getSharedPreferences("user_prefs", 0)
-        sharedPref.edit().clear().apply()
+        val sharedPref = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        sharedPref.edit().apply {
+            remove("is_logged_in")
+            remove("phone")
+            remove("password")
+            remove("name")
+            remove("code")
+            remove("birthday")
+            remove("gender")
+            remove("barcode_number")
+            remove("effective_date")
+            apply()
+        }
+
+        val mmkv = MMKV.defaultMMKV()
+        mmkv.encode("isLogin", false)
+        mmkv.removeValueForKey("crm_member_access_token")
+        mmkv.removeValueForKey("user_name")
+
+
         updateLoginUI()
         val intent = Intent(requireContext(), LoginActivity::class.java)
+        intent.putExtra("isFromSplash", true)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
     }
@@ -389,6 +409,7 @@ class UserFragment : BaseFragment(){
     override fun onResume() {
         super.onResume()
         updateBarcodeUI()
+        updateLoginUI()
     }
 
 }

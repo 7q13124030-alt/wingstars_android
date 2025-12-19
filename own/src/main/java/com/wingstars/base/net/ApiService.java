@@ -9,7 +9,11 @@ import com.wingstars.base.net.beans.CRMSignInRequest;
 import com.wingstars.base.net.beans.CRMSignInResponse;
 import com.wingstars.base.net.beans.CRMVerifyRequest;
 import com.wingstars.base.net.beans.CRMVerifyResponse;
+import com.wingstars.base.net.beans.EvtCheckinRequest;
+import com.wingstars.base.net.beans.EvtCheckinResponse;
+import com.wingstars.base.net.beans.EvtMemberBadgeResponse;
 import com.wingstars.base.net.beans.EvtMemberTaskResponse;
+import com.wingstars.base.net.beans.EvtTaskResponse;
 import com.wingstars.base.net.beans.NSInfoRequest;
 import com.wingstars.base.net.beans.NSInfoResponse;
 import com.wingstars.base.net.beans.WSCalendarCategoryResponse;
@@ -126,7 +130,7 @@ public interface ApiService {
 
     //Event > 获得点数.   ${BaseApplication.HOST_EVENT}/api/v1/public/events/reward
     @POST(NetBase.HOST_EVENT + "/api/v1/public/events/reward")
-    Observable<EvtCheckinResponse> evtReward( @Body EvtCheckinRequest evtCheckinRequest);
+    Observable<EvtCheckinResponse> evtReward(@Body EvtCheckinRequest evtCheckinRequest);
 
     //Event > 会员任务状态列表.   ${BaseApplication.HOST_EVENT}/api/v1/public/members/tasks?encryptedIdentity=...
     @GET(NetBase.HOST_EVENT + "/api/v1/public/members/tasks")
@@ -134,7 +138,7 @@ public interface ApiService {
 
     //Event > 查询会员勋章列表.   ${BaseApplication.HOST_EVENT}/api/v1/public/member/badges?encryptedIdentity=...
     @GET(NetBase.HOST_EVENT + "/api/v1/public/member/badges")
-    Observable<List<EvtMemberBadgeResponse>> evtMemberBadges( @Query("encryptedIdentity") String encryptedIdentity);
+    Observable<List<EvtMemberBadgeResponse>> evtMemberBadges(@Query("encryptedIdentity") String encryptedIdentity);
 
     //Event > 取得任务详情.   ${BaseApplication.HOST_EVENT}/api/v1/public/event-tasks/{taskid}
     @GET(NetBase.HOST_EVENT + "/api/v1/public/event-tasks/{taskid}")

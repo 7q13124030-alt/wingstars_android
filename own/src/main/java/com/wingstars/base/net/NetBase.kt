@@ -35,7 +35,7 @@ object NetBase : Application(){
 
     //测试区
     const val HOST_BASE = "https://61.218.209.209"
-    const val HOST_CRM = "https://ws-crm-dev.newretail.tw/"
+    const val HOST_CRM = "https://ws-crm-dev.newretail.tw"
     const val HOST_EVENT = "https://ws-event-dev.newretail.tw/"
 
     const val CRM_HOST = "https://ws-crm-dev.newretail.tw"

@@ -223,7 +223,6 @@ class LoginActivity : BaseActivity(), LoginNavigator {
     fun onMessageEvent(event: MessageEvent?) {
     }
 
-    // --- QUAN TRỌNG: LOGIN SUCCESS ---
     override fun loginSuccess() {
         NetBase.refreshEvtTasks(true)
         val phoneStr = binding.edtPhone.text.toString().trim()
@@ -231,7 +230,6 @@ class LoginActivity : BaseActivity(), LoginNavigator {
 
         setUserName(phoneStr)
 
-        // >>> BỔ SUNG: Lưu SharedPreferences cho UserFragment dùng <<<
         val sharedPref = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
         sharedPref.edit().apply {
             putBoolean("is_logged_in", true)
@@ -239,8 +237,6 @@ class LoginActivity : BaseActivity(), LoginNavigator {
             putString("password", psdStr)
             apply()
         }
-        // >>> KẾT THÚC BỔ SUNG <<<
-
         sendBroadcast(Intent(NetBase.BROADCAST_USER_LOGIN))
         if (tag.isNotEmpty()) {
             val intent = Intent(NetBase.BROADCAST_LOGIN_SUCCESS_INTENT)
