@@ -49,7 +49,7 @@ dependencies {
 
 
     implementation(project(":own"))
-    implementation("com.google.android.material:material:1.5.0")
+    implementation("me.jessyan:autosize:1.2.1")
 //
 
     implementation ("com.github.bumptech.glide:okhttp3-integration:4.16.0")
