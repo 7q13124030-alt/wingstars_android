@@ -358,7 +358,7 @@ class CropImageViewActivity : BaseActivity(), View.OnClickListener {
 // 添加要分享的图片 Uri
         shareIntent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(
             this,
-            "${this@CropImageViewActivity.packageName}.fileprovider",
+            "${packageName}.provider",
             file!!
         ))
 

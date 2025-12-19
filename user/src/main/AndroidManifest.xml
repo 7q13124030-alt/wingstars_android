@@ -19,7 +19,7 @@
             android:windowSoftInputMode="adjustResize|stateHidden"
             android:theme="@style/AppTheme"/>
         <activity android:name=".activity.ContactCustomerActivity"/>
-        <provider
+        <!--<provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
             android:exported="false"
@@ -28,7 +28,7 @@
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
-        </provider>
+        </provider>-->
         <activity android:name=".activity.MemberLevelActivity"/>
 
     </application>

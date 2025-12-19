@@ -39,16 +39,8 @@
             android:exported="false"/>
         <activity android:name=".activity.TakeMomentsDisplayActivity"
             android:exported="false"/>
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="com.company.wingstars.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true"
-            tools:replace="android:authorities">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-        </provider>
+        <!--tools:replace="android:authorities"-->
+
     </application>
 
 </manifest>

@@ -68,7 +68,7 @@ class TakeMomentsDisplayActivity : BaseActivity(),OnClickListener {
                 binding.videoView.visibility = View.VISIBLE
                 val uriForFile = FileProvider.getUriForFile(
                     this,
-                    "${this@TakeMomentsDisplayActivity.packageName}.fileprovider",
+                    "${this@TakeMomentsDisplayActivity.packageName}.provider",
                     file!!
                 )
                 binding.videoView.setVideoURI(uriForFile)
@@ -138,7 +138,7 @@ class TakeMomentsDisplayActivity : BaseActivity(),OnClickListener {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
             val uriForFile = FileProvider.getUriForFile(
                 this,
-                "${this@TakeMomentsDisplayActivity.packageName}.fileprovider",
+                "${this@TakeMomentsDisplayActivity.packageName}.provider",
                 file!!
             )
             copyVideoToPicturesDirectory(uriForFile)
@@ -412,7 +412,7 @@ class TakeMomentsDisplayActivity : BaseActivity(),OnClickListener {
 // 添加要分享的图片 Uri
         shareIntent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(
             this,
-             "${packageName}.fileprovider",
+             "${packageName}.provider",
             file!!
         ))
 
