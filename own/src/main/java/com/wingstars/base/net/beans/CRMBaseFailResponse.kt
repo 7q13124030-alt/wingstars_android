@@ -1,7 +1,7 @@
 package com.wingstars.base.net.beans
 
 data class CRMBaseFailResponse(
-    var code: String,
-    var message: String,
-    var data: Any
+    val success: Boolean,
+    val message: String,
+    val time: String,
 )
