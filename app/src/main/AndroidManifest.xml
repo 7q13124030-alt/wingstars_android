@@ -41,6 +41,10 @@
             android:theme="@style/Theme.WingStars.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
+            android:name=".main.PermissionRequestActivity"
+            android:exported="false"
+            android:theme="@style/Theme.WingStars.NoActionBar" />
+        <activity
             android:name="com.wingstars.login.LoginActivity"
             android:exported="false"
             android:theme="@style/Theme.WingStars.NoActionBar" />
@@ -60,6 +64,13 @@
             android:exported="false"
             android:theme="@style/Theme.WingStars.Register"
             android:windowSoftInputMode="stateHidden|adjustResize" />
+        <meta-data
+            android:name="design_width_in_dp"
+            android:value="402"/>
+
+        <meta-data
+            android:name="design_height_in_dp"
+            android:value="874"/>
     </application>
 
 </manifest>

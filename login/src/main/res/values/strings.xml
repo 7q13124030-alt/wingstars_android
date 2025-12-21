@@ -11,7 +11,7 @@
     <string name="app_name">台鋼獵鷹</string>
     <string name="welcome_login">歡迎登入</string>
     <string name="login_hint">如果您曾是獵鷹商城會員，請點選 會員綁定</string>
-    <string name="hint_phone">請輸入手機</string>
+    <string name="hint_phone">請輸入手機號碼</string>
     <string name="hint_psd">請輸入密碼</string>
     <string name="remember_psd">記住帳號</string>
     <string name="login">登入</string>
@@ -22,7 +22,9 @@
     <string name="register_terms">個人資料</string>
     <string name="register_termss">註冊條款</string>
     <string name="user_privacy_policy">隱私條款</string>
-
+    <string name="login_success">đăng nhập thành công</string>
+    <string name="login_error">Đăng nhập thất bại</string>
+    <string name="login_error_phone">tài khoàn chưa đăng kí hoặc sia mật khẩu</string>
 
     <string name="user_register">註冊會員</string>
     <string name="why_identity_information">為何需要身分資料</string>

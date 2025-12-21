@@ -46,11 +46,29 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.activity)
 
 
     implementation(project(":own"))
-    implementation("com.google.android.material:material:1.5.0")
+    implementation("me.jessyan:autosize:1.2.1")
+    implementation("io.reactivex.rxjava3:rxandroid:3.0.0")
+    implementation("org.greenrobot:eventbus:3.3.1")
+
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    implementation("com.squareup.retrofit2:adapter-rxjava3:2.11.0")
+    implementation("com.squareup.retrofit2:converter-scalars:2.11.0")
+    implementation("com.tencent:mmkv:1.3.9")
+
 //
 
-
+    implementation ("com.github.bumptech.glide:okhttp3-integration:4.16.0")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+    implementation("com.squareup.retrofit2:adapter-rxjava3:2.9.0")
+    implementation("io.reactivex.rxjava3:rxjava:3.1.8")
+    implementation("io.reactivex.rxjava3:rxandroid:3.0.2")
+    implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
 }

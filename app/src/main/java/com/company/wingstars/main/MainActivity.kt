@@ -11,6 +11,7 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.company.wingstars.R
 import com.company.wingstars.databinding.ActivityMainBinding
+import com.tencent.mmkv.MMKV
 import com.wingstars.base.base.BaseActivity
 import com.wingstars.base.inter.IPermissionsCallback
 import com.wingstars.calendar.fragment.CalendarFragment
@@ -18,6 +19,7 @@ import com.wingstars.count.fragment.CountFragment
 import com.wingstars.home.fragment.HomeFragment
 import com.wingstars.member.activity.FanInteractionActivity
 import com.wingstars.member.fragment.MemberFragment
+import com.wingstars.net.beans.request_respone.RetrofitClient
 import com.wingstars.user.fragment.UserFragment
 
 class MainActivity : BaseActivity(), BaseActivity.OnInitialization, View.OnClickListener,
@@ -29,6 +31,7 @@ class MainActivity : BaseActivity(), BaseActivity.OnInitialization, View.OnClick
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        RetrofitClient.appContext = this
         binding = ActivityMainBinding.inflate(layoutInflater)
 
 
@@ -50,6 +53,20 @@ class MainActivity : BaseActivity(), BaseActivity.OnInitialization, View.OnClick
             }
             changeTab(positions)
             false
+        }
+        val isLogin = MMKV.defaultMMKV().decodeBool("isLogin", false)
+
+        if (isLogin) {
+            // === TRƯỜNG HỢP ĐÃ ĐĂNG NHẬP ===
+            Log.d("MainActivity", "Người dùng ĐÃ đăng nhập")
+
+            // 1. Lấy Token đã lưu
+            val token = MMKV.defaultMMKV().decodeString("crm_member_access_token")
+
+        } else {
+            // === TRƯỜNG HỢP CHƯA ĐĂNG NHẬP (KHÁCH) ===
+            Log.d("MainActivity", "Người dùng là KHÁCH (Chưa đăng nhập)")
+
         }
         initFragment()
         defaultFragment()

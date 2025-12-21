@@ -1,11 +1,21 @@
 package com.wingstars.base.net;
 
 
+import com.wingstars.base.net.beans.CRMBaseResponse;
+import com.wingstars.base.net.beans.CRMGenQRCodeRequest;
+import com.wingstars.base.net.beans.CRMGenQRCodeResponse;
+import com.wingstars.base.net.beans.CRMMemberContactResponse;
+import com.wingstars.base.net.beans.CRMSignInRequest;
+import com.wingstars.base.net.beans.CRMSignInResponse;
+import com.wingstars.base.net.beans.CRMVerifyRequest;
+import com.wingstars.base.net.beans.CRMVerifyResponse;
 import com.wingstars.base.net.beans.EvtCheckinRequest;
 import com.wingstars.base.net.beans.EvtCheckinResponse;
 import com.wingstars.base.net.beans.EvtMemberBadgeResponse;
 import com.wingstars.base.net.beans.EvtMemberTaskResponse;
 import com.wingstars.base.net.beans.EvtTaskResponse;
+import com.wingstars.base.net.beans.NSInfoRequest;
+import com.wingstars.base.net.beans.NSInfoResponse;
 import com.wingstars.base.net.beans.WSCalendarCategoryResponse;
 import com.wingstars.base.net.beans.WSCalendarResponse;
 import com.wingstars.base.net.beans.WSCustomerResponse;
@@ -35,6 +45,25 @@ import retrofit2.http.Url;
 
 
 public interface ApiService {
+    //Oauth > 客户端验证. ${BaseApplication.HOST_CRM}/api/v1/oauth/verify
+    @POST()
+    Observable<CRMBaseResponse<CRMVerifyResponse>> crmVerify(@Url String url, @Body CRMVerifyRequest verifyRequest);
+    @POST()
+    Call<CRMBaseResponse<CRMVerifyResponse>> crmVerifyCall(@Url String url, @Body CRMVerifyRequest verifyRequest);
+    @POST()
+    Call<CRMBaseResponse<CRMSignInResponse>> crmSignInCall(@Url String url, @Body CRMSignInRequest signInRequest);
+    @GET()
+    Observable<CRMBaseResponse<Object>> crmSignInCheck(@Url String url, @Query("phone") String phone);
+    @POST()
+    Observable<CRMBaseResponse<CRMSignInResponse>> crmSignIn(@Url String url, @Body CRMSignInRequest signInRequest);
+    @GET()
+    Observable<CRMBaseResponse<CRMMemberContactResponse>> crmGetMemberContact(@Url String url);
+    @POST()
+    Observable<NSInfoResponse> nsInfo(@Url String url, @Body NSInfoRequest infoRequest);
+    @POST()
+    Observable<CRMBaseResponse<CRMGenQRCodeResponse>> crmGenQRCode(@Url String url, @Body CRMGenQRCodeRequest genQRCodeRequest);
+    @GET()
+    Observable<List<EvtMemberTaskResponse>> evtMemberTasks(@Url String url, @Query("encryptedIdentity") String encryptedIdentity);
 
     //今日行程
     @GET(NetBase.HOST_BASE + "/wp-json/wp/v2/calendar?_fields=id,title.rendered,acf,content.rendered,yoast_head_json.og_image,calendar_category")
@@ -101,7 +130,7 @@ public interface ApiService {
 
     //Event > 获得点数.   ${BaseApplication.HOST_EVENT}/api/v1/public/events/reward
     @POST(NetBase.HOST_EVENT + "/api/v1/public/events/reward")
-    Observable<EvtCheckinResponse> evtReward( @Body EvtCheckinRequest evtCheckinRequest);
+    Observable<EvtCheckinResponse> evtReward(@Body EvtCheckinRequest evtCheckinRequest);
 
     //Event > 会员任务状态列表.   ${BaseApplication.HOST_EVENT}/api/v1/public/members/tasks?encryptedIdentity=...
     @GET(NetBase.HOST_EVENT + "/api/v1/public/members/tasks")
@@ -109,7 +138,7 @@ public interface ApiService {
 
     //Event > 查询会员勋章列表.   ${BaseApplication.HOST_EVENT}/api/v1/public/member/badges?encryptedIdentity=...
     @GET(NetBase.HOST_EVENT + "/api/v1/public/member/badges")
-    Observable<List<EvtMemberBadgeResponse>> evtMemberBadges( @Query("encryptedIdentity") String encryptedIdentity);
+    Observable<List<EvtMemberBadgeResponse>> evtMemberBadges(@Query("encryptedIdentity") String encryptedIdentity);
 
     //Event > 取得任务详情.   ${BaseApplication.HOST_EVENT}/api/v1/public/event-tasks/{taskid}
     @GET(NetBase.HOST_EVENT + "/api/v1/public/event-tasks/{taskid}")
