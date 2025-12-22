@@ -28,6 +28,7 @@ import com.wingstars.login.LoginActivity
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.time.LocalDate
+import com.tencent.mmkv.MMKV
 import java.util.*
 
 class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
@@ -63,6 +64,16 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
 
     override fun onResume() {
         super.onResume()
+
+        if (MMKV.defaultMMKV().decodeBool("isLogin")) {
+            binding.llLoginState.visibility=View.VISIBLE
+            binding.llNoLogin.visibility=View.GONE
+        }
+        else{
+            binding.llLoginState.visibility=View.GONE
+            binding.llNoLogin.visibility=View.VISIBLE
+        }
+
         // 如果不是从详情页返回，才重新加载数据
         if (!isFromDetailsReturn && !isDataLoaded) {
             loadData()
