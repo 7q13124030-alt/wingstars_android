@@ -24,6 +24,7 @@ import com.wingstars.calendar.utils.CalendarDateUtils
 import com.wingstars.calendar.utils.CalendarDateUtils.Companion.BIRTH_DATE_FORMATTER
 import com.wingstars.calendar.viewmodel.CalendarViewModel
 import com.wingstars.calendar.viewmodel.DailyCalendarData
+import com.wingstars.login.LoginActivity
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -151,6 +152,10 @@ class CalendarFragment : BaseFragment(), OnCalendarSelectListener {
         }
         binding.ivNext.setOnClickListener {
             binding.calendarView.scrollToNext(true)
+        }
+
+        binding.tvLogin.setOnClickListener {
+            startActivity(Intent(requireActivity(), LoginActivity::class.java))
         }
         binding.calendarView.setMonthViewScrollable(true)
         binding.calendarView.setWeekViewScrollable(true)
