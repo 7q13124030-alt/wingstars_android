@@ -35,14 +35,20 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
     private var timer: CountDownTimer? = null
     private val phoneRegex = Regex("^09\\d{8}$")     // Taiwan mobile (ví dụ)
     private val viewModel: RegisterViewModel by viewModels()
-    private var gender ="M"
+    private var gender = "M"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRegistersBinding.inflate(layoutInflater)
-        setTitleFoot(view1=binding.root,navigationBarColor=R.color.gray_200,setFoot=false,initialization=this)
+        setTitleFoot(
+            view1 = binding.root,
+            navigationBarColor = R.color.gray_200,
+            setFoot = false,
+            initialization = this
+        )
 
     }
+
     private fun startCountDown(totalMs: Long = 60_000) {
         timer?.cancel()
         binding.tvCodeTimer.visibility = View.VISIBLE
@@ -53,6 +59,7 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
                 val sec = (ms / 1000).toInt()
                 binding.tvCodeTimer.text = "${sec}s"
             }
+
             override fun onFinish() {
                 binding.tvCodeTimer.text = "0s"
                 if (binding.tvResend != null) {
@@ -65,6 +72,7 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
             }
         }.start()
     }
+
     private fun updateSendButtonState() {
         val ok = phoneRegex.matches(binding.edtPhone.text?.toString().orEmpty())
         binding.btnSendCode.isEnabled = ok
@@ -74,10 +82,11 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
         val colorBg = if (hasFocus && ok) R.drawable.bg_send_code_able
         else R.drawable.bg_sends_code
         binding.btnSendCode.setTextColor(ContextCompat.getColor(this, colorRes))
-        Log.e("edtPhone","updateSendButtonState")
+        Log.e("edtPhone", "updateSendButtonState")
         binding.btnSendCode.background = ContextCompat.getDrawable(this, colorBg)
 
     }
+
     private fun showTimerUI() {
         // Ẩn nút gửi mã, hiện khung timer
         binding.btnSendCode.visibility = View.GONE
@@ -86,6 +95,7 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
         setEditTextRightAnchor(R.id.rl_code_timer)
         updateConfirmButtonState()
     }
+
     private fun showSendButtonUI() {
         binding.btnSendCode.visibility = View.VISIBLE
         binding.rlCodeTimer.visibility = View.GONE
@@ -93,16 +103,19 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
         updateSendButtonState()
         updateConfirmButtonState()
     }
+
     private fun setEditTextRightAnchor(targetId: Int) {
         val lp = binding.edtPhone.layoutParams as RelativeLayout.LayoutParams
         lp.addRule(RelativeLayout.START_OF, targetId)
         binding.edtPhone.layoutParams = lp
     }
+
     private fun showPhoneError(msg: String) {
         binding.tvPhoneInputError.text = msg
         binding.tvPhoneInputError.visibility = View.VISIBLE
 //        binding.alertCircle.visibility = View.VISIBLE
     }
+
     private fun validatePasswordConfirm() {
         val pwd = binding.edtPsd.text?.toString().orEmpty()
         val confirm = binding.edtPsdConfirm.text?.toString().orEmpty()
@@ -117,6 +130,7 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
             showPsdConfirmNormal()
         }
     }
+
     private fun showPhoneNormal() {
         binding.tvPhoneInputError.text = ""
         binding.tvPhoneInputError.visibility = View.INVISIBLE
@@ -140,6 +154,7 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
         binding.tvPsdInputError.visibility = View.VISIBLE
 //        binding.alertCircle.visibility = View.VISIBLE
     }
+
     private fun showPsdConfirmError(msg: String) {
 
         binding.tvPsdReinputError.text = msg
@@ -157,27 +172,29 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
     private fun isPasswordStrong(pwd: String): Boolean {
         if (pwd.length < 8) return false
         val hasLetter = pwd.any { it.isLetter() }
-        val hasDigit  = pwd.any { it.isDigit() }
+        val hasDigit = pwd.any { it.isDigit() }
         return hasLetter && hasDigit
     }
+
     private fun isEmailValid(s: String) =
         android.util.Patterns.EMAIL_ADDRESS.matcher(s).matches()
 
     private fun isAllValid(): Boolean {
-        val name     = binding.edtName?.text?.toString()?.trim().orEmpty()
-        val phone    = binding.edtPhone.text?.toString()?.trim().orEmpty()
-        val code     = binding.edtPhoneCode?.text?.toString()?.trim().orEmpty() // nếu có ô nhập OTP
-        val pwd      = binding.edtPsd.text?.toString().orEmpty()
-        val confirm  = binding.edtPsdConfirm.text?.toString().orEmpty()
-        val email    = binding.edtEmail?.text?.toString()?.trim().orEmpty()
-        val agreed   = binding.rbPrivacyPolicy?.isChecked == true && binding.rbUserTerms?.isChecked == true
+        val name = binding.edtName?.text?.toString()?.trim().orEmpty()
+        val phone = binding.edtPhone.text?.toString()?.trim().orEmpty()
+        val code = binding.edtPhoneCode?.text?.toString()?.trim().orEmpty() // nếu có ô nhập OTP
+        val pwd = binding.edtPsd.text?.toString().orEmpty()
+        val confirm = binding.edtPsdConfirm.text?.toString().orEmpty()
+        val email = binding.edtEmail?.text?.toString()?.trim().orEmpty()
+        val agreed =
+            binding.rbPrivacyPolicy?.isChecked == true && binding.rbUserTerms?.isChecked == true
 
-        val phoneOk  = isTaiwanPhone(phone)
-        val codeOk   = code.isNotEmpty()
-        val pwdOk    = isPasswordStrong(pwd)
-        val matchOk  = confirm.isNotEmpty() && pwd == confirm
-        val nameOk   = name.isNotEmpty()
-        val emailOk  = isEmailValid(email) // nếu email là optional thì cho phép trống
+        val phoneOk = isTaiwanPhone(phone)
+        val codeOk = code.isNotEmpty()
+        val pwdOk = isPasswordStrong(pwd)
+        val matchOk = confirm.isNotEmpty() && pwd == confirm
+        val nameOk = name.isNotEmpty()
+        val emailOk = isEmailValid(email) // nếu email là optional thì cho phép trống
 
         return nameOk && phoneOk && codeOk && pwdOk && matchOk && emailOk && agreed
     }
@@ -187,16 +204,19 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
         binding.btnConfirm.isEnabled = enabled
         if (enabled) {
             binding.bottomView.setBackgroundColor(getColor(R.color.color_EE97BB))
-            binding.btnConfirm.background = ContextCompat.getDrawable(this, R.drawable.bg_button_login_able)
+            binding.btnConfirm.background =
+                ContextCompat.getDrawable(this, R.drawable.bg_button_login_able)
             binding.btnConfirm.setTextColor(ContextCompat.getColor(this, R.color.white))
         } else {
             binding.bottomView.setBackgroundColor(getColor(R.color.gray_200))
-            binding.btnConfirm.background = ContextCompat.getDrawable(this, R.drawable.bg_button_login_disable)
+            binding.btnConfirm.background =
+                ContextCompat.getDrawable(this, R.drawable.bg_button_login_disable)
             binding.btnConfirm.setTextColor(ContextCompat.getColor(this, R.color.gray_500))
         }
 //        debugValidity(enabled)
     }
-//    private fun debugValidity(enabled: Boolean) {
+
+    //    private fun debugValidity(enabled: Boolean) {
 //        if (enabled) return
 //        val name     = binding.edtName?.text?.toString()?.trim().orEmpty()
 //        val phone    = binding.edtPhone.text?.toString()?.trim().orEmpty()
@@ -217,52 +237,55 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
 //                    "(name='$name', phone='$phone', code='${code.length}', email='$email', rlCodeTimer=${binding.rlCodeTimer?.visibility})"
 //        )
 //    }
-private fun showRegisterSuccessDialog() {
-    val dialog = BottomSheetDialog(this, R.style.MyBottomSheetDialogTheme)
+    private fun showRegisterSuccessDialog() {
+        val dialog = BottomSheetDialog(this, R.style.MyBottomSheetDialogTheme)
 
-    val view = layoutInflater.inflate(R.layout.dialog_register_success, null)
-    dialog.setContentView(view)
-    dialog.setCancelable(false)
-    dialog.setOnDismissListener {
+        val view = layoutInflater.inflate(R.layout.dialog_register_success, null)
+        dialog.setContentView(view)
+        dialog.setCancelable(false)
+        dialog.setOnDismissListener {
 
-    }
-    val btnGoLogin = view.findViewById<TextView>(R.id.btnGoLogin)
-    dialog.window?.apply {
-        // 关键代码：允许内容延伸到导航栏下方
-        setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        // setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        setFlags(
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-        )
-        // 全屏模式 + 沉浸式处理
-        decorView.systemUiVisibility = (
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                )
+        }
+        val btnGoLogin = view.findViewById<TextView>(R.id.btnGoLogin)
+        dialog.window?.apply {
+            // 关键代码：允许内容延伸到导航栏下方
+            setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            // setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            setFlags(
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+            )
+            // 全屏模式 + 沉浸式处理
+            decorView.systemUiVisibility = (
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    )
 
-        val params = attributes
-        params.flags =
-            params.flags or WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
-        attributes = params
+            val params = attributes
+            params.flags =
+                params.flags or WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
+            attributes = params
 
-        setGravity(Gravity.BOTTOM)
-    }
-    btnGoLogin.setOnClickListener {
+            setGravity(Gravity.BOTTOM)
+        }
+        btnGoLogin.setOnClickListener {
+            if (dialog!=null){
+                dialog.dismiss()
+            }
             finish()
         }
-    val view1 = view.findViewById<View>(R.id.view)
-    val navigationBarHeight = getNavigationBarHeight()
-    if (navigationBarHeight!=0){
-        var height =navigationBarHeight
-        val layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            height
-        )
-        view1?.layoutParams = layoutParams
+        val view1 = view.findViewById<View>(R.id.view)
+        val navigationBarHeight = getNavigationBarHeight()
+        if (navigationBarHeight != 0) {
+            var height = navigationBarHeight
+            val layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                height
+            )
+            view1?.layoutParams = layoutParams
+        }
+        dialog.show()
     }
-    dialog.show()
-}
 
     override fun initView() {
         binding.btnConfirm.isEnabled = false
@@ -280,10 +303,11 @@ private fun showRegisterSuccessDialog() {
             binding.rlPhone.isActivated = hasFocus
             val colorRes = if (hasFocus && binding.btnSendCode.isEnabled) R.color.white
             else R.color.text_tittle
-            val colorBg = if (hasFocus && binding.btnSendCode.isEnabled) R.drawable.bg_send_code_able
-            else R.drawable.bg_sends_code
+            val colorBg =
+                if (hasFocus && binding.btnSendCode.isEnabled) R.drawable.bg_send_code_able
+                else R.drawable.bg_sends_code
             binding.btnSendCode.setTextColor(ContextCompat.getColor(this, colorRes))
-            Log.e("edtPhone","edtPhone")
+            Log.e("edtPhone", "edtPhone")
             binding.btnSendCode.background = ContextCompat.getDrawable(this, colorBg)
         }
         binding.edtPhone.addTextChangedListener(object : TextWatcher {
@@ -294,13 +318,14 @@ private fun showRegisterSuccessDialog() {
                 updateSendButtonState()
                 updateConfirmButtonState()
             }
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun afterTextChanged(s: Editable?) {}
         })
-        viewModel.isLoading.observe(this){
+        viewModel.isLoading.observe(this) {
             showLoadingUI(it, this)
         }
-        viewModel.message.observe(this){
+        viewModel.message.observe(this) {
             showToast("$it")
         }
         binding.btnSendCode.setOnClickListener {
@@ -336,8 +361,16 @@ private fun showRegisterSuccessDialog() {
             val intent = Intent(this, RegistrationTermsActivity::class.java)
             startActivity(intent)
         }
-        binding.edtName?.addTextChangedListener(object: SimpleTW(){ override fun onTextChanged(s: CharSequence?, st: Int, b: Int, c: Int){ updateConfirmButtonState() }})
-        binding.edtPhoneCode?.addTextChangedListener(object: SimpleTW(){ override fun onTextChanged(s: CharSequence?, st: Int, b: Int, c: Int){ updateConfirmButtonState() }})
+        binding.edtName?.addTextChangedListener(object : SimpleTW() {
+            override fun onTextChanged(s: CharSequence?, st: Int, b: Int, c: Int) {
+                updateConfirmButtonState()
+            }
+        })
+        binding.edtPhoneCode?.addTextChangedListener(object : SimpleTW() {
+            override fun onTextChanged(s: CharSequence?, st: Int, b: Int, c: Int) {
+                updateConfirmButtonState()
+            }
+        })
         binding.edtEmail.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
@@ -354,6 +387,7 @@ private fun showRegisterSuccessDialog() {
         binding.rbPrivacyPolicy?.setOnCheckedChangeListener { _, _ -> updateConfirmButtonState() }
         binding.rbUserTerms?.setOnCheckedChangeListener { _, _ -> updateConfirmButtonState() }
     }
+
     private fun setupLiveValidation() {
         binding.edtPhone.addTextChangedListener(object : SimpleTW() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -394,12 +428,12 @@ private fun showRegisterSuccessDialog() {
             val otp = binding.edtPhoneCode.text.toString()
             val email = binding.edtEmail.text.toString()
 
-            if (binding.rbSexMale.isChecked){
-                gender ="M"
-            }else if (binding.rbSexFemale.isChecked){
-                gender ="F"
-            }else{
-                gender ="S"
+            if (binding.rbSexMale.isChecked) {
+                gender = "M"
+            } else if (binding.rbSexFemale.isChecked) {
+                gender = "F"
+            } else {
+                gender = "S"
             }
 
 
@@ -420,43 +454,44 @@ private fun showRegisterSuccessDialog() {
     }
 
     override fun onClick(v: View?) {
-          var id = v?.id
-         when(id){
-             binding.privacy.id-> {
-                 val intent = Intent()
-                 intent.action = "policy_term"
-                 intent.addCategory(Intent.CATEGORY_DEFAULT)
-                 intent.putExtra("tag", "PrivacyPolicy")
-                 if (intent.resolveActivity(packageManager) != null) {
-                     startActivity(intent)
-                 }
-             }
-             binding.agreement.id->{
-                 val intent = Intent()
-                 intent.action = "policy_term"
-                 intent.addCategory(Intent.CATEGORY_DEFAULT)
-                 intent.putExtra("tag", "UserTerms")
-                 if (intent.resolveActivity(packageManager) != null) {
-                     startActivity(intent)
-                 }
-             }
-             //重新发送
-             binding.tvResend.id->{
-                 val phone = binding.edtPhone.text?.toString().orEmpty()
-                 if (!phoneRegex.matches(phone)) {
-                     binding.tvPhoneInputError.visibility = View.VISIBLE
-                     return
-                 }
-                 viewModel.getRegisterPhoneCode(phone)
-             }
-         }
+        var id = v?.id
+        when (id) {
+            binding.privacy.id -> {
+                val intent = Intent()
+                intent.action = "policy_term"
+                intent.addCategory(Intent.CATEGORY_DEFAULT)
+                intent.putExtra("tag", "PrivacyPolicy")
+                if (intent.resolveActivity(packageManager) != null) {
+                    startActivity(intent)
+                }
+            }
+
+            binding.agreement.id -> {
+                val intent = Intent()
+                intent.action = "policy_term"
+                intent.addCategory(Intent.CATEGORY_DEFAULT)
+                intent.putExtra("tag", "UserTerms")
+                if (intent.resolveActivity(packageManager) != null) {
+                    startActivity(intent)
+                }
+            }
+            //重新发送
+            binding.tvResend.id -> {
+                val phone = binding.edtPhone.text?.toString().orEmpty()
+                if (!phoneRegex.matches(phone)) {
+                    binding.tvPhoneInputError.visibility = View.VISIBLE
+                    return
+                }
+                viewModel.getRegisterPhoneCode(phone)
+            }
+        }
     }
 
     override fun onInitializationSuccessful() {
         binding.btnSendCode.isEnabled = false
         val navigationBarHeight = getNavigationBarHeight()
-        if (navigationBarHeight!=0){
-            var height =navigationBarHeight
+        if (navigationBarHeight != 0) {
+            var height = navigationBarHeight
             val layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 height
