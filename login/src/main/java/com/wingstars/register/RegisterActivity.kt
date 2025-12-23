@@ -42,158 +42,6 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
         binding = ActivityRegistersBinding.inflate(layoutInflater)
         setTitleFoot(view1=binding.root,navigationBarColor=R.color.gray_200,setFoot=false,initialization=this)
 
-        binding.btnConfirm.isEnabled = false
-        viewModel.setNavigator(this)
-//        updateConfirmButtonState()
-//        updateSendButtonState()
-        binding.tvResend.setOnClickListener(this)
-        binding.ivClose.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
-        binding.tvPhoneInputError.visibility = View.INVISIBLE
-        binding.tvPsdInputError.visibility = View.INVISIBLE
-        binding.privacy.setOnClickListener(this)
-        binding.agreement.setOnClickListener(this)
-        setupLiveValidation()
-        binding.edtPhone.setOnFocusChangeListener { _, hasFocus ->
-            binding.rlPhone.isActivated = hasFocus
-            val colorRes = if (hasFocus && binding.btnSendCode.isEnabled) R.color.white
-            else R.color.text_tittle
-            val colorBg = if (hasFocus && binding.btnSendCode.isEnabled) R.drawable.bg_send_code_able
-            else R.drawable.bg_sends_code
-            binding.btnSendCode.setTextColor(ContextCompat.getColor(this, colorRes))
-            Log.e("edtPhone","edtPhone")
-            binding.btnSendCode.background = ContextCompat.getDrawable(this, colorBg)
-        }
-        binding.edtPhone.addTextChangedListener(object : TextWatcher {
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val ok = phoneRegex.matches(s?.toString().orEmpty())
-                binding.tvPhoneInputError.visibility =
-                    if (s.isNullOrEmpty() || ok) View.INVISIBLE else View.VISIBLE
-                updateSendButtonState()
-                updateConfirmButtonState()
-            }
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun afterTextChanged(s: Editable?) {}
-        })
-        viewModel.isLoading.observe(this){
-            showLoadingUI(it, this)
-        }
-        viewModel.message.observe(this){
-            showToast("$it")
-        }
-        binding.btnSendCode.setOnClickListener {
-            val phone = binding.edtPhone.text?.toString().orEmpty()
-            if (!phoneRegex.matches(phone)) {
-                binding.tvPhoneInputError.visibility = View.VISIBLE
-                return@setOnClickListener
-            }
-           viewModel.getRegisterPhoneCode(phone)
-
-        }
-        binding.cbPsdConfirmVisible.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) {
-                binding.edtPsdConfirm.inputType =
-                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-            } else {
-                binding.edtPsdConfirm.inputType =
-                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-            }
-            binding.edtPsdConfirm.text?.let { binding.edtPsdConfirm.setSelection(it.length) }
-        }
-        binding.cbPsdVisible.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) {
-                binding.edtPsd.inputType =
-                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-            } else {
-                binding.edtPsd.inputType =
-                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-            }
-            binding.edtPsd.text?.let { binding.edtPsd.setSelection(it.length) }
-        }
-        binding.ivSexCircle.setOnClickListener {
-            val intent = Intent(this, RegistrationTermsActivity::class.java)
-            startActivity(intent)
-        }
-        binding.edtName?.addTextChangedListener(object: SimpleTW(){ override fun onTextChanged(s: CharSequence?, st: Int, b: Int, c: Int){ updateConfirmButtonState() }})
-        binding.edtPhoneCode?.addTextChangedListener(object: SimpleTW(){ override fun onTextChanged(s: CharSequence?, st: Int, b: Int, c: Int){ updateConfirmButtonState() }})
-        binding.edtEmail.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                updateConfirmButtonState()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-
-            }
-        })
-
-        binding.rbPrivacyPolicy?.setOnCheckedChangeListener { _, _ -> updateConfirmButtonState() }
-        binding.rbUserTerms?.setOnCheckedChangeListener { _, _ -> updateConfirmButtonState() }
-    }
-    private fun setupLiveValidation() {
-        binding.edtPhone.addTextChangedListener(object : SimpleTW() {
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val phone = s?.toString()?.trim().orEmpty()
-                when {
-                    phone.isEmpty() -> showPhoneError(getString(R.string.hint_phone))   // yêu cầu nhập
-                    !isTaiwanPhone(phone) -> showPhoneError(getString(R.string.error_phone_format)) // sai định dạng
-                    else -> showPhoneNormal()
-                }
-            }
-        })
-
-        binding.edtPsd.addTextChangedListener(object : SimpleTW() {
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val pwd = s?.toString().orEmpty()
-                when {
-                    pwd.isEmpty() -> showPsdError(getString(R.string.error_psd_empty))
-                    !isPasswordStrong(pwd) -> showPsdError(getString(R.string.note_register_psd))
-                    else -> showPsdNormal()
-                }
-                validatePasswordConfirm()
-                updateConfirmButtonState()
-            }
-        })
-        binding.edtPsdConfirm.addTextChangedListener(object : SimpleTW() {
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                validatePasswordConfirm()
-                updateConfirmButtonState()
-            }
-        })
-        binding.btnConfirm.setOnClickListener {
-//            if (!isAllValid()) return@setOnClickListener
-           // showRegisterSuccessDialog()
-            val password = binding.edtPsd.text.toString()
-
-            val name = binding.edtName.text.toString()
-            val phone = binding.edtPhone.text.toString()
-            val otp = binding.edtPhoneCode.text.toString()
-            val email = binding.edtEmail.text.toString()
-
-            if (binding.rbSexMale.isChecked){
-                gender ="M"
-            }else if (binding.rbSexFemale.isChecked){
-                gender ="F"
-            }else{
-                gender ="S"
-            }
-
-
-
-            viewModel.checkPhone(
-                CRMSignUpRequest(
-                    name,
-                    phone,
-                    otp,
-                    password,
-                    email,
-                    "",
-                    gender,
-                    ""
-                )
-            )
-        }
     }
     private fun startCountDown(totalMs: Long = 60_000) {
         timer?.cancel()
@@ -417,7 +265,158 @@ private fun showRegisterSuccessDialog() {
 }
 
     override fun initView() {
+        binding.btnConfirm.isEnabled = false
+        viewModel.setNavigator(this)
+//        updateConfirmButtonState()
+//        updateSendButtonState()
+        binding.tvResend.setOnClickListener(this)
+        binding.ivClose.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
+        binding.tvPhoneInputError.visibility = View.INVISIBLE
+        binding.tvPsdInputError.visibility = View.INVISIBLE
+        binding.privacy.setOnClickListener(this)
+        binding.agreement.setOnClickListener(this)
+        setupLiveValidation()
+        binding.edtPhone.setOnFocusChangeListener { _, hasFocus ->
+            binding.rlPhone.isActivated = hasFocus
+            val colorRes = if (hasFocus && binding.btnSendCode.isEnabled) R.color.white
+            else R.color.text_tittle
+            val colorBg = if (hasFocus && binding.btnSendCode.isEnabled) R.drawable.bg_send_code_able
+            else R.drawable.bg_sends_code
+            binding.btnSendCode.setTextColor(ContextCompat.getColor(this, colorRes))
+            Log.e("edtPhone","edtPhone")
+            binding.btnSendCode.background = ContextCompat.getDrawable(this, colorBg)
+        }
+        binding.edtPhone.addTextChangedListener(object : TextWatcher {
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val ok = phoneRegex.matches(s?.toString().orEmpty())
+                binding.tvPhoneInputError.visibility =
+                    if (s.isNullOrEmpty() || ok) View.INVISIBLE else View.VISIBLE
+                updateSendButtonState()
+                updateConfirmButtonState()
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun afterTextChanged(s: Editable?) {}
+        })
+        viewModel.isLoading.observe(this){
+            showLoadingUI(it, this)
+        }
+        viewModel.message.observe(this){
+            showToast("$it")
+        }
+        binding.btnSendCode.setOnClickListener {
+            val phone = binding.edtPhone.text?.toString().orEmpty()
+            if (!phoneRegex.matches(phone)) {
+                binding.tvPhoneInputError.visibility = View.VISIBLE
+                return@setOnClickListener
+            }
+            viewModel.getRegisterPhoneCode(phone)
 
+        }
+        binding.cbPsdConfirmVisible.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                binding.edtPsdConfirm.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            } else {
+                binding.edtPsdConfirm.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            }
+            binding.edtPsdConfirm.text?.let { binding.edtPsdConfirm.setSelection(it.length) }
+        }
+        binding.cbPsdVisible.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                binding.edtPsd.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            } else {
+                binding.edtPsd.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            }
+            binding.edtPsd.text?.let { binding.edtPsd.setSelection(it.length) }
+        }
+        binding.ivSexCircle.setOnClickListener {
+            val intent = Intent(this, RegistrationTermsActivity::class.java)
+            startActivity(intent)
+        }
+        binding.edtName?.addTextChangedListener(object: SimpleTW(){ override fun onTextChanged(s: CharSequence?, st: Int, b: Int, c: Int){ updateConfirmButtonState() }})
+        binding.edtPhoneCode?.addTextChangedListener(object: SimpleTW(){ override fun onTextChanged(s: CharSequence?, st: Int, b: Int, c: Int){ updateConfirmButtonState() }})
+        binding.edtEmail.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                updateConfirmButtonState()
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+        })
+
+        binding.rbPrivacyPolicy?.setOnCheckedChangeListener { _, _ -> updateConfirmButtonState() }
+        binding.rbUserTerms?.setOnCheckedChangeListener { _, _ -> updateConfirmButtonState() }
+    }
+    private fun setupLiveValidation() {
+        binding.edtPhone.addTextChangedListener(object : SimpleTW() {
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val phone = s?.toString()?.trim().orEmpty()
+                when {
+                    phone.isEmpty() -> showPhoneError(getString(R.string.hint_phone))   // yêu cầu nhập
+                    !isTaiwanPhone(phone) -> showPhoneError(getString(R.string.error_phone_format)) // sai định dạng
+                    else -> showPhoneNormal()
+                }
+            }
+        })
+
+        binding.edtPsd.addTextChangedListener(object : SimpleTW() {
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val pwd = s?.toString().orEmpty()
+                when {
+                    pwd.isEmpty() -> showPsdError(getString(R.string.error_psd_empty))
+                    !isPasswordStrong(pwd) -> showPsdError(getString(R.string.note_register_psd))
+                    else -> showPsdNormal()
+                }
+                validatePasswordConfirm()
+                updateConfirmButtonState()
+            }
+        })
+        binding.edtPsdConfirm.addTextChangedListener(object : SimpleTW() {
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                validatePasswordConfirm()
+                updateConfirmButtonState()
+            }
+        })
+        binding.btnConfirm.setOnClickListener {
+//            if (!isAllValid()) return@setOnClickListener
+            // showRegisterSuccessDialog()
+            val password = binding.edtPsd.text.toString()
+
+            val name = binding.edtName.text.toString()
+            val phone = binding.edtPhone.text.toString()
+            val otp = binding.edtPhoneCode.text.toString()
+            val email = binding.edtEmail.text.toString()
+
+            if (binding.rbSexMale.isChecked){
+                gender ="M"
+            }else if (binding.rbSexFemale.isChecked){
+                gender ="F"
+            }else{
+                gender ="S"
+            }
+
+
+
+            viewModel.checkPhone(
+                CRMSignUpRequest(
+                    name,
+                    phone,
+                    otp,
+                    password,
+                    email,
+                    "",
+                    gender,
+                    ""
+                )
+            )
+        }
     }
 
     override fun onClick(v: View?) {
@@ -464,6 +463,7 @@ private fun showRegisterSuccessDialog() {
             )
             binding.bottomView?.layoutParams = layoutParams
         }
+        initView()
     }
 
     override fun getPhoneCodeSuccess() {
