@@ -70,6 +70,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener, PopularityAdapter.onP
         binding.titleHighlights.root.setOnClickListener(this)
         binding.titleStylistVibe.root.setOnClickListener(this)
         binding.titleNews.root.setOnClickListener(this)
+        binding.titleProducts.root.setOnClickListener(this)
     }
 
     private fun setupComingSoonBanner() {
@@ -140,7 +141,12 @@ class HomeFragment : BaseFragment(), View.OnClickListener, PopularityAdapter.onP
             mutableListOf(),
             object : ProductAdapter.OnItemListener {
                 override fun onItemClick(data: WSProductResponse, position: Int) {
-                    // Xử lý click sản phẩm
+                    checkLoginAndAction {
+                        try {
+                            val intent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse(data.permalink))
+                            startActivity(intent)
+                        } catch (e: Exception) { e.printStackTrace() }
+                    }
                 }
             })
         binding.rvProducts.adapter = hotProductAdapter
@@ -154,7 +160,10 @@ class HomeFragment : BaseFragment(), View.OnClickListener, PopularityAdapter.onP
             mutableListOf(),
             object : StylistOutfitsAdapter.OnItemListener {
                 override fun onItemClick(data: WSFashionResponse, position: Int) {
-                    // Xử lý click thời trang
+
+                    checkLoginAndAction {
+                        //
+                    }
                 }
             }
         )
@@ -172,7 +181,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener, PopularityAdapter.onP
         val youtubeAdapter = YoutubeAdapter(requireContext())
         binding.rvArticles.adapter = youtubeAdapter // Gán vào RecyclerView
 
-        // 2. Lắng nghe dữ liệu từ ViewModel
+
         viewModel.youtubeVideoList.observe(viewLifecycleOwner) { list ->
             youtubeAdapter.setList(list)
         }
@@ -184,7 +193,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener, PopularityAdapter.onP
 //            binding.rvPopularityRanking.adapter = memberAdapter
 //        }
         viewModel.wsRankData.observe(viewLifecycleOwner) {
-            Log.e("wsRankData", "${Gson().toJson(it)}")
+//            Log.e("wsRankData", "${Gson().toJson(it)}")
             var adapter = PopularityAdapter(requireActivity(), it, this)
             binding.rvPopularityRanking.layoutManager = LinearLayoutManager(
                 requireActivity(),
@@ -212,31 +221,60 @@ class HomeFragment : BaseFragment(), View.OnClickListener, PopularityAdapter.onP
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            binding.icNotification.id -> {
-                val isLogin = MMKV.defaultMMKV().decodeBool("isLogin", false)
-                if (isLogin) {
-                    // Đã đăng nhập -> Vào Thông báo
-                    startActivity(Intent(requireActivity(), com.wingstars.home.activity.NotificationActivity::class.java))
-                } else {
-                    // Chưa đăng nhập -> Vào Login
-                    val intent = Intent(requireActivity(), com.wingstars.login.LoginActivity::class.java)
-                    startActivity(intent)
+            binding.icNotification.id,
+            binding.titlePopularRanking.root.id,
+            binding.titleHighlights.root.id,
+            binding.titleStylistVibe.root.id,
+            binding.titleProducts.root.id -> {
+                checkLoginAndAction {
+                    when (v.id) {
+                        binding.icNotification.id ->
+                            startActivity(Intent(requireActivity(), com.wingstars.home.activity.NotificationActivity::class.java))
+
+                        binding.titlePopularRanking.root.id ->
+                            startActivity(Intent(requireActivity(), com.wingstars.member.activity.PopularityRankingActivity::class.java))
+
+                        binding.titleHighlights.root.id ->
+                            startActivity(Intent(requireActivity(), com.wingstars.member.activity.EventHighlightsActivity::class.java))
+
+                        binding.titleStylistVibe.root.id ->
+                            startActivity(Intent(requireActivity(), com.wingstars.member.activity.FashionableAtmosphereActivity::class.java))
+
+                        binding.titleProducts.root.id -> {
+                            try {
+                                val url = "https://61.218.209.209/product/"
+                                val intent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse(url))
+                                startActivity(intent)
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        }
+                    }
                 }
             }
 
-            binding.titlePopularRanking.root.id -> startActivity(Intent(requireActivity(), com.wingstars.member.activity.PopularityRankingActivity::class.java))
-            binding.titleHighlights.root.id -> startActivity(Intent(requireActivity(), com.wingstars.member.activity.EventHighlightsActivity::class.java))
-            binding.titleStylistVibe.root.id -> startActivity(Intent(requireActivity(), com.wingstars.member.activity.FashionableAtmosphereActivity::class.java))
-            binding.titleNews.root.id -> startActivity(Intent(requireActivity(), com.wingstars.home.activity.LatestNewsActivity::class.java))
+            binding.titleNews.root.id ->
+                startActivity(Intent(requireActivity(), com.wingstars.home.activity.LatestNewsActivity::class.java))
+        }
+    }
+    private fun checkLoginAndAction(action: () -> Unit) {
+        val isLogin = MMKV.defaultMMKV().decodeBool("isLogin", false)
+        if (isLogin) {
+            action()
+        } else {
+            val intent = Intent(requireActivity(), com.wingstars.login.LoginActivity::class.java)
+            startActivity(intent)
         }
     }
 
     override fun onPopularityRankingClickItem(position: Int) {
-        startActivity(
-            Intent(
-                requireActivity(),
-                PopularityRankingActivity::class.java
+        checkLoginAndAction {
+            startActivity(
+                Intent(
+                    requireActivity(),
+                    PopularityRankingActivity::class.java
+                )
             )
-        )
+        }
     }
 }
