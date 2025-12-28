@@ -5,10 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.gson.Gson
 import com.wingstars.base.net.API
+import com.wingstars.base.net.NetBase
 import com.wingstars.base.net.beans.WSCalendarResponse
+import com.wingstars.base.net.beans.WSFashionCategoryResponse
 import com.wingstars.base.net.beans.WSFashionResponse
+import com.wingstars.base.net.beans.WSMemberResponse
 import com.wingstars.base.net.beans.WSPostResponse
 import com.wingstars.base.net.beans.WSProductResponse
+import com.wingstars.base.net.beans.YoutubeUiData
 import com.wingstars.member.bean.WSMemberRankBean
 import com.wingstars.member.bean.WSRankBean
 import com.wingstars.member.bean.WSRankBean.ACFBean
@@ -25,6 +29,9 @@ class HomeViewModel : ViewModel() {
     val productDataList = MutableLiveData<MutableList<WSProductResponse>>()
     val fashionDataList = MutableLiveData<MutableList<WSFashionResponse>>()
     var wsRankData = MutableLiveData<MutableList<WSMemberRankBean>>()
+    var wsFashions = MutableLiveData<MutableList<WSFashionResponse>>()
+    var wsFashionCategorysData = MutableLiveData<MutableList<WSFashionCategoryResponse>>()
+    var wsMembersData = MutableLiveData<MutableList<WSMemberResponse>>()
 
 
 
@@ -50,6 +57,7 @@ class HomeViewModel : ViewModel() {
         getCalendarData()
         getProductsData()
         getFashionsData()
+        getYoutubeData()
     }
     fun getLatestNewsData() {
         isLoading.postValue(true)
@@ -146,29 +154,28 @@ class HomeViewModel : ViewModel() {
                 { next ->
                     if (!next.isNullOrEmpty()) {
                         var data = mutableListOf<WSMemberRankBean>()
-                        Log.e("getRenderedList", "${Gson().toJson(next)}")
-                        next.forEach {
-                            val title = it.title
-                            var rendered = ""
-                            if (title != null) {
-                                rendered = title.rendered
-                            }
-                            val acf = it.acf
-                            var name = ""
-                            var volume = ""
-                            if (acf != null) {
-                                val rankBean = acf.rankBean(1)
-                                if (rankBean != null) {
-                                    name = rankBean.name
-                                    volume = rankBean.volume
+
+                        val latestBoard = next[0]
+
+                        val title = latestBoard.title?.rendered ?: ""
+                        val acf = latestBoard.acf
+
+                        if (acf != null) {
+                            for (i in 1..5) {
+                                val rankBean = acf.rankBean(i)
+                                if (rankBean != null && !rankBean.name.isNullOrEmpty()) {
+                                    var bean = WSMemberRankBean(
+                                        title = title,
+                                        name = rankBean.name,
+                                        volume = rankBean.volume
+                                    )
+                                    data.add(bean)
                                 }
                             }
-                            var bean =
-                                WSMemberRankBean(title = rendered, name = name, volume = volume)
-                            data.add(bean)
                         }
-
+                        getWsMembersData(data)
                         wsPhotos(data)
+
 
 
                     } else {
@@ -183,7 +190,7 @@ class HomeViewModel : ViewModel() {
     }
     private fun wsPhotos(data: MutableList<WSMemberRankBean>) {
         API.shared?.api?.let {
-            val observer = it.wsPhotos()
+            val observer = it.wsPhotos(100,1)
             observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
                 AndroidSchedulers.mainThread()
             )?.subscribe(
@@ -217,6 +224,142 @@ class HomeViewModel : ViewModel() {
                 },
                 { error ->
                     isLoading.postValue(false)
+                }
+            )
+        }
+    }
+    val youtubeVideoList = MutableLiveData<List<YoutubeUiData>>()
+//    val isLoading = MutableLiveData<Boolean>()
+
+    fun getYoutubeData() {
+        isLoading.postValue(true)
+
+        API.shared?.api?.let { api ->
+            api.getYoutubeVideos(
+                "snippet",
+                NetBase.YOUTUBE_CHANNEL_ID,
+                4,
+                "date",
+                "video",
+                NetBase.YOUTUBE_API_KEY
+            )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    { response ->
+                        isLoading.postValue(false)
+                        val rawItems = response.items
+
+                        if (!rawItems.isNullOrEmpty()) {
+                            val uiList = mutableListOf<YoutubeUiData>()
+
+                            // Xử lý dữ liệu thô sang dữ liệu đẹp
+                            rawItems.forEach { item ->
+                                val snippet = item.snippet
+                                val idObj = item.id
+
+                                if (snippet != null && idObj != null) {
+                                    val title = snippet.title ?: ""
+                                    val image = snippet.thumbnails?.medium?.url ?: ""
+                                    val videoId = idObj.videoId ?: ""
+
+                                    // Xử lý ngày: Lấy 10 ký tự đầu (2025-12-22) và thay dấu - bằng dấu .
+                                    val rawDate = snippet.publishTime ?: ""
+                                    val formattedDate = if (rawDate.length >= 10) {
+                                        rawDate.substring(0, 10).replace("-", ".")
+                                    } else {
+                                        rawDate
+                                    }
+
+                                    // Tạo link youtube
+                                    val videoLink = "https://www.youtube.com/watch?v=$videoId"
+
+                                    uiList.add(YoutubeUiData(title, image, formattedDate, videoLink))
+                                }
+                            }
+                            Log.d("YoutubeViewModel", "youtubeVideoList: $uiList")
+
+                            // Bắn dữ liệu sang UI
+                            youtubeVideoList.postValue(uiList)
+                        }
+                    },
+                    { error ->
+                        isLoading.postValue(false)
+                        error.printStackTrace() // Log lỗi nếu có
+                    }
+                )
+        }
+    }
+    public fun wsFashions() {
+        API.shared?.api?.let {
+            val emptyHashMap: java.util.HashMap<String?, Int?>? = HashMap()
+            val observer = it.wsFashions(emptyHashMap, 3, 1)
+            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
+                AndroidSchedulers.mainThread()
+            )?.subscribe(
+                { next ->
+                    if (!next.isNullOrEmpty()) {
+                        Log.e("wsFashions", "${next}")
+                        wsFashions.postValue(next)
+                    }
+                },
+                { error ->
+
+                }
+            )
+        }
+    }
+    public fun wsFashionCategorys() {
+        API.shared?.api?.let {
+            val observer = it.wsFashionCategorys()
+            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
+                AndroidSchedulers.mainThread()
+            )?.subscribe(
+                { next ->
+                    if (!next.isNullOrEmpty()) {
+                        wsFashionCategorysData.postValue(next)
+                        wsFashions()
+                    }
+                },
+                { error ->
+
+                }
+            )
+        }
+    }
+
+    fun getWsMembersData(rankData: MutableList<WSMemberRankBean>) {
+        Log.e("getWsMembersData", "getWsMembersData")
+
+        API.shared?.api?.let {
+            val observer = it.wsMembers(100, 1)
+
+            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
+                AndroidSchedulers.mainThread()
+            )?.subscribe(
+                { allMembers ->
+
+                    if (!allMembers.isNullOrEmpty()) {
+                        val filteredList = allMembers.filter { member ->
+                            rankData.any { rankBean ->
+                                rankBean.name?.trim() == member.titleF?.trim()
+                            }
+                        }
+
+                        val sortedList = filteredList.sortedBy { member ->
+                            rankData.indexOfFirst { it.name?.trim() == member.titleF?.trim() }
+                        }
+
+                        Log.e("getWsMembersData", "Filtered & Sorted Size: ${sortedList.size}")
+
+                        wsMembersData.postValue(sortedList as MutableList<WSMemberResponse>?)
+                    } else {
+                        wsMembersData.postValue(mutableListOf())
+                    }
+                },
+                { error ->
+                    Log.e("getWsMembersData", "error=${error.message}")
+                    // Xử lý lỗi
                 }
             )
         }

@@ -56,11 +56,19 @@ class PopularityRankingActivity : BaseActivity(), View.OnClickListener,
             Toast.makeText(this,"$it", Toast.LENGTH_SHORT).show()
         }
         viewModel.wsRankData.observe(this) {
+            if (wsNewRankData.size!=0){
+                wsNewRankData.clear()
+            }
             wsNewRankData.addAll(it)
             setScreening(type)
         }
 
         viewModel.getRenderedList()
+        binding.refresh.setColorSchemeResources(R.color.color_E2518D)
+        binding.refresh.setOnRefreshListener {
+            binding.refresh.isRefreshing = false
+            viewModel.getRenderedList()
+        }
     }
 
     private fun setScreening(name: String) {
@@ -68,6 +76,8 @@ class PopularityRankingActivity : BaseActivity(), View.OnClickListener,
             val filter = wsNewRankData.filter { it.title == name }
             Log.e("setScreening", "${Gson().toJson(filter)}")
             if (!filter.isNullOrEmpty()) {
+                binding.rankList.visibility = View.VISIBLE
+                binding.notData.visibility = View.GONE
                 val acf = filter[0].acf
                 if (!acf.isNullOrEmpty()) {
                     setThree(acf.take(3).toMutableList())
@@ -88,6 +98,8 @@ class PopularityRankingActivity : BaseActivity(), View.OnClickListener,
 
 
             } else {
+                binding.rankList.visibility = View.GONE
+                binding.notData.visibility = View.VISIBLE
                 var data = mutableListOf<ACFBean>()
                 setThree(data)
                 if (adapter == null) {

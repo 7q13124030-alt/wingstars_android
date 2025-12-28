@@ -53,6 +53,7 @@ data class WSFashionDetailResponse(
             val product_image_url_large: String,        //
             val product_image_url_medium: String,       //
             val product_image_url_thumbnail: String,    //
+            var product_image: Any
         ) : java.io.Serializable {
 
             val product_titleF: String
@@ -86,14 +87,14 @@ data class WSFashionDetailResponse(
         }
 
         data class GalleryImageUrls(
-            val image1: String,           //
-            val image2: String,           //
-            val image3: String,           //
-            val image4: String,           //
-            val image5: String,           //
+            val image1: Any,           //
+            val image2: Any,           //
+            val image3: Any,           //
+            val image4: Any,           //
+            val image5: Any,           //
         ) : java.io.Serializable {
 
-            fun image(index: Int): String? {        //image1 ~ image5 format
+            fun image(index: Int): Any? {        //image1 ~ image5 format
                 return when (index) {
                     1 -> image1
                     2 -> image2
@@ -129,6 +130,14 @@ data class WSFashionDetailResponse(
             val url: String,            //圖片地址
             val type: String,
         ) : java.io.Serializable
+    }
+
+    data class ProductImage(
+        var sizes:SizesBean
+    ){
+        data class SizesBean(
+            val `1536x1536`: String
+        )
     }
 
 }
