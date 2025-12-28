@@ -230,7 +230,7 @@ class LoginActivity : BaseActivity(), LoginNavigator {
         val psdStr = binding.edtPsd.text.toString().trim()
         val isRemember = binding.cbPsd.isChecked
 
-        setUserName(phoneStr)
+//        setUserName(phoneStr)
         MMKVManagement.setIsRememberAccount(isRemember)
 
         if (isRemember) {
