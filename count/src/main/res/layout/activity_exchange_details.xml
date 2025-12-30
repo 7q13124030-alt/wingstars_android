@@ -23,8 +23,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white"
-            tools:context=".count.gift.GiftDetailsActivity">
+            android:background="@color/white">
             <LinearLayout
                 android:id="@+id/top_container"
                 android:orientation="vertical"
@@ -321,7 +320,7 @@
                                         android:textStyle="bold"
                                         android:layout_marginBottom="@dimen/pt_7"/>
                                     <TextView
-                                        android:id="@+id/finish_time"
+                                        android:id="@+id/exchange_location"
                                         android:ellipsize="end"
                                         android:singleLine="true"
                                         android:textColor="@color/color_101828"
