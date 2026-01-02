@@ -60,16 +60,30 @@ class LoginActivity : BaseActivity(), LoginNavigator {
         }
 
         // --- MMKV: Ghi nhớ tài khoản ---
-        if (MMKVManagement.getIsRememberAccount()) {
-            val account = MMKVManagement.getMemberPhone()
-            val psd = MMKVManagement.getMemberPassword()
-            if (!account.isNullOrEmpty() && !psd.isNullOrEmpty()) {
-                binding.edtPhone.setText(account)
-                binding.edtPsd.setText(psd)
-            }
-            binding.cbPsd.isChecked = true
-        } else {
+        val autoPhone = intent.getStringExtra("PHONE_NUMBER")
+        if (!autoPhone.isNullOrEmpty()) {
+            binding.edtPhone.setText(autoPhone)
+            binding.edtPhone.setSelection(autoPhone.length)
             binding.cbPsd.isChecked = false
+        }else{
+            if (MMKVManagement.getIsRememberAccount()) {
+                val account = MMKVManagement.getMemberPhone()
+                val psd = MMKVManagement.getMemberPassword()
+                if (!account.isNullOrEmpty() && !psd.isNullOrEmpty()) {
+                    binding.edtPhone.setText(account)
+                    binding.edtPsd.setText(psd)
+                }
+                binding.cbPsd.isChecked = true
+            } else {
+                binding.cbPsd.isChecked = false
+            }
+            try {
+                viewModel.isLoading.observe(this) { isShow ->
+                    showLoadingUI(isShow, this)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
 
         binding.ivBack.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
@@ -306,8 +320,11 @@ class LoginActivity : BaseActivity(), LoginNavigator {
         btnConfirm.setOnClickListener {
             dialog.dismiss()
             if (isRegisterAction) {
-                startActivity(Intent(this, com.wingstars.register.RegisterActivity::class.java))
-            }
+                dialog.dismiss()
+                val phoneStr = binding.edtPhone.text.toString().trim()
+                val intent = Intent(this, com.wingstars.register.RegisterActivity::class.java)
+                intent.putExtra("PHONE_NUMBER", phoneStr)
+                startActivity(intent)            }
         }
         dialog.show()
     }

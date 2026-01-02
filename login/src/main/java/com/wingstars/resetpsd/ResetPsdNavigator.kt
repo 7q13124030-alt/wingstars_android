@@ -10,5 +10,6 @@ package com.wingstars.resetpsd
 interface ResetPsdNavigator {
     fun getPhoneCodeSuccess()
     fun resetPsdSuccess()
+    fun registerDialog()
     fun showToast(msg: String)
 }

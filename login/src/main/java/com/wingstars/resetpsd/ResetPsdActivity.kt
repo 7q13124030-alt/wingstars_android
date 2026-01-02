@@ -1,21 +1,33 @@
 package com.wingstars.resetpsd
 
+import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.Editable
 import android.text.InputType
+import android.text.Spannable
+import android.text.SpannableString
 import android.text.TextWatcher
+import android.text.style.ForegroundColorSpan
 import android.view.View
+import android.view.WindowManager
 import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import com.wingstars.base.base.BaseActivity
 import com.wingstars.base.net.beans.CRMForgotPasswordRequest
 import com.wingstars.login.R
 import com.wingstars.login.databinding.ActivityRegistersBinding
 import com.wingstars.login.databinding.ActivityResetPsdBinding
-class ResetPsdActivity : BaseActivity(), ResetPsdNavigator {
+
+
+class ResetPsdActivity :  BaseActivity(), ResetPsdNavigator {
     private lateinit var binding: ActivityResetPsdBinding
     private val viewModel: ResetPsdViewModel by viewModels()
 
@@ -34,7 +46,9 @@ class ResetPsdActivity : BaseActivity(), ResetPsdNavigator {
         setTitleFoot(
             view1 = binding.root,
             navigationBarColor = R.color.gray_200,
-            statusBarColor = R.color.white
+            statusBarColor = R.color.white,
+            setHeadAndFoot = false,
+            setFoot = false
         )
         // 1. Cài đặt ViewModel & Navigator
         viewModel.setNavigator(this)
@@ -183,6 +197,10 @@ class ResetPsdActivity : BaseActivity(), ResetPsdNavigator {
         showSuccessDialog()
     }
 
+    override fun registerDialog() {
+        showRegisterDialog()
+    }
+
     private fun showSuccessDialog() {
         if (isFinishing) return
         val builder = androidx.appcompat.app.AlertDialog.Builder(this)
@@ -194,26 +212,77 @@ class ResetPsdActivity : BaseActivity(), ResetPsdNavigator {
         val btnConfirm = dialogView.findViewById<android.view.View>(R.id.btnConfirm)
         btnConfirm.setOnClickListener {
             dialog.dismiss()
-            finish()
+            val phoneStr = binding.edtPhone.text.toString().trim()
+            val intent = Intent(this, com.wingstars.login.LoginActivity::class.java)
+            intent.putExtra("PHONE_NUMBER", phoneStr)
+            startActivity(intent)
+        }
+        dialog.show()
+    }
+    private fun showRegisterDialog(){
+        if(isFinishing) return
+        val builder = androidx.appcompat.app.AlertDialog.Builder(this)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_reset_success, null)
+        builder.setView(dialogView)
+        builder.setCancelable(false)
+        val dialog = builder.create()
+        val tvTitle = dialogView.findViewById<android.widget.TextView>(R.id.tvTitle)
+        val tvSubtitle = dialogView.findViewById<android.widget.TextView>(R.id.tvSubtitle)
+        tvSubtitle?.visibility = View.GONE
+        tvTitle?.text = "您尚未註冊，請先註冊會員"
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        val btnConfirm = dialogView.findViewById<android.view.View>(R.id.btnConfirm)
+        btnConfirm.setOnClickListener {
+            dialog.dismiss()
+            val phoneStr = binding.edtPhone.text.toString().trim()
+            val intent = Intent(this, com.wingstars.register.RegisterActivity::class.java)
+            intent.putExtra("PHONE_NUMBER", phoneStr)
+            startActivity(intent)
         }
         dialog.show()
     }
 
-    private fun startCountDown(totalMs: Long = 300_000) {
+    private fun startCountDown(totalMs: Long = 60_000) {
         timer?.cancel()
         binding.tvCodeTimer.visibility = View.VISIBLE
         binding.tvResend?.visibility = View.GONE
 
         timer = object : CountDownTimer(totalMs, 1000) {
             override fun onTick(ms: Long) {
+
                 val min = (ms / 1000) / 60
                 val sec = (ms / 1000) % 60
-                binding.tvCodeTimer.text = String.format("重新發送 %02d:%02d", min, sec)
+                val pinkText = "${sec}s "
+                val grayText = "重新發送"
+                val fullText = pinkText + grayText
+                val spannable = SpannableString(fullText)
+//                binding.tvCodeTimer.text = String.format("%02d 重新發送", sec)
+                spannable.setSpan(
+                    ForegroundColorSpan(
+                        ContextCompat.getColor(
+                            this@ResetPsdActivity,
+                            R.color.color_E2518D
+                        )
+                    ),
+                    0,
+                    pinkText.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+
+                spannable.setSpan(
+                    ForegroundColorSpan(ContextCompat.getColor(this@ResetPsdActivity, R.color.text_subtitle)),
+                    pinkText.length,
+                    fullText.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                binding.tvCodeTimer.text = spannable
             }
             override fun onFinish() {
                 if (binding.tvResend != null) {
                     binding.tvCodeTimer.visibility = View.GONE
                     binding.tvResend.visibility = View.VISIBLE
+                    binding.tvResend.setTextColor(ContextCompat.getColor(this@ResetPsdActivity, R.color.white))
+                    binding.tvResend.background = ContextCompat.getDrawable(this@ResetPsdActivity, R.drawable.bg_send_code_able)
                 } else {
                     showSendButtonUI()
                 }
@@ -300,11 +369,13 @@ class ResetPsdActivity : BaseActivity(), ResetPsdNavigator {
         return hasLetter && hasDigit
     }
 
+    // Sửa hàm này trong ResetPsdActivity.kt
     private fun updateConfirmButtonState() {
         val enabled = if (currentStep == 1) {
             val phone = binding.edtPhone.text?.toString().orEmpty()
             val code = binding.edtPhoneCode.text?.toString().orEmpty()
-            phoneRegex.matches(phone) && code.length == otpLength && isCodeSent        } else {
+            phoneRegex.matches(phone) && code.length == otpLength && isCodeSent
+        } else {
             val pwd = binding.edtPsd.text?.toString().orEmpty()
             val confirm = binding.edtPsdConfirm.text?.toString().orEmpty()
             isPasswordStrong(pwd) && pwd == confirm
@@ -314,10 +385,12 @@ class ResetPsdActivity : BaseActivity(), ResetPsdNavigator {
         if (enabled) {
             binding.btnConfirm.background = ContextCompat.getDrawable(this, R.drawable.bg_button_login_able)
             binding.btnConfirm.setTextColor(ContextCompat.getColor(this, R.color.white))
+            updateNavigationBarColor(R.color.color_EE97BB)
         } else {
             binding.btnConfirm.background = ContextCompat.getDrawable(this, R.drawable.bg_button_login_disable)
             binding.btnConfirm.setTextColor(ContextCompat.getColor(this, R.color.gray_500))
 
+            updateNavigationBarColor(R.color.gray_200)
         }
     }
 

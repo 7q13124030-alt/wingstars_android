@@ -48,9 +48,9 @@ class ResetPsdViewModel : ViewModel() {
                         sendOtpInternal(phone)
                     } else {
                         isLoading.postValue(false)
-                        android.util.Log.e("API_DEBUG", "signIpCheck Failed: ${next.message}")
-
-                        navigator?.showToast(next.message ?: "尚未註冊")
+//                        android.util.Log.e("API_DEBUG", "signIpCheck Failed: ${next.message}")
+//                        navigator?.showToast(next.message ?: "尚未註冊")
+                        navigator?.registerDialog()
                     }
                 },
                 { error ->
@@ -131,6 +131,11 @@ class ResetPsdViewModel : ViewModel() {
             }
         }
         android.util.Log.e("API_DEBUG", "$tag Error Final Msg: $msg")
-        navigator?.showToast(msg)
+        if(msg == "尚未註冊"){
+            navigator?.registerDialog()
+        }else{
+            navigator?.showToast(msg)
+
+        }
     }
 }
