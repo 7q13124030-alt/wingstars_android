@@ -40,31 +40,24 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
     private lateinit var indicatorAdapterItinerary: DotIndicatorAdapter
     private lateinit var indicatorAdapterComingSoon: DotIndicatorAdapter
     private lateinit var popularityAdapter: PopularityAdapter
+    private var isDataLoaded = false // 标记数据是否加载过
+    override fun onResume() {
+        super.onResume()
+        if (!isDataLoaded) {
+            loadData()
+            isDataLoaded = true
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
+        initView()
         return binding.root
     }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initView()
-    }
-
-    private fun initView() {
-        viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
-
-        popularityAdapter = PopularityAdapter(requireActivity(), mutableListOf(), this)
-        binding.rvPopularityRanking.layoutManager = LinearLayoutManager(
-            requireActivity(),
-            LinearLayoutManager.HORIZONTAL, false
-        )
-        binding.rvPopularityRanking.adapter = popularityAdapter
-        setupUI()
-        setupComingSoonBanner()
-        observeData()
+    private fun loadData() {
         viewModel.getRenderedList()
 
         val value = viewModel.wsFashionCategorysData.value
@@ -77,6 +70,42 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
         viewModel.getCalendarData()
         viewModel.getHomeData()
         viewModel.getLatestNewsData()
+    }
+
+    private fun initView() {
+        viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
+        binding.refresh.setColorSchemeResources(R.color.color_E2518D)
+
+        binding.refresh.setOnRefreshListener {
+            loadData()
+        }
+
+        try {
+            viewModel.isLoading.observe(viewLifecycleOwner) { isShow ->
+                if (isShow) {
+                    if (!binding.refresh.isRefreshing) {
+                        showLoadingUI(true, requireActivity())
+                    }
+                } else {
+                    showLoadingUI(false, requireActivity()) // Tắt Dialog
+
+                    if (binding.refresh.isRefreshing) {
+                        binding.refresh.isRefreshing = false
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        popularityAdapter = PopularityAdapter(requireActivity(), mutableListOf(), this)
+        binding.rvPopularityRanking.layoutManager = LinearLayoutManager(
+            requireActivity(),
+            LinearLayoutManager.HORIZONTAL, false
+        )
+        binding.rvPopularityRanking.adapter = popularityAdapter
+        setupUI()
+        setupComingSoonBanner()
+        observeData()
     }
 
     private fun setupUI() {
@@ -124,19 +153,19 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
     }
 
     private fun observeData() {
-        // --- 1. Lịch trình (Calendar) ---
         viewModel.calendarDataList.observe(viewLifecycleOwner) { list ->
             if (list.isNullOrEmpty()) {
                 binding.bannerItinerary.visibility = View.GONE
                 binding.todayItinerary.visibility = View.GONE
             } else {
                 binding.bannerItinerary.visibility = View.VISIBLE
-
                 val bannerAdapter = ItineraryBannerAdapter(list)
                 bannerAdapter.onItemClickListener = { data ->
-                    val intent = Intent(requireActivity(), TodayItineraryDetailsActivity::class.java)
-                    intent.putExtra("DATA_ITINERARY", data)
-                    startActivity(intent)
+                    checkLoginAndAction {
+                        val intent = Intent(requireActivity(), TodayItineraryDetailsActivity::class.java)
+                        intent.putExtra("DATA_ITINERARY", data)
+                        startActivity(intent)
+                    }
                 }
 
                 binding.bannerItinerary.setAdapter(bannerAdapter)
