@@ -75,6 +75,19 @@ class GiftDetailsActivity : AppCompatActivity() {
         initView()
     }
 
+    fun String?.formatDate(): String {
+        if (this.isNullOrEmpty()) return ""
+        return try {
+            val inputFormat = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.getDefault())
+            val outputFormat = java.text.SimpleDateFormat("yyyy/MM/dd HH:mm", java.util.Locale.getDefault())
+
+            val date = inputFormat.parse(this)
+            outputFormat.format(date!!)
+        } catch (e: Exception) {
+            this
+        }
+    }
+
     private fun loadData() {
         val serializableData = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getSerializableExtra("data", CRMCouponsAvailableResponse::class.java)
@@ -117,6 +130,7 @@ class GiftDetailsActivity : AppCompatActivity() {
 
         binding.couponName.text = data.couponName ?: ""
         binding.pointCost.text = "${data.pointCost ?: 0} 點"
+        binding.tvCouponTime.text = "${data.couponStartDate.formatDate()} ~ ${data.couponEndDate.formatDate()}"
 
         val eligibleMembersStr = data.eligibleMembersStr
         if (!eligibleMembersStr.isNullOrEmpty() && eligibleMembersStr != getString(R.string.all_members)) {
@@ -127,9 +141,15 @@ class GiftDetailsActivity : AppCompatActivity() {
 
         binding.maxPerMember.text = if (data.maxPerMember == -1) getString(R.string.NoLimit) else "${data.maxPerMember} 次"
         binding.activityTime.text = "${data.totalQuantity ?: 0}"
-        binding.exchangeLocation.text = data.redeemStore?.joinToString(", ") ?: ""
-        binding.tvUsageRules.text = data.description ?: ""
-        binding.tvPrecautions.text = data.usageRules ?: ""
+//        val exchangeLocation = data.redeemStore?.joinToString(", ") ?: ""
+//        if (exchangeLocation.isNotEmpty()) {
+//            binding.exchangeLocation.text = exchangeLocation
+//        } else {
+//            binding.exchangeLocation.text = getString(R.string.all_location)
+//        }
+        binding.exchangeLocation.text = data.redeemStore?.joinToString(", ")?.ifEmpty { null } ?: "不限定兌換地點"
+        binding.tvDescription.text = data.description ?: ""
+        binding.tvUsageRules.text = data.usageRules ?: ""
 
         val imageUrl = if (!data.galleryImages.isNullOrEmpty()) data.galleryImages[0] else data.coverImage
         if (!imageUrl.isNullOrEmpty()) {
@@ -173,14 +193,15 @@ class GiftDetailsActivity : AppCompatActivity() {
 
     private fun setButtonBackground(pointCost: Int, point: Int, claimedCount: Int, maxPerMember: Int) {
         if (point < pointCost) {
-            binding.button.visibility = View.GONE
+            binding.btnExchange.text = getString(R.string.insufficient_points)
+            disableButton()
             return
         }
-        binding.button.visibility = View.VISIBLE
-        binding.btnExchange.isEnabled = true
-        val redeemStartAt = data.redeemStartAt
-        if (redeemStartAt != null) {
-            val startDate = parseDate(redeemStartAt)
+        binding.btnExchange.text = getString(R.string.count_activate_barcode)
+
+        val couponStartDate = data.couponStartDate
+        if (couponStartDate != null) {
+            val startDate = parseDate(couponStartDate)
             if (startDate != null && startDate.after(Date())) {
                 binding.btnExchange.text = getString(R.string.not_yet_open)
                 disableButton()
@@ -188,9 +209,9 @@ class GiftDetailsActivity : AppCompatActivity() {
             }
         }
 
-        val redeemEndAt = data.redeemEndAt
-        if (redeemEndAt != null) {
-            val endDate = parseDate(redeemEndAt)
+        val couponEndDate = data.couponEndDate
+        if (couponEndDate != null) {
+            val endDate = parseDate(couponEndDate)
             if (endDate != null && Date().after(endDate)) {
                 binding.btnExchange.text = getString(R.string.finished)
                 disableButton()
@@ -234,11 +255,6 @@ class GiftDetailsActivity : AppCompatActivity() {
             disableButton()
             return
         }
-
-        if (point < pointCost) {
-            binding.button.visibility = View.GONE
-            return
-        }
         setButtonRestore()
     }
 
@@ -274,7 +290,7 @@ class GiftDetailsActivity : AppCompatActivity() {
 
     private fun parseDate(dateStr: String): Date? {
         return try {
-            val format = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault())
+            val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
             format.parse(dateStr)
         } catch (e: Exception) {
             null
@@ -350,8 +366,8 @@ class GiftDetailsActivity : AppCompatActivity() {
 
     private fun initView() {
         binding.imgBack.setOnClickListener { finish() }
-        binding.rlRuleHeader.setOnClickListener { toggleSection(binding.tvUsageRules, binding.ivArrow) }
-        binding.rlPrecautions.setOnClickListener { toggleSection(binding.tvPrecautions, binding.ivArrow1) }
+        binding.rlDescription.setOnClickListener { toggleSection(binding.tvDescription, binding.ivArrow) }
+        binding.rlRuleHeader.setOnClickListener { toggleSection(binding.tvUsageRules, binding.ivArrow1) }
         binding.btnExchange.setOnClickListener { handleExchangeClick() }
     }
 
@@ -362,8 +378,9 @@ class GiftDetailsActivity : AppCompatActivity() {
                 if (data.otpRequired) {
                     viewModel.getOTPCoupons(data.id)
                 } else {
-                    val randomOtp = (100000..999999).random().toString()
-                    showOtpDialog(randomOtp)
+                    viewModel.crmRedeemCoupon(data.id, "")
+//                    val randomOtp = (100000..999999).random().toString()
+//                    showOtpDialog(randomOtp)
 //                    showConfirmRedeemDialog()
                 }
             }
@@ -606,8 +623,8 @@ class GiftDetailsActivity : AppCompatActivity() {
         binding.pointCost.text = "${newData.pointCost ?: 0} 點"
         binding.activityTime.text = "${newData.totalQuantity ?: 0}"
         binding.exchangeLocation.text = newData.redeemStore?.joinToString(", ") ?: ""
-        binding.tvUsageRules.text = newData.description ?: ""
-        binding.tvPrecautions.text = newData.usageRules ?: ""
+        binding.tvUsageRules.text = newData.usageRules ?: ""
+        binding.tvDescription.text = newData.description ?: ""
 
         val imgUrl = if (!newData.galleryImages.isNullOrEmpty()) newData.galleryImages[0] else newData.coverImage
         Glide.with(this).load(imgUrl).into(binding.merchandise)
