@@ -63,6 +63,7 @@ class UserFragment : BaseFragment(){
         initView()
         originalConstraintSet = ConstraintSet()
         originalConstraintSet.clone(binding.barcodeMember)
+        initBarcodeCollapsed()
     }
     private fun initView() {
         val packageManager: PackageManager =  requireActivity().packageManager
@@ -85,28 +86,22 @@ class UserFragment : BaseFragment(){
             startActivity(intent)
         }
         binding.icArrowDown.setOnClickListener {
-            isBarcodeContentVisible = !isBarcodeContentVisible
-
             if (isBarcodeContentVisible) {
+                // ĐÓNG
+                initBarcodeCollapsed()
+            } else {
+                // MỞ
+                isBarcodeContentVisible = true
+
                 val params = binding.barcodeMember.layoutParams
                 params.height = resources.getDimensionPixelSize(R.dimen.dp_186)
                 binding.barcodeMember.layoutParams = params
+
                 originalConstraintSet.applyTo(binding.barcodeMember)
                 updateBarcodeUI()
-            } else {
-                val params = binding.barcodeMember.layoutParams
-                params.height = resources.getDimensionPixelSize(R.dimen.dp_56)
-                binding.barcodeMember.layoutParams = params
-                binding.barcode.visibility = View.GONE
-                binding.tvBarcodeDesc.visibility = View.GONE
-                binding.barcodeNull.visibility = View.GONE
-                val set = ConstraintSet()
-                set.clone(binding.barcodeMember)
-                set.centerVertically(binding.tvMemberBarcode.id, ConstraintSet.PARENT_ID)
-                set.centerVertically(binding.icArrowDown.id, ConstraintSet.PARENT_ID)
-                set.applyTo(binding.barcodeMember)
             }
         }
+
         binding.llUserMemberInformation.setOnClickListener {
             checkLoginOrGoLogin {
                 val intent = Intent(requireActivity(), MemberInformationActivity::class.java)
@@ -213,6 +208,24 @@ class UserFragment : BaseFragment(){
         }
 
     }
+    private fun initBarcodeCollapsed() {
+        isBarcodeContentVisible = false
+
+        val params = binding.barcodeMember.layoutParams
+        params.height = resources.getDimensionPixelSize(R.dimen.dp_56)
+        binding.barcodeMember.layoutParams = params
+
+        binding.barcode.visibility = View.GONE
+        binding.tvBarcodeDesc.visibility = View.GONE
+        binding.barcodeNull.visibility = View.GONE
+
+        val set = ConstraintSet()
+        set.clone(binding.barcodeMember)
+        set.centerVertically(binding.tvMemberBarcode.id, ConstraintSet.PARENT_ID)
+        set.centerVertically(binding.icArrowDown.id, ConstraintSet.PARENT_ID)
+        set.applyTo(binding.barcodeMember)
+    }
+
     private fun getImageUri(requireContext: Context, logoShare: Int): Uri {
         val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.logo_share)!!
         val bitmap = drawableToBitmap(drawable)
@@ -267,12 +280,12 @@ class UserFragment : BaseFragment(){
         val isLoggedIn = MMKVManagement.isLogin()
         val name = MMKVManagement.getMemberName()
 //        Log.d("UserFragment", "Update UI: Login=$isLoggedIn, Name=$name")
-        binding.cardGeneralMember.visibility = if (isLoggedIn) View.GONE else View.VISIBLE
-        binding.cardFriendshipMember.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
+        binding.cardGeneralMember.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
+        binding.cardFriendshipMember.visibility = if (isLoggedIn) View.GONE else View.GONE
         binding.qrMember.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
         binding.barcodeMember.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
         binding.layoutMain.tvLogin.visibility = if (isLoggedIn) View.GONE else View.VISIBLE
-        binding.layoutMain.tvLoginStartFriend.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
+        binding.layoutMain.tvLoginGenerally.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
         binding.layoutMain.effectiveDateGeneral.visibility = if (isLoggedIn) View.GONE else View.VISIBLE
         if (isLoggedIn) {
             binding.layoutMain.tvUserName.text = name
@@ -317,7 +330,12 @@ class UserFragment : BaseFragment(){
     private fun updateBarcodeUI() {
         val barcodeNumber = MMKVManagement.getCrmMemberBarcode()
         val hasBarcode = !barcodeNumber.isNullOrEmpty()
-        isBarcodeContentVisible = hasBarcode
+        if (!isBarcodeContentVisible) {
+            binding.barcode.visibility = View.GONE
+            binding.tvBarcodeDesc.visibility = View.GONE
+            binding.barcodeNull.visibility = View.GONE
+            return
+        }
         if (hasBarcode) {
             val bitmap = generateBarcode(barcodeNumber!!)
             bitmap?.let {
