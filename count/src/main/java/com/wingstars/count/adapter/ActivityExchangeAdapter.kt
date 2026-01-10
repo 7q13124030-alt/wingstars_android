@@ -22,7 +22,7 @@ class ActivityExchangeAdapter(
 
     private var dataList: MutableList<CRMCouponsAvailableResponse> = mutableListOf()
     companion object {
-        private val inputFormat = SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.TAIWAN)
+        private val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.TAIWAN)
         private val outputDateFormat = SimpleDateFormat("yyyy/MM/dd", Locale.TAIWAN)
     }
 
@@ -84,14 +84,14 @@ class ActivityExchangeAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
         private val context: Context = binding.root.context
 
-        init {
-            binding.llWingStarsRoot.setOnClickListener {
-                val position = bindingAdapterPosition
-                if (position != RecyclerView.NO_POSITION) {
-                    onItemClick(dataList[position])
-                }
-            }
-        }
+//        init {
+//            binding.llWingStarsRoot.setOnClickListener {
+//                val position = bindingAdapterPosition
+//                if (position != RecyclerView.NO_POSITION) {
+//                    onItemClick(dataList[position])
+//                }
+//            }
+//        }
 
         fun bind(item: CRMCouponsAvailableResponse) {
             bindDate(item)
@@ -99,6 +99,38 @@ class ActivityExchangeAdapter(
             bindCouponCost(item)
             bindImage(item)
             bindLabel(item)
+            bindSoldOutStatus(item)
+        }
+
+        private fun bindSoldOutStatus(item: CRMCouponsAvailableResponse) {
+            val claimedCount = try {
+                item.claimedCount?.toString()?.toDouble()?.toInt() ?: 0
+            } catch (e: Exception) {
+                0
+            }
+
+            val maxPerMember = item.maxPerMember
+            val totalIssued = item.totalIssued ?: 0
+            val totalQuantity = item.totalQuantity
+            var isSoldOut = false
+            if (maxPerMember != -1) {
+                if (claimedCount >= maxPerMember) {
+                    isSoldOut = true
+                }
+            }
+            if (totalQuantity != -1 && totalIssued >= totalQuantity) {
+                isSoldOut = true
+            }
+            if (isSoldOut) {
+                binding.flSoldOutOverlay.visibility = View.VISIBLE
+                binding.llWingStarsRoot.setOnClickListener { onItemClick(item) }
+
+            } else {
+                binding.flSoldOutOverlay.visibility = View.GONE
+                binding.llWingStarsRoot.setOnClickListener {
+                    onItemClick(item)
+                }
+            }
         }
 
         private fun bindLabel(item: CRMCouponsAvailableResponse) {
@@ -112,25 +144,25 @@ class ActivityExchangeAdapter(
         }
 
         private fun bindDate(item: CRMCouponsAvailableResponse) {
-            val redeemStart = item.redeemStartAtF
+            val couponStart = item.couponStartDate
 
-            if (redeemStart.isNullOrEmpty()) {
+            if (couponStart.isNullOrEmpty()) {
                 binding.couponStartDate.text = "~"
                 return
             }
 
             try {
-                val date = inputFormat.parse(redeemStart)
+                val date = inputFormat.parse(couponStart)
 
                 if (date != null) {
                     val dateStr = outputDateFormat.format(date)
                     val week = getWeekDayString(date)
                     binding.couponStartDate.text = "$dateStr $week"
                 } else {
-                    binding.couponStartDate.text = redeemStart
+                    binding.couponStartDate.text = couponStart
                 }
             } catch (e: Exception) {
-                binding.couponStartDate.text = redeemStart
+                binding.couponStartDate.text = couponStart
             }
         }
 
@@ -192,7 +224,9 @@ class ActivityExchangeAdapter(
             return oldItem.couponName == newItem.couponName &&
                     oldItem.pointCost == newItem.pointCost &&
                     oldItem.redeemStartAt == newItem.redeemStartAt &&
-                    oldItem.coverImage == newItem.coverImage
+                    oldItem.coverImage == newItem.coverImage &&
+                    oldItem.claimedCount == newItem.claimedCount &&
+                    oldItem.totalIssued == newItem.totalIssued
         }
     }
 }

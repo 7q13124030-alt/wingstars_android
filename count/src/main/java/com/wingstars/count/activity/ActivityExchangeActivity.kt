@@ -47,8 +47,11 @@ class ActivityExchangeActivity : AppCompatActivity() {
         setupObservers()
         initListeners()
 
-        viewModel.activityListData(currentSortMethod)
-        viewModel.getMemberPointFromDetailsData()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.setActivityInfo("-1", currentSortMethod, showLoading = false)
     }
 
     private fun initView() {
@@ -62,7 +65,7 @@ class ActivityExchangeActivity : AppCompatActivity() {
                 val listToSend = ArrayList(currentList)
                 putExtra("EXTRA_LIST_DATA", listToSend)
                 putExtra("EXTRA_CURRENT_INDEX", index)
-                intent.putExtra("count", binding.tvCountWin.text.toString())
+                putExtra("count", binding.tvCountWin.text.toString())
             }
             startActivity(intent)
         }
@@ -80,6 +83,10 @@ class ActivityExchangeActivity : AppCompatActivity() {
 
         binding.tvList.setOnClickListener {
             showSortDialog()
+        }
+
+        binding.srlProductCoupons.setOnRefreshListener {
+            viewModel.setActivityInfo("-1", currentSortMethod, showLoading = true)
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
