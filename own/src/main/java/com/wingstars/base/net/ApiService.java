@@ -214,16 +214,12 @@ public interface ApiService {
 
     //CRM Event Service======
     //Event > 取得活跃任务列表.   ${BaseApplication.HOST_EVENT}/api/v1/public/events/tasks
-    @GET(NetBase.HOST_EVENT + "api/v1/public/events/tasks")
+    @GET(NetBase.HOST_EVENT + "/api/v1/public/events/tasks")
     Observable<List<EvtTaskResponse>> evtTasks();
 
     //Event > 获得点数.   ${BaseApplication.HOST_EVENT}/api/v1/public/events/reward
     @POST(NetBase.HOST_EVENT + "/api/v1/public/events/reward")
     Observable<EvtCheckinResponse> evtReward(@Body EvtCheckinRequest evtCheckinRequest);
-
-    //Event > 会员任务状态列表.   ${BaseApplication.HOST_EVENT}/api/v1/public/members/tasks?encryptedIdentity=...
-    @GET(NetBase.HOST_EVENT + "/api/v1/public/members/tasks")
-    Observable<List<EvtMemberTaskResponse>> evtMemberTasks( @Query("encryptedIdentity") String encryptedIdentity);
 
     //Event > 查询会员勋章列表.   ${BaseApplication.HOST_EVENT}/api/v1/public/member/badges?encryptedIdentity=...
     @GET(NetBase.HOST_EVENT + "/api/v1/public/member/badges")

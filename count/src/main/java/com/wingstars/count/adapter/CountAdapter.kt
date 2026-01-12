@@ -85,14 +85,8 @@ class CountAdapter(
                 }
             }
 
-            // Trạng thái nhiệm vụ
             binding.tvCountStatus.apply {
-                if (item.status != null) {
-                    visibility = View.GONE
-                } else {
-                    visibility = View.VISIBLE
-                    background = null
-                    setTextColor(ContextCompat.getColor(context, R.color.color_A3A3A3))
+//                    visibility = View.GONE
 //                    when (item.status) {
 //                        "unlock" -> {
 //                            text = context.getString(R.string.count_unlock)
@@ -137,6 +131,21 @@ class CountAdapter(
 //                            setTextColor(ContextCompat.getColor(context, R.color.color_F5F5F5))
 //                        }
 //                    }
+
+                when (item.status) {
+                    "completed", "reward" -> {
+                        visibility = View.VISIBLE
+                        text = context.getString(R.string.count_completed)
+                        background = ContextCompat.getDrawable(
+                            context,
+                            R.drawable.bg_rounded_rectangle_completed
+                        )
+                        setTextColor(ContextCompat.getColor(context, R.color.color_F5F5F5))
+                    }
+
+                    else -> {
+                        visibility = View.GONE
+                    }
                 }
 
 //            if (item.status != "unlock") {
