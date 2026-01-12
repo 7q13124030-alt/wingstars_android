@@ -12,6 +12,7 @@ import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.wingstars.base.net.beans.WSCalendarResponse
+import com.wingstars.base.net.beans.WSProductResponse
 import com.wingstars.home.R
 import com.youth.banner.adapter.BannerAdapter
 import java.nio.charset.StandardCharsets
@@ -36,7 +37,10 @@ class ItineraryBannerAdapter(datas: List<WSCalendarResponse>) :
             onItemClickListener?.invoke(data)
         }
     }
-
+    fun setList(list: MutableList<WSCalendarResponse>?) {
+        setDatas(list)
+        notifyDataSetChanged()
+    }
     class BannerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         // ID lấy từ item_today_itinerary.xml
         private val imgPoster: ImageView = view.findViewById(R.id.imgPoster)
