@@ -71,10 +71,10 @@ class PersonalScheduleItemAdapter
 
             if (position % 2 != 0) {
                 binding.tvMonthWeekly.setBackgroundColor(context.getColor(R.color.color_F9FAFB))
-                binding.tvTeamName.setBackgroundColor(context.getColor(R.color.color_F9FAFB))
+                binding.llTeamName.setBackgroundColor(context.getColor(R.color.color_F9FAFB))
             } else {
                 binding.tvMonthWeekly.setBackgroundColor(context.getColor(R.color.white))
-                binding.tvTeamName.setBackgroundColor(context.getColor(R.color.white))
+                binding.llTeamName.setBackgroundColor(context.getColor(R.color.white))
             }
 
             var dateFormatWeek = SimpleDateFormat("M/d(E)")
