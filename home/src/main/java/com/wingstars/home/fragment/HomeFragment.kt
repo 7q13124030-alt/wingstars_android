@@ -209,13 +209,14 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
         )
         // 6. 人氣排行
         stylistOutfitsAdapter = StylistOutfitsAdapter(requireActivity(), mutableListOf(), object : StylistOutfitsAdapter.onSupportFashionListener {
-            override fun onSupportFashionClickItem(memberId: Int) {
+            override fun onSupportFashionClickItem(memberId: Int,fashionType: Int) {
                 checkLoginAndAction {
                     val intent = Intent(
                         requireActivity(),
                         AtmosphereFashionDetailsActivity::class.java
                     )
                     intent.putExtra("memberId", memberId)
+                    intent.putExtra("fashionType", fashionType)
                     startActivity(intent)
                 }
             }
@@ -406,10 +407,11 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
         }
     }
 
-    override fun onSupportFashionClickItem(memberId: Int) {
+    override fun onSupportFashionClickItem(memberId: Int,fashionType: Int) {
         checkLoginAndAction {
             val intent = Intent(requireActivity(), AtmosphereFashionDetailsActivity::class.java)
             intent.putExtra("memberId", memberId)
+            intent.putExtra("fashionType", fashionType)
             startActivity(intent)
         }
     }

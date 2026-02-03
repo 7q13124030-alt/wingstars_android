@@ -65,10 +65,10 @@ class StylistOutfitsAdapter(
                 com.wingstars.member.R.mipmap.ic_member_activity}
             binding.imageType.setImageResource(imageType)
             binding.tittleStylist.text = data.titleF
-            binding.item.setOnClickListener { listener.onSupportFashionClickItem(data.id) }
+            binding.item.setOnClickListener { listener.onSupportFashionClickItem(data.id,data.type) }
         }
             }
     interface onSupportFashionListener{
-        fun onSupportFashionClickItem(memberId: Int)
+        fun onSupportFashionClickItem(memberId: Int,fashionType: Int)
     }
 }

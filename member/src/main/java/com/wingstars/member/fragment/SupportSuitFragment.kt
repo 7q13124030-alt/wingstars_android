@@ -144,12 +144,13 @@ class SupportSuitFragment : BaseFragment(), SupportSuitAdapter.OnItemListener {
 
 
 
-    override fun onItemClick(memberId: Int) {
+    override fun onItemClick(memberId: Int,fashionType: Int) {
         val intent = Intent(
             requireActivity(),
             AtmosphereFashionDetailsActivity::class.java
         )
         intent.putExtra("memberId", memberId)
+        intent.putExtra("fashionType", fashionType)
         startActivity(intent)
     }
 }

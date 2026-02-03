@@ -21,6 +21,7 @@ import com.wingstars.member.adapter.SmallCommodityAdapter
 import com.wingstars.member.adapter.SupportSuitAdapter
 import com.wingstars.member.databinding.ActivityAtmosphereFashionDetailsBinding
 import com.wingstars.member.viewmodel.AtmosphereFashionDetailsViewModel
+import com.wingstars.member.viewmodel.SupportSuitViewModel
 import com.youth.banner.listener.OnPageChangeListener
 
 class AtmosphereFashionDetailsActivity : BaseActivity(), SupportSuitAdapter.OnItemListener {
@@ -29,6 +30,7 @@ class AtmosphereFashionDetailsActivity : BaseActivity(), SupportSuitAdapter.OnIt
     private var recommend: MutableList<Recommend>?=null
     private var smallCommodityAdapter:SmallCommodityAdapter?=null
     private lateinit var viewModel: AtmosphereFashionDetailsViewModel
+    private lateinit var viewModelSuit: SupportSuitViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAtmosphereFashionDetailsBinding.inflate(layoutInflater)
@@ -149,19 +151,41 @@ class AtmosphereFashionDetailsActivity : BaseActivity(), SupportSuitAdapter.OnIt
             }
 
         })
-      //  var image = mutableListOf(R.mipmap.ic_demo2,R.mipmap.ic_demo2)
-
-       // var image1 = mutableListOf(R.mipmap.ic_demo2,R.mipmap.ic_demo2,R.mipmap.ic_demo2)
 
 
 
-        val list = mutableListOf("1","2")
-        var width = ScreenUtils.getWidth(this)
-        var smallwidth  = width - DPUtils.dpToPx(50f,this).toInt()
-        var smallwidths = smallwidth/2
-        var smallhight = smallwidths.toInt()*1.585
-     /*   binding.list.adapter = SupportSuitAdapter(this, list,smallwidths.toInt()
-            ,smallhight.toInt(),this)*/
+        //init 相關服飾 Adapter
+        viewModelSuit =ViewModelProvider(this)[SupportSuitViewModel::class.java]
+        viewModelSuit.PER_PAGE=4 //最多取4个2x2显示，不用左右滑动
+        viewModelSuit.loading.observe(this) {
+            showLoadingUI(it, this)
+        }
+        val fashionType = intent.getIntExtra("fashionType", 1)  //1 應援服  2 活動服
+        viewModelSuit.wsFashionCategorys(fashionType,true)
+
+        viewModelSuit.wsFashions.observe(this) {
+            it.forEach { data ->
+                val fashionCategoryF = data.fashion_categoryF
+                val wsRankDataList = viewModelSuit.wsFashionCategorysData.value
+                val typeData = wsRankDataList!!.find { it.id == fashionCategoryF }
+                if (typeData != null) {
+                    data.type = when (typeData.name.trim()) {
+                        "應援服" -> 1
+                        "活動服" -> 2
+                        else -> 0
+                    }
+
+                }
+            }
+
+            val width = ScreenUtils.getWidth(this)
+            val smallWidth = width - DPUtils.dpToPx(50f, this).toInt()
+            val smallWidths = smallWidth / 2
+            val smallHeight = smallWidths.toInt() * 1.585
+            binding.rvRelatedClothing.adapter = SupportSuitAdapter(
+                this, it, smallWidths.toInt(), smallHeight.toInt(), this
+            )
+        }
     }
 
 
@@ -174,7 +198,7 @@ class AtmosphereFashionDetailsActivity : BaseActivity(), SupportSuitAdapter.OnIt
         v?.layoutParams = params
     }
 
-    override fun onItemClick(position: Int) {
+    override fun onItemClick(memberId: Int,fashionType: Int) {
 
     }
 
