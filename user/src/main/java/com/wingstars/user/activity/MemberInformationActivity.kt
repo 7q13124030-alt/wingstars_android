@@ -115,6 +115,7 @@ class MemberInformationActivity : BaseActivity() {
         val gender = MMKVManagement.getMemberGender()
         val name = MMKVManagement.getMemberName()
         val mail = MMKVManagement.getMemberMail()
+        val barcodeNumber = MMKVManagement.getCrmMemberBarcode()
         binding.phoneMember.text = phone
         binding.idCardNumber.text = identity
         binding.birthday.text = birthday
@@ -126,6 +127,7 @@ class MemberInformationActivity : BaseActivity() {
         }
         binding.tvUserName.text = name
         binding.tvUserMail.text = mail
+        binding.edtBarcodeCarrier.setText(barcodeNumber)
     }
     private fun deleteAccountApi() {
         val userId = MMKVManagement.getCrmMemberCode()

@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.widget.addTextChangedListener
 import com.wingstars.base.base.BaseActivity
+import com.wingstars.base.utils.MMKVManagement
 import com.wingstars.user.utils.KeyboardUtils
 import com.wingstars.user.R
 import com.wingstars.user.databinding.ActivityMobileBarcodeCarrierBinding
@@ -21,6 +22,10 @@ class MobileBarcodeCarrierActivity: BaseActivity() {
         initView()
     }
     override fun initView() {
+        val barcodeNumber = MMKVManagement.getCrmMemberBarcode()
+        if(barcodeNumber.isNotEmpty())
+        binding.edtMobile.setText(barcodeNumber)
+
         binding.ivBack.setOnClickListener { finish() }
         binding.rlMobile.setOnClickListener {
             binding.edtMobile.requestFocus()
