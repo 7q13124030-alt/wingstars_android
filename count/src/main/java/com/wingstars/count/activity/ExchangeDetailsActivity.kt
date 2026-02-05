@@ -235,7 +235,6 @@ class ExchangeDetailsActivity : AppCompatActivity() {
 
         // Animation toggle logic
         binding.rlRuleHeader.setOnClickListener { toggleSection(binding.tvUsageRules, binding.ivArrow) }
-        binding.rlInformation.setOnClickListener { toggleSection(binding.tvInformation, binding.ivArrow1) }
         binding.rlPrecautions.setOnClickListener { toggleSection(binding.tvPrecautions, binding.ivArrow3) }
 
         binding.btnExchange.setOnClickListener {
@@ -326,7 +325,6 @@ class ExchangeDetailsActivity : AppCompatActivity() {
         binding.activityTime.text = "${data.totalQuantity ?: 0}"
         binding.exchangeLocation.text = data.redeemStore?.joinToString(", ") ?: ""
         binding.tvUsageRules.text = item.usageRules
-        binding.tvInformation.text = item.description
 
         val newImages = item.galleryImages ?: listOfNotNull(item.coverImage)
         if (currentBannerImages != newImages) {
