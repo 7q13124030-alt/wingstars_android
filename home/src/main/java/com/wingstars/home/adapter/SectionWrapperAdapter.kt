@@ -93,6 +93,7 @@ class SectionWrapperAdapter(
     private fun setupIndicator(holder: ViewHolder) {
         val rv = holder.rvContent
         val indicatorRv = holder.rvIndicator
+        val rvTitle=holder.tvTitle
 
         // dot adapter init
         val dots = holder.dotAdapter ?: DotIndicatorAdapter().also {
@@ -115,6 +116,7 @@ class SectionWrapperAdapter(
         val count = innerAdapter.itemCount
         dots.submitCount(count)
         indicatorRv.visibility = if (count > 1) View.VISIBLE else View.GONE
+        rvTitle.visibility = if (count > 0) View.VISIBLE else View.GONE
 
         // remove old listener
         holder.scrollListener?.let { rv.removeOnScrollListener(it) }
@@ -140,6 +142,7 @@ class SectionWrapperAdapter(
                     val newCount = innerAdapter.itemCount
                     dots.submitCount(newCount)
                     indicatorRv.visibility = if (newCount > 1) View.VISIBLE else View.GONE
+                    rvTitle.visibility = if (newCount > 0) View.VISIBLE else View.GONE
                 }
                 override fun onChanged() = refresh()
                 override fun onItemRangeInserted(positionStart: Int, itemCount: Int) = refresh()
