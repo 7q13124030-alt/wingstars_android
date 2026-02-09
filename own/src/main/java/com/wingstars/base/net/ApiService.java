@@ -175,6 +175,12 @@ public interface ApiService {
     @GET(NetBase.HOST_BASE + "/wp-json/wc/v3/products?per_page=4&order=desc&status=publish")
     Observable<List<WSProductResponse>> wsProducts();
 
+    //即将售饭商品
+    //status = "future": 即将售饭商品
+    //status = "publish": 热销商品
+    @GET(NetBase.HOST_BASE + "/wp-json/wc/v3/products")
+    Observable<List<WSProductResponse>> wsProducts(@Query("status") String status, @Query("per_page") int per_page, @Query("page") int page);
+
     //最新消息
     @GET(NetBase.HOST_BASE + "/wp-json/wp/v2/posts?per_page=4&order=desc")
     Observable<List<WSPostResponse>> wsPosts();

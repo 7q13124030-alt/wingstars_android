@@ -6,6 +6,8 @@ data class WSProductResponse(
     val name: String,                   //產品名稱
     val permalink: String,              //產品網址
     val price: String,                  //當前產品價格
+    val date_on_sale_from: String?,     //上市时间开始
+    val date_on_sale_to: String?,       //上市时间结束
     val images: List<Image>,            //圖片
     val yoast_head_json: YoastHeadJson, //圖片
 ) {
@@ -26,6 +28,16 @@ data class WSProductResponse(
             } else {
                 ""
             }
+        }
+
+    val date_on_sale_fromF: String                    //date_on_sale_from format
+        get() {
+            return date_on_sale_from?.replace("-", "/")?.replace("T", " ") ?: ""
+        }
+
+    val date_on_sale_toF: String                    //date_on_sale_to format
+        get() {
+            return date_on_sale_to?.replace("-", "/")?.replace("T", " ") ?: ""
         }
 
     data class Image(

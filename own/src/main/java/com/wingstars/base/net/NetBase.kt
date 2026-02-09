@@ -358,6 +358,26 @@ object NetBase : Application(){
 //                }
 //            )
 
+            //即将售饭商品
+//            val status = "future"
+//            val observer = it.wsProducts(status, 10, 1)
+//            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
+//                AndroidSchedulers.mainThread())?.subscribe(
+//                { next ->
+//                    Log.d("API", "[wsProducts] next.data.size: ${next.size}")
+//
+//                    for (rd in next) {
+//                        println("id: ${rd.id}, name: ${rd.name}, date_on_sale: ${rd.date_on_sale_fromF} ~ ${rd.date_on_sale_toF}, url: ${rd.urlF}, permalink: ${rd.permalink}")
+//                        println("  image: ${rd.imageF}")
+//                    }
+//                },
+//                { error ->
+//                    error.message?.let { it1 ->
+//                        Log.d("API", "[wsProducts] error.message: ${it1?.toString()}")
+//                    }
+//                }
+//            )
+
             //最新消息
 //            val observer = it.wsPosts()
 //            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
