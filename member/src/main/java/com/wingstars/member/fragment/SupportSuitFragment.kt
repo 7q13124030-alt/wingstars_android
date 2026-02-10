@@ -70,7 +70,7 @@ class SupportSuitFragment : BaseFragment(), SupportSuitAdapter.OnItemListener {
         }
         binding.srlMemberIntroduction.setOnLoadMoreListener {
             binding.srlMemberIntroduction.finishLoadMore()
-            Log.e("isMore", "isMore=$isMore")
+            //Log.e("isMore", "isMore=$isMore")
             if (isMore) {
                 viewModel.wsFashions(isShowLoading = true, isLoadMore = true)
             }else{

@@ -88,7 +88,7 @@ class GiftExchangeViewModel : ViewModel() {
 
         API.shared?.api?.let { api ->
             val id = MMKV.defaultMMKV().decodeString("crm_member_id") ?: ""
-            Log.e("productCouponsData", "ID: $id")
+            //Log.e("productCouponsData", "ID: $id")
 
             val couponType = 1 // 1：商品券，2：活动券
             val page = 1
@@ -171,6 +171,6 @@ class GiftExchangeViewModel : ViewModel() {
                 e.printStackTrace()
             }
         }
-        Log.e("GiftExchangeViewModel", "API Error: $msg")
+        //Log.e("GiftExchangeViewModel", "API Error: $msg")
     }
 }

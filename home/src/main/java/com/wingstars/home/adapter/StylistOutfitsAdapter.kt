@@ -50,7 +50,7 @@ class StylistOutfitsAdapter(
             val data = dataList!![position]
             Glide.with(binding.imageStylist.context).clear(binding.imageStylist)
             val imgUrl = data.urlF
-            Log.e("imgUrl", "imgUrl=$imgUrl")
+            //Log.e("imgUrl", "imgUrl=$imgUrl")
             if (!imgUrl.isNullOrEmpty()) {
                 Glide.with(binding.imageStylist.context)
                     .load(imgUrl)

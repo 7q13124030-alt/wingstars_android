@@ -74,7 +74,7 @@ class PopularityRankingActivity : BaseActivity(), View.OnClickListener,
     private fun setScreening(name: String) {
         if (!wsNewRankData.isNullOrEmpty()) {
             val filter = wsNewRankData.filter { it.title == name }
-            Log.e("setScreening", "${Gson().toJson(filter)}")
+            //Log.e("setScreening", "${Gson().toJson(filter)}")
             if (!filter.isNullOrEmpty()) {
                 binding.rankList.visibility = View.VISIBLE
                 binding.notData.visibility = View.GONE

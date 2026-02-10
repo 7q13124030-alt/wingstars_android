@@ -34,7 +34,7 @@ class FanInteractionViewModel : ViewModel() {
                 AndroidSchedulers.mainThread()
             )?.subscribe(
                 { next ->
-                    Log.e("wsPhotoFrames","next=${Gson().toJson(next)}")
+                    //Log.e("wsPhotoFrames","next=${Gson().toJson(next)}")
                     loading.postValue(false)
                     if (!next.isNullOrEmpty()) {
                         next.forEach { data->
@@ -66,7 +66,7 @@ class FanInteractionViewModel : ViewModel() {
                     }
                 },
                 { error ->
-                    Log.e("wsPhotoFrames","error=${error.message}")
+                    //Log.e("wsPhotoFrames","error=${error.message}")
                     loading.postValue(false)
                 }
             )

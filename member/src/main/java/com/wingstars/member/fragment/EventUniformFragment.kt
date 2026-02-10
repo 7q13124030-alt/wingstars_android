@@ -78,7 +78,7 @@ class EventUniformFragment : BaseFragment(), SupportSuitAdapter.OnItemListener {
 
                 }
             }
-            Log.e("wsFashions", "${Gson().toJson(it)}")
+            //Log.e("wsFashions", "${Gson().toJson(it)}")
             /* var adapter1 = SupportSuitAdapter(requireActivity(), it, smallwidths.toInt()
                  ,smallhight.toInt(),this)
              binding.list.adapter = adapter1*/
@@ -129,7 +129,7 @@ class EventUniformFragment : BaseFragment(), SupportSuitAdapter.OnItemListener {
         }
         binding.srlMemberIntroduction.setOnLoadMoreListener {
             binding.srlMemberIntroduction.finishLoadMore()
-            Log.e("isMore", "isMore=$isMore")
+            //Log.e("isMore", "isMore=$isMore")
             if (isMore) {
                 viewModel.wsFashions(isShowLoading = true, isLoadMore = true)
             }else{

@@ -35,7 +35,8 @@ class WebActivity : BaseActivity() {
         fullText?.let {
         var replacedStr = replaceSrcWithDataUploadPath(fullText)
         //println("替换后的文本：\n$replacedStr")
-        Log.e("fullText","替换后的文本fullText=$replacedStr")}
+        //Log.e("fullText","替换后的文本fullText=$replacedStr")
+        }
 
         binding.title.setTitle(stringExtra!!)
         binding.title.setBackClickListener{
@@ -139,7 +140,7 @@ class WebActivity : BaseActivity() {
      * @return 替换后的字符串
      */
     private fun replaceSrcWithDataUploadPath(fullText: String): String {
-        Log.e("fullText","fullText=$fullText")
+        //Log.e("fullText","fullText=$fullText")
         val regex1 = "data-upload-path\\s*=([\"']?)([^\"'>\\s]+)\\1"
         val pattern1 = Pattern.compile(regex1)
         val matcher1 = pattern1.matcher(fullText)

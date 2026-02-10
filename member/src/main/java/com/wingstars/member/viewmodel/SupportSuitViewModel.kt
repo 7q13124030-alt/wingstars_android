@@ -80,7 +80,7 @@ class SupportSuitViewModel : ViewModel() {
                 { next ->
                     loading.postValue(false)
                     if (!next.isNullOrEmpty()) {
-                        Log.e("wsFashions", "${next}")
+                        //Log.e("wsFashions", "${next}")
                         if (!isLoadMore){
                             wsFashions.postValue(next)
                         }else{

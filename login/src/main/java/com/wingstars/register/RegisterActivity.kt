@@ -109,7 +109,7 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
         val colorBg = if (hasFocus && ok) R.drawable.bg_send_code_able
         else R.drawable.bg_sends_code
         binding.btnSendCode.setTextColor(ContextCompat.getColor(this, colorRes))
-        Log.e("edtPhone", "updateSendButtonState")
+        //Log.e("edtPhone", "updateSendButtonState")
         binding.btnSendCode.background = ContextCompat.getDrawable(this, colorBg)
 
     }
@@ -337,7 +337,7 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
                 if (hasFocus && binding.btnSendCode.isEnabled) R.drawable.bg_send_code_able
                 else R.drawable.bg_sends_code
             binding.btnSendCode.setTextColor(ContextCompat.getColor(this, colorRes))
-            Log.e("edtPhone", "edtPhone")
+            //Log.e("edtPhone", "edtPhone")
             binding.btnSendCode.background = ContextCompat.getDrawable(this, colorBg)
         }
         binding.edtPhone.addTextChangedListener(object : TextWatcher {

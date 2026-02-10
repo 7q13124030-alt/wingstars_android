@@ -43,13 +43,13 @@ class LoginViewModel : ViewModel(){
 
         // Kiểm tra xem API có null không
         if (API.shared == null) {
-            Log.e("LoginDebug", "LỖI: API.shared bị NULL! Bạn chưa khởi tạo API trong BaseApplication?")
+            //Log.e("LoginDebug", "LỖI: API.shared bị NULL! Bạn chưa khởi tạo API trong BaseApplication?")
             isLoading.postValue(false)
             return
         }
 
         if (API.shared?.api == null) {
-            Log.e("LoginDebug", "LỖI: API.shared.api bị NULL! Retrofit chưa được tạo?")
+            //Log.e("LoginDebug", "LỖI: API.shared.api bị NULL! Retrofit chưa được tạo?")
             isLoading.postValue(false)
             return
         }
@@ -76,7 +76,7 @@ class LoginViewModel : ViewModel(){
                             login(request, isRememberAccount)
                         } else {
                             isLoading.postValue(false)
-                            Log.e("LoginDebug", "4. Login Check Fail: ${next.message}")
+                            //Log.e("LoginDebug", "4. Login Check Fail: ${next.message}")
                             // Mở lại Toast để xem trên màn hình
                             // ToastUtil.showLongToast(BaseApplication.shared()!!, next.message)
                         }
@@ -90,7 +90,7 @@ class LoginViewModel : ViewModel(){
                 )
         } ?: run {
             // Block này chạy nếu .let bị skip
-            Log.e("LoginDebug", "LỖI: Code không chạy vào trong .let { } do API null")
+            //Log.e("LoginDebug", "LỖI: Code không chạy vào trong .let { } do API null")
         }
     }
     private fun handleHttpError(error: Throwable) {
@@ -115,10 +115,10 @@ class LoginViewModel : ViewModel(){
 
                 }
             } catch (e: Exception) {
-                Log.e("LoginDebug", "Error parsing HTTP error body: ${e.message}")
+                //Log.e("LoginDebug", "Error parsing HTTP error body: ${e.message}")
             }
         }
-        Log.e("LoginDebug", "HTTP Error: $msg")
+        //Log.e("LoginDebug", "HTTP Error: $msg")
     }
 
     fun login(request: CRMSignInRequest, isRememberAccount: Boolean) {
@@ -127,7 +127,7 @@ class LoginViewModel : ViewModel(){
 
         // Kiểm tra API null
         if (API.shared?.api == null) {
-            Log.e("LoginDebug", "LỖI: API Instance bị NULL trong hàm login()")
+            //Log.e("LoginDebug", "LỖI: API Instance bị NULL trong hàm login()")
             isLoading.postValue(false)
             return
         }
@@ -205,7 +205,7 @@ class LoginViewModel : ViewModel(){
                         navigator?.loginSuccess()
                     },
                     { error ->
-                        Log.e("LoginDebug", "Lỗi khi lấy thông tin chi tiết: ${error.message}")
+                        //Log.e("LoginDebug", "Lỗi khi lấy thông tin chi tiết: ${error.message}")
                         isLoading.postValue(false)
                         // Dù lỗi lấy info vẫn nên cho họ vào, nhưng báo loginSuccess
                         navigator?.loginSuccess()
@@ -230,7 +230,7 @@ class LoginViewModel : ViewModel(){
     fun sendOtp() {
         val phone = MMKVManagement.getMemberPhone()
         if (phone.isBlank()) {
-            Log.e("LoginDebug", "SendOtp failed: phone is empty")
+            //Log.e("LoginDebug", "SendOtp failed: phone is empty")
             return
         }
         val request = CRMSendOtpRequest(phone, "resetPassword")
@@ -243,10 +243,10 @@ class LoginViewModel : ViewModel(){
                     if (response.success) {
                         Log.d("LoginDebug", "OTP gửi thành công: ${response.message}")
                     } else {
-                        Log.e("LoginDebug", "OTP gửi thất bại: ${response.message}")
+                        //Log.e("LoginDebug", "OTP gửi thất bại: ${response.message}")
                     }
                 }, { error ->
-                    Log.e("LoginDebug", "sendOtp error: ${error.message}")
+                    //Log.e("LoginDebug", "sendOtp error: ${error.message}")
                 })
         }
     }
@@ -311,7 +311,9 @@ class LoginViewModel : ViewModel(){
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(
                     { _ -> },
-                    { error -> Log.e("LoginDebug", "updateMemberInfo error: ${error.message}") }
+                    { error ->
+                        //Log.e("LoginDebug", "updateMemberInfo error: ${error.message}")
+                    }
                 )
         }
     }

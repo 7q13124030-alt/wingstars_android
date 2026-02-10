@@ -244,11 +244,11 @@ class ActivityExchangeViewModel : ViewModel() {
                     msg = it
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "Error parsing error response: ${e.message}")
+                //Log.e(TAG, "Error parsing error response: ${e.message}")
             }
         }
 
-        Log.e(TAG, "API Error: $msg")
+        //Log.e(TAG, "API Error: $msg")
         messages.postValue(msg)
     }
 

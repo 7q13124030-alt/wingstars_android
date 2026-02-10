@@ -83,7 +83,7 @@ class CountItemViewModel : ViewModel() {
                 }
             }, { error ->
                 isLoading.value = false
-                Log.e("API", "Error: ${error.message}")
+                //Log.e("API", "Error: ${error.message}")
                 errorMessage.value = "Lỗi kết nối: ${error.message}"
                 data.isSendApiF = false
             })?.let { compositeDisposable.add(it) }
@@ -107,7 +107,7 @@ class CountItemViewModel : ViewModel() {
                         }
                     },
                     { error ->
-                        Log.e("API_ERROR", error.message.toString())
+                        //Log.e("API_ERROR", error.message.toString())
                     }
                 )?.let { compositeDisposable.add(it) }
         }

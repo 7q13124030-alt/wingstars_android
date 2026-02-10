@@ -41,7 +41,7 @@ class ResetPsdViewModel : ViewModel() {
             )?.subscribe(
                 { next ->
                     // Log kết quả check
-                    android.util.Log.e("API_DEBUG", "signIpCheck Success: ${Gson().toJson(next)}")
+                    //android.util.Log.e("API_DEBUG", "signIpCheck Success: ${Gson().toJson(next)}")
 
                     if (next.success) {
                         // Bước 2: Nếu Check thành công -> Gọi API gửi OTP
@@ -69,12 +69,12 @@ class ResetPsdViewModel : ViewModel() {
             )?.subscribe(
                 { next ->
                     isLoading.postValue(false)
-                    android.util.Log.e("API_DEBUG", "resetPsdOtp Success: ${Gson().toJson(next)}")
+                    //android.util.Log.e("API_DEBUG", "resetPsdOtp Success: ${Gson().toJson(next)}")
 
                     if (next.success) {
                         navigator!!.getPhoneCodeSuccess()
                     } else {
-                        android.util.Log.e("API_DEBUG", "resetPsdOtp Failed logic: ${next.message}")
+                        //android.util.Log.e("API_DEBUG", "resetPsdOtp Failed logic: ${next.message}")
                         navigator?.showToast(next.message)
                     }
                 },
@@ -88,7 +88,7 @@ class ResetPsdViewModel : ViewModel() {
 
     fun resetPsd(request: CRMForgotPasswordRequest) {
         isLoading.postValue(true)
-        android.util.Log.e("API_DEBUG", "resetPsd Request: ${Gson().toJson(request)}")
+        //android.util.Log.e("API_DEBUG", "resetPsd Request: ${Gson().toJson(request)}")
 
         API?.shared?.api?.let {
             val observer = it.crmForgotPassword(request)
@@ -97,12 +97,12 @@ class ResetPsdViewModel : ViewModel() {
             )?.subscribe(
                 { next ->
                     isLoading.postValue(false)
-                    android.util.Log.e("API_DEBUG", "resetPsd Success: ${Gson().toJson(next)}")
+                    //android.util.Log.e("API_DEBUG", "resetPsd Success: ${Gson().toJson(next)}")
 
                     if (next.success) {
                         navigator!!.resetPsdSuccess()
                     } else {
-                        android.util.Log.e("API_DEBUG", "resetPsd Failed logic: ${next.message}")
+                        //android.util.Log.e("API_DEBUG", "resetPsd Failed logic: ${next.message}")
                         navigator?.showToast(next.message)
                     }
                 },
@@ -119,7 +119,7 @@ class ResetPsdViewModel : ViewModel() {
         if (error is HttpException) {
             try {
                 val errorBody = error.response()?.errorBody()?.string()
-                android.util.Log.e("API_DEBUG", "$tag Error Body: $errorBody")
+                //android.util.Log.e("API_DEBUG", "$tag Error Body: $errorBody")
                 val gson = Gson()
                 val type = object : TypeToken<CRMBaseFailResponse>() {}.type
                 val failResponse = gson.fromJson<CRMBaseFailResponse>(errorBody, type)
@@ -130,7 +130,7 @@ class ResetPsdViewModel : ViewModel() {
                 e.printStackTrace()
             }
         }
-        android.util.Log.e("API_DEBUG", "$tag Error Final Msg: $msg")
+        //android.util.Log.e("API_DEBUG", "$tag Error Final Msg: $msg")
         if(msg == "尚未註冊"){
             navigator?.registerDialog()
         }else{

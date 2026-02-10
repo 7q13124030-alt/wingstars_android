@@ -40,9 +40,7 @@ class ItineraryBannerAdapter(datas: List<WSCalendarNResponse>) :
 
     override fun onBindView(holder: BannerViewHolder, data: WSCalendarNResponse, position: Int, size: Int) {
         holder.bind(data, this)
-        holder.itemView.setOnClickListener {
-            holder.itemView.setOnClickListener { listener?.onItemClick(data) }
-        }
+        holder.itemView.setOnClickListener { listener?.onItemClick(data) }
     }
     fun setList(list: MutableList<WSCalendarNResponse>?) {
         setDatas(list)

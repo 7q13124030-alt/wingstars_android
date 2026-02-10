@@ -54,7 +54,7 @@ class AtmosphereFashionDetailsActivity : BaseActivity(), SupportSuitAdapter.OnIt
                  recommend = mutableListOf<Recommend>()
                  for (j in 1..5){
                      val recommend1 = acf.recommend(j)
-                     Log.e("recommend1","$recommend1")
+                     //Log.e("recommend1","$recommend1")
                      if (recommend1!=null){
                          recommend!!.add(recommend1)
                      }
@@ -93,7 +93,7 @@ class AtmosphereFashionDetailsActivity : BaseActivity(), SupportSuitAdapter.OnIt
                         }
 
                     }
-                    Log.e("recommend","${Gson().toJson(recommend)}")
+                    //Log.e("recommend","${Gson().toJson(recommend)}")
                     binding.productList.adapter  = ProductListAdapter(this, recommend,object : ProductListAdapter.OnItemListener{
                         override fun onItemClick(data: Recommend, position: Int) {
                                 val intent = Intent(this@AtmosphereFashionDetailsActivity, WebActivity::class.java)

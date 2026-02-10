@@ -117,7 +117,7 @@ class HighlightsFragment(var highlightsType: HighlightsType) : BaseFragment() {
 
         binding.srlNotUsed.setOnRefreshListener {
             loadData()
-            Log.e("viewModel", "srlNotUsed=$highlightsType")
+            //Log.e("viewModel", "srlNotUsed=$highlightsType")
             binding.srlNotUsed.finishRefresh()
         }
 

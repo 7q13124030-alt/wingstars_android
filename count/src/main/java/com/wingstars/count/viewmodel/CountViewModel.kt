@@ -186,7 +186,7 @@ class CountViewModel: ViewModel() {
                                     e.printStackTrace()
                                 }
                             }
-                            Log.e("refreshEvtTasks", msg)
+                            //Log.e("refreshEvtTasks", msg)
                         }
                     )
                 }
@@ -299,7 +299,7 @@ class CountViewModel: ViewModel() {
             API.shared?.api?.let {
                 val id = MMKV.defaultMMKV().decodeString("crm_member_id")
                 if (id.isNullOrEmpty()) {
-                    Log.e("API_ERROR", "Member ID is null or empty!")
+                    //Log.e("API_ERROR", "Member ID is null or empty!")
                     if (showLoading) setIsLoading(false)
                     points.postValue("0")
                     return@let
@@ -320,7 +320,7 @@ class CountViewModel: ViewModel() {
                         },
                         { error ->
                             if (showLoading) setIsLoading(false)
-                            Log.e("API_ERROR", error.message.toString())
+                            //Log.e("API_ERROR", error.message.toString())
                             points.postValue("0")
                         }
                     )

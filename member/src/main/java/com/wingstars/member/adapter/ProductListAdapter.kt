@@ -89,7 +89,7 @@ class ProductListAdapter     // -------------------------------------------
             var product_image_url_fullF = ""
             val productImage = recommend.product_image
             if (productImage is String) {
-                Log.e("productImage", "productImage is String productImage=$productImage")
+                //Log.e("productImage", "productImage is String productImage=$productImage")
                 product_image_url_fullF = "$productImage"
             } else if (productImage is Boolean) {
                 product_image_url_fullF = ""

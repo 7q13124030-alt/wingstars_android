@@ -75,7 +75,7 @@ class NotUsedViewModel : ViewModel() {
                         if (next.success && next.data != null) {
                             couponQRCode.postValue(next.data.qrcode)
                         }
-                        Log.e("logcheckdata", "crmCouponQRCode ${next.data}")
+                        //Log.e("logcheckdata", "crmCouponQRCode ${next.data}")
                     },
                     { error -> handleError(error) }
                 )
@@ -102,7 +102,7 @@ class NotUsedViewModel : ViewModel() {
                 e.printStackTrace()
             }
         }
-        Log.e("API_ERROR", msg)
+        //Log.e("API_ERROR", msg)
     }
 
     override fun onCleared() {

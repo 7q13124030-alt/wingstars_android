@@ -30,6 +30,8 @@ class HomeViewModel : ViewModel() {
 
     //    val calendarDataList = MutableLiveData<MutableList<WSCalendarResponse>>()
     val calendarDataList = MutableLiveData<MutableList<WSCalendarNResponse>>()
+
+    val comingSoonDataList = MutableLiveData<MutableList<WSProductResponse>>()
     val productDataList = MutableLiveData<MutableList<WSProductResponse>>()
     val fashionDataList = MutableLiveData<MutableList<WSFashionResponse>>()
     var wsRankData = MutableLiveData<MutableList<WSMemberRankBean>>()
@@ -55,6 +57,7 @@ class HomeViewModel : ViewModel() {
         getLatestNewsData()
         getNewCalendarData()
 //        getCalendarData()
+        getComingSoonData()
         getProductsData()
         getFashionsData()
         getYoutubeData()
@@ -127,10 +130,31 @@ class HomeViewModel : ViewModel() {
                 val limitedList = next.take(3).toMutableList()
                 calendarDataList.postValue(limitedList)
             }, { error ->
-                Log.e("getWsCalendarsData", error.toString())
+                //Log.e("getWsCalendarsData", error.toString())
 
                 error.printStackTrace()
             })
+        }
+    }
+
+    //即将贩售商品
+    fun getComingSoonData() {
+        API.shared?.api?.let { api ->
+            val status = "future"
+            val observer = api.wsProducts(status, 10, 1)
+            observer
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    { next ->
+                        val list = mutableListOf<WSProductResponse>()
+                        list.addAll(next)
+                        comingSoonDataList.postValue(list)
+                    },
+                    { error ->
+                        error.printStackTrace()
+                    }
+                )
         }
     }
 
@@ -337,7 +361,7 @@ class HomeViewModel : ViewModel() {
             )?.subscribe(
                 { next ->
                     if (!next.isNullOrEmpty()) {
-                        Log.e("wsFashions", "${next}")
+                        //Log.e("wsFashions", "${next}")
                         wsFashions.postValue(next)
                     }
                 },
@@ -368,7 +392,7 @@ class HomeViewModel : ViewModel() {
     }
 
     fun getWsMembersData(rankData: MutableList<WSMemberRankBean>) {
-        Log.e("getWsMembersData", "getWsMembersData")
+        //Log.e("getWsMembersData", "getWsMembersData")
 
         API.shared?.api?.let {
             val observer = it.wsMembers(100, 1)
@@ -389,7 +413,7 @@ class HomeViewModel : ViewModel() {
                             rankData.indexOfFirst { it.name?.trim() == member.titleF?.trim() }
                         }
 
-                        Log.e("getWsMembersData", "Filtered & Sorted Size: ${sortedList.size}")
+                        //Log.e("getWsMembersData", "Filtered & Sorted Size: ${sortedList.size}")
 
                         wsMembersData.postValue(sortedList as MutableList<WSMemberResponse>?)
                     } else {
@@ -397,7 +421,7 @@ class HomeViewModel : ViewModel() {
                     }
                 },
                 { error ->
-                    Log.e("getWsMembersData", "error=${error.message}")
+                    //Log.e("getWsMembersData", "error=${error.message}")
                     // Xử lý lỗi
                 }
             )

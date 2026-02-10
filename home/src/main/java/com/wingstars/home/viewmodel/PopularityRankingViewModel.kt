@@ -53,7 +53,7 @@ class PopularityRankingViewModel: ViewModel() {
                 { error ->
                     loading.postValue(false)
                     tip.postValue(error.message)
-                    Log.e("getRenderedList","error=${error.message}")
+                    //Log.e("getRenderedList","error=${error.message}")
                 }
             )
         }

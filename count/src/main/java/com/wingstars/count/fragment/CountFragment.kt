@@ -312,7 +312,7 @@ class CountFragment : BaseFragment() {
             updateListDisplay()
         }
         viewModel.points.observe(viewLifecycleOwner) { pointStr ->
-            Log.e("CountFragment", "Observer received points: $pointStr")
+            //Log.e("CountFragment", "Observer received points: $pointStr")
             binding.tvCountWinstar.text = pointStr
         }
         viewModel.isLoading.observe(viewLifecycleOwner) { }

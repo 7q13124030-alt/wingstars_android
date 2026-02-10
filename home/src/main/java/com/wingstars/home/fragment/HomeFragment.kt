@@ -11,12 +11,10 @@ import android.view.ViewGroup
 import android.view.WindowInsets
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ConcatAdapter
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.wingstars.base.base.BaseFragment
 import com.wingstars.base.net.beans.WSCalendarNResponse
-import com.wingstars.base.net.beans.WSCalendarResponse
 import com.wingstars.base.net.beans.WSMemberResponse
 import com.wingstars.base.net.beans.WSProductResponse
 import com.wingstars.base.utils.DPUtils
@@ -82,7 +80,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
             binding.root.setOnApplyWindowInsetsListener { v, insets ->
                 val statusBarHeight = insets.getInsets(WindowInsets.Type.statusBars()).top
                 minHight = statusBarHeight + DPUtils.dpToPx(64f, requireActivity()).toInt()
-                Log.e("statusBarHeight", "statusBarHeight=$statusBarHeight")
+                //Log.e("statusBarHeight", "statusBarHeight=$statusBarHeight")
                 setViewTop(binding.rlTopBar, statusBarHeight)
                 binding.root.setOnApplyWindowInsetsListener(null)
                 insets
@@ -144,21 +142,24 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
         }
 
         val itinerarySection = SectionWrapperAdapter(
-            title = "今日行程",
+            title = getString(R.string.today_schedule_title),
             innerAdapter = itineraryAdapter,
             onMoreClick = null,
             showIndicator = true
         )
 
-        val comingSoonList = mutableListOf(
-            ComingSoonData(R.drawable.placeholder_calendar, "25-26 WS女孩應援毛巾｜天鷹款\n", "2025/09/20 (六) 10:00"),
-            ComingSoonData(R.drawable.placeholder_calendar, "Event 2 Title", "2025/10/01")
-        )
-        comingSoonAdapter = ComingSoonAdapter(comingSoonList)
+        comingSoonAdapter = ComingSoonAdapter(mutableListOf()).apply {
+            setOnItemListener(object : ComingSoonAdapter.OnItemListener {
+            override fun onItemClick(data: WSProductResponse, position: Int) {
+                checkLoginAndAction { openWebUrl(data.permalink)
+                   }
+               }
+           })
+       }
         val comingSoonSection = SectionWrapperAdapter(
-            title = "即將販售",
+            title = getString(R.string.coming_soon_title),
             innerAdapter = comingSoonAdapter,
-            onMoreClick = null
+            onMoreClick = null,
         )
 
         productAdapter = ProductAdapter(requireActivity(), mutableListOf(), object : ProductAdapter.OnItemListener {
@@ -181,7 +182,6 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
                 endDp = 20,
                 bottomDp = 0
             )
-
         )
 
         // 5. 人氣排行
@@ -296,6 +296,12 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
 //            itinerarySection.setVisible(todayList.isNotEmpty())
             loadedHome = true
             stopLoadingIfReady()
+        }
+
+        viewModel.comingSoonDataList.observe(viewLifecycleOwner) { list ->
+            if (!list.isNullOrEmpty()) {
+                comingSoonAdapter.setList(list)
+            }
         }
 
         viewModel.productDataList.observe(viewLifecycleOwner) { list ->

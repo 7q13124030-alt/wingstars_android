@@ -63,7 +63,7 @@ class MemberViewModel : ViewModel() {
             )?.subscribe(
                 { next ->
                     if (!next.isNullOrEmpty()) {
-                        Log.e("wsFashions", "${next}")
+                        //Log.e("wsFashions", "${next}")
                         wsFashions.postValue(next)
                     }
                 },
@@ -85,7 +85,7 @@ class MemberViewModel : ViewModel() {
                 { next ->
                     if (!next.isNullOrEmpty()) {
                         var data = mutableListOf<WSMemberRankBean>()
-                        Log.e("getRenderedList", "${Gson().toJson(next)}")
+                        //Log.e("getRenderedList", "${Gson().toJson(next)}")
                         next.forEach {
                             val title = it.title
                             var rendered = ""
@@ -163,7 +163,7 @@ class MemberViewModel : ViewModel() {
     }
 // 成员 > 成员介绍
     fun getWsMembersData() {
-        Log.e("getWsMembersData", "getWsMembersData")
+        //Log.e("getWsMembersData", "getWsMembersData")
         //成员 > 成员介绍
         API.shared?.api?.let {
             val observer = it.wsMembers(4, 1)
@@ -171,7 +171,7 @@ class MemberViewModel : ViewModel() {
                 AndroidSchedulers.mainThread()
             )?.subscribe(
                 { next ->
-                    Log.e("getWsMembersData", "[wsMembers] next.data.size:  ")
+                    //Log.e("getWsMembersData", "[wsMembers] next.data.size:  ")
                     /*Log.d("API", "[wsMembers] next.data.size: ${next.size}")
 
                     for (rd in next) {
@@ -180,7 +180,7 @@ class MemberViewModel : ViewModel() {
                     wsMembersData.postValue(next)
                 },
                 { error ->
-                    Log.e("getWsMembersData", "error=${error.message}")
+                    //Log.e("getWsMembersData", "error=${error.message}")
                     var msg = error.message.toString()
                     /*if (error is HttpException) {
                         try {

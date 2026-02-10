@@ -45,7 +45,7 @@ class MainActivity : BaseActivity(), BaseActivity.OnInitialization, View.OnClick
     override fun initView() {
         binding.member.setOnClickListener(this)
         binding.tabGroup.setClickIntercepter { positions ->
-            Log.e("positions","positions=$positions")
+            //Log.e("positions","positions=$positions")
             if (position==4){
                 binding.icnoMember.setImageResource(R.mipmap.icon_main_member_not_select)
             }
@@ -126,7 +126,7 @@ class MainActivity : BaseActivity(), BaseActivity.OnInitialization, View.OnClick
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 //  runOnUiThread { startActivity(Intent(this@MainActivity, FanInteractionActivity::class.java)) }
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
-                    Log.e("permissions","onRequestPermissionsResult permissions=$permissions")
+                    //Log.e("permissions","onRequestPermissionsResult permissions=$permissions")
                     if (permission==1){
                         runOnUiThread { startActivity(Intent(this@MainActivity, FanInteractionActivity::class.java)) }
                     }
@@ -160,7 +160,7 @@ class MainActivity : BaseActivity(), BaseActivity.OnInitialization, View.OnClick
 
     override fun setPermissions(permissions: Int) {
         permission = permissions
-        Log.e("setPermissions","setPermissions=$permissions")
+        //Log.e("setPermissions","setPermissions=$permissions")
     }
 
 

@@ -69,7 +69,7 @@ class CountHistoryViewModel : ViewModel() {
                         },
                         { error ->
                             if (showLoading) setIsLoading(false)
-                            Log.e("CountHistoryViewModel", "Error: ${error.message}")
+                            //Log.e("CountHistoryViewModel", "Error: ${error.message}")
                             // countHawks.postValue("0")
                         }
                     )
