@@ -146,30 +146,31 @@ public interface ApiService {
             @Query("key") String apiKey
     );
 
-    // Gọi trực tiếp đến Google thay vì server NewSoft
+    // Gọi trực tiếp đến Google, trả về thẳng YoutubeListResponse để Gson tự động parse
     @GET("https://www.googleapis.com/youtube/v3/playlistItems")
-    Observable<YoutubeSearchResponse> getYoutubePlaylistItems(
+    Observable<YoutubeListResponse> getYoutubePlaylistItemsDirect(
             @Query("part") String part,
             @Query("playlistId") String playlistId,
             @Query("maxResults") int maxResults,
             @Query("key") String apiKey
     );
 
-    @GET(NetBase.HOST_CRM +"api/v1/basic/member/{id}/message/inapp/list")
-    Observable<List<CRMInAppMessageResponse>>getInAppMessages(
+    // Sửa lại ApiService.java
+    @GET(NetBase.HOST_CRM +"/api/v1/basic/member/{id}/message/inapp")
+    Observable<CRMBaseResponse<List<CRMInAppMessageResponse>>> getInAppMessages(
             @Path("id") String memberId,
             @Query("category") String category,
             @Query("page") Integer page,
             @Query("limit") Integer limit
     );
 
-    @POST(NetBase.HOST_CRM +"api/v1/basic/member/{id}/message/inapp/list")
+    @POST(NetBase.HOST_CRM +"/api/v1/basic/member/{id}/message/inapp/read")
     Observable<CRMBaseResponse<Object>>crmInAppMessageRead(
             @Path("id") String memberId,
             @Body CRMMessageReadRequest request
     );
 
-    @POST(NetBase.HOST_CRM +"api/v1/basic/member/{id}/message/inapp/read-all")
+    @POST(NetBase.HOST_CRM +"/api/v1/basic/member/{id}/message/inapp/read-all")
     Observable<CRMBaseResponse<Object>> crmInAppMessageReadAll(@Path("id") String memberId, @Query("category") String category);
 
 
@@ -343,14 +344,6 @@ public interface ApiService {
     //获取Youtube视频
     @GET(NetBase.HOST_NEWSOFT + "/api/v1/app/youtube/vlist")
     Observable<YoutubeListResponse> nsYtbList();
-    // Gọi trực tiếp đến Google, trả về thẳng YoutubeListResponse để Gson tự động parse
-    @GET("https://www.googleapis.com/youtube/v3/playlistItems")
-    Observable<YoutubeListResponse> getYoutubePlaylistItemsDirect(
-            @Query("part") String part,
-            @Query("playlistId") String playlistId,
-            @Query("maxResults") int maxResults,
-            @Query("key") String apiKey
-    );
 
     //获取Youtube List
     //eventType=completed：僅包含已結束的廣播。

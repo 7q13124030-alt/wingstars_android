@@ -56,7 +56,7 @@ class HighlightsViewModel : ViewModel() {
                     { error ->
                         setIsLoading(false)
                         highlightsList.postValue(arrayList)
-                        Log.e("YoutubeError", "LỖI GỌI GOOGLE: ${error.message}", error)
+                        Log.e("YoutubeError", "Error in GOOGLE: ${error.message}", error)
                     }
                 )
         }
