@@ -27,6 +27,8 @@ class MMKVManagement {
         private val CRM_MEMBER_USER_TYPE = "crm_member_user_type"   //CRM的会员用户类型
 
         private val CRM_MEMBER_CODE = "crm_member_code"
+        private val CRM_MEMBER_BARCODE = "crm_member_barcode"
+        private val CRM_MEMBER_INVOICE_NUMBER = "crm_member_invoice_number"
 
         private val MEMBER_PSD = "member_psd"   //用户密码
 
@@ -77,11 +79,19 @@ class MMKVManagement {
             MMKV.defaultMMKV().encode(CRM_MEMBER_CODE, crm_member_code)
         }
         public fun getCrmMemberBarcode(): String {
-            return MMKV.defaultMMKV().decodeString(CRM_MEMBER_CODE, "")!!
+            return MMKV.defaultMMKV().decodeString(CRM_MEMBER_BARCODE, "")!!
         }
 
-        public fun setCrmMemberBarcode(crm_member_code: String) {
-            MMKV.defaultMMKV().encode(CRM_MEMBER_CODE, crm_member_code)
+        public fun setCrmMemberBarcode(crm_member_barcode: String) {
+            MMKV.defaultMMKV().encode(CRM_MEMBER_BARCODE, crm_member_barcode)
+        }
+
+        public fun getCrmMemberInvoiceNumber(): String {
+            return MMKV.defaultMMKV().decodeString(CRM_MEMBER_INVOICE_NUMBER, "")!!
+        }
+
+        public fun setCrmMemberInvoiceNumber(crm_member_invoice_number: String) {
+                MMKV.defaultMMKV().encode(CRM_MEMBER_INVOICE_NUMBER, crm_member_invoice_number)
         }
 
         public fun getCrmMemberUserType(): String {

@@ -73,55 +73,10 @@ class ChooseMemberActivity : BaseActivity() {
         }
     }
 
-    private fun buildSelectedMap(): Map<String, Int> {
-        val map = mutableMapOf<String, Int>()
-        selectedNames.forEachIndexed { index, value ->
-            val memberId = value?.split("|")?.getOrNull(0)
-            if (!memberId.isNullOrBlank()) {
-                map[memberId] = index + 1
-            }
-        }
-        return map
-    }
-
-    private fun refreshAdapters() {
-        if (currentMemberList.isEmpty()) return
-        val selectedMap = buildSelectedMap()
-        val half = currentMemberList.size / 2
-        binding.rvMember.adapter = MemberUIAdapter(
-            currentMemberList.take(half),
-            selectedMap,
-            ::onMemberImageClicked
-        )
-        binding.rvMemberSecond.adapter = MemberUIAdapter(
-            currentMemberList.drop(half),
-            selectedMap,
-            ::onMemberImageClicked
-        )
-    }
-
-    private fun onMemberImageClicked(member: MemberUI) {
-        val key = "${member.memberId}|${member.memberName}"
-        val existingIndex = selectedNames.indexOfFirst { it == key }
-        if (existingIndex != -1) {
-            // Deselect and compact: shift remaining entries left
-            selectedNames[existingIndex] = null
-            val compacted: MutableList<String?> = selectedNames.filterNotNull().toMutableList()
-            repeat(3 - compacted.size) { compacted.add(null) }
-            selectedNames[0] = compacted[0]
-            selectedNames[1] = compacted[1]
-            selectedNames[2] = compacted[2]
-        } else {
-            val emptyIndex = selectedNames.indexOfFirst { it.isNullOrEmpty() }
-            if (emptyIndex == -1) {
-                Toast.makeText(this, "已選擇3位成員，請先移除一位", Toast.LENGTH_SHORT).show()
-                return
-            }
-            selectedNames[emptyIndex] = key
-        }
-        updateAllInputFields()
-        checkEnableSaveButton()
-        refreshAdapters()
+    private fun getSelectedMemberIds(): Set<String> {
+        return selectedNames
+            .mapNotNull { value -> value?.split("|")?.getOrNull(0)?.takeIf { it.isNotBlank() } }
+            .toSet()
     }
 
     private fun observeViewModel() {
@@ -132,7 +87,9 @@ class ChooseMemberActivity : BaseActivity() {
                 binding.rvMemberSecond.adapter = MemberUIAdapter(emptyList())
                 return@observe
             }
-            refreshAdapters()
+            val half = members.size / 2
+            binding.rvMember.adapter = MemberUIAdapter(members.take(half))
+            binding.rvMemberSecond.adapter = MemberUIAdapter(members.drop(half))
         }
         viewModel.errorMessage.observe(this) { msg ->
             msg?.takeIf { it.isNotBlank() }?.let {
@@ -173,13 +130,16 @@ class ChooseMemberActivity : BaseActivity() {
         }
 
         val favoriteIds = selectedNames
-            .mapNotNull { it?.takeIf { name -> name.isNotBlank() } }
+            .mapNotNull { value ->
+                value?.replace("|", " ")?.takeIf { it.isNotBlank() }
+            }
+
 
         val loadingDialog = UpLoadingDialog.Builder(this).createDialog(this)
         loadingDialog.show()
 
         val request = CRMUpdateContactRequest(
-            extraData = CRMExtraData(favorite_players = favoriteIds)
+            extraData = CRMExtraData(favorite_players = favoriteIds, invoice_number=MMKVManagement.getCrmMemberInvoiceNumber())
         )
         val url = "${NetBase.HOST_CRM}/api/v1/basic/member/$memberId/contact"
 
@@ -228,19 +188,9 @@ class ChooseMemberActivity : BaseActivity() {
                 return@ChooseMemberDialog
             }
             selectedNames[index] = selected
-            val parts = selected.split("|")
-            val displayText = "${parts.getOrNull(0) ?: ""} ${parts.getOrNull(1) ?: ""}"
-
-            when(index) {
-                0 -> binding.edtTeamMember.setText(displayText)
-                1 -> binding.edtTeamMember1.setText(displayText)
-                2 -> binding.edtTeamMember2.setText(displayText)
-            }
-
-            updateInputStyle(index)
+            updateAllInputFields()
             checkEnableSaveButton()
-            refreshAdapters()
-        }, selectedNames[index]).show(supportFragmentManager, "choose")
+        }, getSelectedMemberIds()).show(supportFragmentManager, "choose")
     }
     private fun updateInputStyle(index: Int) {
         val color = getColor(R.color.color_4A5565)

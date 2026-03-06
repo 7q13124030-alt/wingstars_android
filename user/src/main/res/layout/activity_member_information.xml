@@ -70,7 +70,7 @@
                         android:id="@+id/iv_icon"
                         android:layout_width="88dp"
                         android:layout_height="88dp"
-                        android:src="@drawable/ic_icon"
+                        android:src="@drawable/ic_avatar"
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true" />
                     <LinearLayout
