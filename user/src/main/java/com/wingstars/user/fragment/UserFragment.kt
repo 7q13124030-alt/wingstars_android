@@ -34,7 +34,6 @@ import com.wingstars.user.activity.CumulativeAmountActivity
 import com.wingstars.user.activity.FrequentlyAskedQuestionsActivity
 import com.wingstars.user.activity.MemberInformationActivity
 import com.wingstars.user.activity.MemberLevelActivity
-import com.wingstars.user.activity.MobileBarcodeCarrierActivity
 import com.wingstars.user.activity.PolicyTermActivity
 import com.wingstars.user.activity.StoreLocationActivity
 import com.wingstars.user.databinding.FragmentUserBinding
@@ -326,17 +325,17 @@ class UserFragment : BaseFragment(){
     }
 
     private fun updateBarcodeUI() {
-        val barcodeNumber = MMKVManagement.getCrmMemberBarcode()
-        val hasBarcode = !barcodeNumber.isNullOrEmpty()
+        val invoiceNumber = MMKVManagement.getCrmMemberInvoiceNumber()
+        val hasBarcode = invoiceNumber.isNotEmpty()
         isBarcodeContentVisible = hasBarcode
         if (hasBarcode) {
-            val bitmap = generateBarcode(barcodeNumber!!)
+            val bitmap = generateBarcode(invoiceNumber)
             bitmap?.let {
                 binding.barcode.setImageBitmap(it)
             }
             binding.barcode.visibility = View.VISIBLE
             binding.tvBarcodeDesc.visibility = View.VISIBLE
-            binding.tvBarcodeDesc.text = barcodeNumber
+            binding.tvBarcodeDesc.text = invoiceNumber
             binding.barcodeNull.visibility = View.GONE
             binding.icArrowDown.visibility = View.VISIBLE
         } else {
