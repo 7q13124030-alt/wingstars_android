@@ -142,14 +142,16 @@ public interface ApiService {
             @Query("type") String type,
             @Query("key") String apiKey
     );
-    // API mới: Lấy danh sách video cực nhanh, chỉ tốn 1 điểm Quota
-//    @GET(NetBase.HOST_GOOGLE + "/youtube/v3/playlistItems")
-//    Observable<YoutubeSearchResponse> getYoutubePlaylistItems(
-//            @Query("part") String part,
-//            @Query("playlistId") String playlistId,
-//            @Query("maxResults") int maxResults,
-//            @Query("key") String apiKey
-//    );
+
+    // Gọi trực tiếp đến Google thay vì server NewSoft
+    @GET("https://www.googleapis.com/youtube/v3/playlistItems")
+    Observable<YoutubeSearchResponse> getYoutubePlaylistItems(
+            @Query("part") String part,
+            @Query("playlistId") String playlistId,
+            @Query("maxResults") int maxResults,
+            @Query("key") String apiKey
+    );
+
     @GET(NetBase.HOST_CRM +"api/v1/basic/member/{id}/message/inapp/list")
     Observable<List<CRMInAppMessageResponse>>getInAppMessages(
             @Path("id") String memberId,
@@ -338,6 +340,14 @@ public interface ApiService {
     //获取Youtube视频
     @GET(NetBase.HOST_NEWSOFT + "/api/v1/app/youtube/vlist")
     Observable<YoutubeListResponse> nsYtbList();
+    // Gọi trực tiếp đến Google, trả về thẳng YoutubeListResponse để Gson tự động parse
+    @GET("https://www.googleapis.com/youtube/v3/playlistItems")
+    Observable<YoutubeListResponse> getYoutubePlaylistItemsDirect(
+            @Query("part") String part,
+            @Query("playlistId") String playlistId,
+            @Query("maxResults") int maxResults,
+            @Query("key") String apiKey
+    );
 
     //获取Youtube List
     //eventType=completed：僅包含已結束的廣播。
