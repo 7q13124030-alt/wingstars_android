@@ -15,6 +15,7 @@ import com.wingstars.base.net.API
 import com.wingstars.base.net.NetBase
 import com.wingstars.base.net.beans.CRMBaseResponse
 import com.wingstars.base.net.beans.CRMDeleteRespone
+import com.wingstars.base.net.beans.CRMMemberContactResponse
 import com.wingstars.base.utils.MMKVManagement
 import com.wingstars.base.view.UpLoadingDialog
 import com.wingstars.login.LoginActivity
@@ -113,7 +114,7 @@ class MemberInformationActivity : BaseActivity() {
                     result.data?.getStringExtra("name3") ?: ""
                 ).filter { it.isNotBlank() }
 
-                binding.edtFavMember.setText(names.joinToString("`"))
+                binding.edtFavMember.setText(names.joinToString("、"))
 
                 MMKVManagement.setMemberFavMember(names)
             }
@@ -144,13 +145,13 @@ class MemberInformationActivity : BaseActivity() {
         val gender = MMKVManagement.getMemberGender()
         val name = MMKVManagement.getMemberName()
         val mail = MMKVManagement.getMemberMail()
-        val barcodeNumber = MMKVManagement.getCrmMemberBarcode()
+        val invoiceNumber = MMKVManagement.getCrmMemberInvoiceNumber()
         val favMembers = MMKVManagement.getMemberFavMember()
         binding.phoneMember.text = phone
         binding.idCardNumber.text = identity
         binding.birthday.text = formatBirthday(birthday)
         binding.birthday.text = formatBirthday(birthday)
-        binding.edtFavMember.setText(favMembers.joinToString("`"))
+        binding.edtFavMember.setText(favMembers.joinToString("、"))
         binding.edtPassword.setText(password)
         binding.userGender.text = when (gender) {
             "M", "Male", "男" -> "男姓"
@@ -159,7 +160,7 @@ class MemberInformationActivity : BaseActivity() {
         }
         binding.tvUserName.text = name
         binding.tvUserMail.text = mail
-        binding.edtBarcodeCarrier.setText(barcodeNumber)
+        binding.edtBarcodeCarrier.setText(invoiceNumber)
     }
 
     fun formatBirthday(birthdayRaw: String?): String {
@@ -238,8 +239,59 @@ class MemberInformationActivity : BaseActivity() {
         finish()
     }
 
+    private fun loadMemberInfoFromApi() {
+        if (!MMKVManagement.isLogin()) return
+        val memberId = MMKVManagement.getCrmMemberId()
+        API.shared?.api?.let { apiService ->
+            val url = "${NetBase.HOST_CRM}/api/v1/basic/member/$memberId/contact"
+            apiService.crmGetMemberContact(url)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Observer<CRMBaseResponse<CRMMemberContactResponse>> {
+                    override fun onSubscribe(d: Disposable) {}
+                    override fun onNext(response: CRMBaseResponse<CRMMemberContactResponse>) {
+                        if (response.success) {
+                            bindContactDataToView(response.data)
+                            MMKVManagement.setMemberName(response.data.Name)
+                            MMKVManagement.setMemberPhone(response.data.Phone)
+                            MMKVManagement.setCrmMemberCode(response.data.Code)
+                            MMKVManagement.setMemberBirthday(response.data.Birthday)
+                            MMKVManagement.setMemberGender(response.data.Gender)
+                            MMKVManagement.setMemberIdentity(response.data.Identity)
+                            MMKVManagement.setMemberMail(response.data.Email)
+                            MMKVManagement.setCrmMemberInvoiceNumber(response.data.ExtraData.invoice_number)
+                            MMKVManagement.setMemberFavMember(response.data.ExtraData.favorite_players ?: emptyList())
+                        } else {
+                            loadMemberInfo()
+                        }
+                    }
+                    override fun onError(e: Throwable) {
+                        loadMemberInfo()
+                    }
+                    override fun onComplete() {}
+                })
+        } ?: loadMemberInfo()
+    }
+
+    private fun bindContactDataToView(data: CRMMemberContactResponse) {
+        binding.phoneMember.text = data.Phone
+        binding.idCardNumber.text = data.Identity
+        binding.birthday.text = formatBirthday(data.Birthday)
+        val favMembers = data.ExtraData.favorite_players ?: emptyList()
+        binding.edtFavMember.setText(favMembers.joinToString("、"))
+        binding.edtPassword.setText(MMKVManagement.getMemberPassword())
+        binding.userGender.text = when (data.Gender) {
+            "M", "Male", "男" -> "男姓"
+            "F", "Female", "女" -> "女姓"
+            else -> ""
+        }
+        binding.tvUserName.text = data.Name
+        binding.tvUserMail.text = data.Email
+        binding.edtBarcodeCarrier.setText(data.ExtraData.invoice_number)
+    }
+
     override fun onResume() {
         super.onResume()
-        loadMemberInfo()
+        loadMemberInfoFromApi()
     }
 }

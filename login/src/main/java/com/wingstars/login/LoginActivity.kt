@@ -59,13 +59,19 @@ class LoginActivity : BaseActivity(), LoginNavigator {
             EventBus.getDefault().register(this)
         }
 
-        // --- MMKV: Ghi nhớ tài khoản ---
+        // --- MMKV: Remember my account ---
+
+        val isFromReset = intent.getBooleanExtra("FROM_RESET_PSD", false)
         val autoPhone = intent.getStringExtra("PHONE_NUMBER")
-        if (!autoPhone.isNullOrEmpty()) {
+        if (isFromReset) {
+            binding.edtPhone.setText("")
+            binding.edtPsd.setText("")
+            binding.cbPsd.isChecked = false
+        } else if (!autoPhone.isNullOrEmpty()) {
             binding.edtPhone.setText(autoPhone)
             binding.edtPhone.setSelection(autoPhone.length)
             binding.cbPsd.isChecked = false
-        }else{
+        } else {
             if (MMKVManagement.getIsRememberAccount()) {
                 val account = MMKVManagement.getMemberPhone()
                 val psd = MMKVManagement.getMemberPassword()
@@ -77,13 +83,13 @@ class LoginActivity : BaseActivity(), LoginNavigator {
             } else {
                 binding.cbPsd.isChecked = false
             }
-            try {
-                viewModel.isLoading.observe(this) { isShow ->
-                    showLoadingUI(isShow, this)
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
+        }
+        try {
+            viewModel.isLoading.observe(this) { isShow ->
+                showLoadingUI(isShow, this)
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
 
         binding.ivBack.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
@@ -193,15 +199,18 @@ class LoginActivity : BaseActivity(), LoginNavigator {
         binding.tvPhoneInputError.visibility = View.VISIBLE
         binding.alertCircle.visibility = View.VISIBLE
     }
+
     private fun showPhoneNormal() {
         binding.tvPhoneInputError.text = ""
         binding.tvPhoneInputError.visibility = View.INVISIBLE
         binding.alertCircle.visibility = View.INVISIBLE
     }
+
     private fun showPsdError(msg: String) {
         binding.tvPsdInputError.text = msg
         binding.tvPsdInputError.visibility = View.VISIBLE
     }
+
     private fun showPsdNormal() {
         binding.tvPsdInputError.text = ""
         binding.tvPsdInputError.visibility = View.INVISIBLE
@@ -232,7 +241,7 @@ class LoginActivity : BaseActivity(), LoginNavigator {
         override fun afterTextChanged(s: Editable?) {}
     }
 
-    private fun setUserName(userName: String){
+    private fun setUserName(userName: String) {
         MMKVManagement.setMemberName(userName)
     }
 
@@ -269,11 +278,10 @@ class LoginActivity : BaseActivity(), LoginNavigator {
             sendBroadcast(intent)
         }
         EventBus.getDefault().post(MessageEvent(EventState.LOG_IN.name, ""))
-
         if (isFromSplash) {
             navigateToMain()
         } else {
-            finish()
+            navigateToMain()
         }
     }
 
@@ -299,6 +307,7 @@ class LoginActivity : BaseActivity(), LoginNavigator {
         }
         dialog.show()
     }
+
     override fun showLoginFailDialog(message: String) {
         showCustomDialog(
             message = message,
@@ -321,12 +330,6 @@ class LoginActivity : BaseActivity(), LoginNavigator {
         val btnConfirm = dialogView.findViewById<android.view.View>(R.id.btnConfirm)
         btnConfirm.setOnClickListener {
             dialog.dismiss()
-            if (isRegisterAction) {
-                dialog.dismiss()
-                val phoneStr = binding.edtPhone.text.toString().trim()
-                val intent = Intent(this, com.wingstars.register.RegisterActivity::class.java)
-                intent.putExtra("PHONE_NUMBER", phoneStr)
-                startActivity(intent)            }
         }
         dialog.show()
     }

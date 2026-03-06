@@ -15,12 +15,9 @@ data class MemberInfo(
 
 class MemberAdapter(
     private val memberList: List<MemberInfo>,
-    private val selectedId: String?,
+    private val selectedIds: Set<String> = emptySet(),
     private val onSelect: (MemberInfo) -> Unit
 ) : RecyclerView.Adapter<MemberAdapter.MemberViewHolder>() {
-
-    private var selectedPosition =
-        memberList.indexOfFirst { it.number == selectedId }
 
     inner class MemberViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val txtNumber: TextView = view.findViewById(R.id.tv_number)
@@ -41,17 +38,11 @@ class MemberAdapter(
         holder.txtName.text = member.name
 
         holder.imgTick.visibility =
-            if (position == selectedPosition) View.VISIBLE else View.GONE
+            if (selectedIds.contains(member.number)) View.VISIBLE else View.GONE
 
         holder.itemView.setOnClickListener {
             val pos = holder.bindingAdapterPosition
             if (pos == RecyclerView.NO_POSITION) return@setOnClickListener
-
-            val old = selectedPosition
-            selectedPosition = pos
-            if (old != -1) notifyItemChanged(old)
-            notifyItemChanged(selectedPosition)
-
             onSelect(member)
         }
     }
