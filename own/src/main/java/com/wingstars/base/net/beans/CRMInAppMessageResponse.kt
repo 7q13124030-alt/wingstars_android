@@ -12,7 +12,7 @@ data class CRMInAppMessageResponse(
     val payload: List<Any>,     // 未來擴充功能使用
     val categories: String,     // activity | system. 訊息類別 (活動通知 or 系統通知)
     var status: Int,            // 使用者是否已讀取. 0=未讀, 1=已讀
-    val readAt: String,         // 使用者已讀時間，如果還沒已讀，不會回傳這個參數，固定回傳無毫秒+08:00
+    val readAt: String? = null,        // 使用者已讀時間，如果還沒已讀，不會回傳這個參數，固定回傳無毫秒+08:00
     val CreatedAt: String,      // 系統預設資料建立時間(有毫秒), 等於系統/排程訊息送出的時間，
     val UpdatedAt: String,      // 系統預設資料更新時間(有毫秒)
 ) {

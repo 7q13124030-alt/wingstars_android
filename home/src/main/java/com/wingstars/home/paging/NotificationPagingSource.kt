@@ -20,19 +20,23 @@ class NotificationPagingSource(
         val memberId = MMKV.defaultMMKV().decodeString("crm_member_id") ?: ""
 
         return try {
-            // 1. Gọi API (Trả về Observable)
+            // Gọi API
             val observable = API.shared?.api?.getInAppMessages(memberId, category, page, limit)
 
-            // 2. Chuyển đổi Observable thành kết quả (Sử dụng hàm await tự viết bên dưới)
-            val dataList = observable?.await() ?: emptyList()
+            // Lấy response tổng thể
+            val response = observable?.await()
 
-            // 3. Trả về kết quả cho Paging
+            // Chọc vào lấy mảng data bên trong (nếu null thì gán list rỗng)
+            val dataList = response?.data ?: emptyList()
+
+            // Trả về kết quả
             LoadResult.Page(
                 data = dataList,
                 prevKey = if (page == 1) null else page - 1,
                 nextKey = if (dataList.isEmpty() || dataList.size < limit) null else page + 1
             )
         } catch (e: Exception) {
+            e.printStackTrace()
             LoadResult.Error(e)
         }
     }

@@ -199,15 +199,18 @@ class LoginActivity : BaseActivity(), LoginNavigator {
         binding.tvPhoneInputError.visibility = View.VISIBLE
         binding.alertCircle.visibility = View.VISIBLE
     }
+
     private fun showPhoneNormal() {
         binding.tvPhoneInputError.text = ""
         binding.tvPhoneInputError.visibility = View.INVISIBLE
         binding.alertCircle.visibility = View.INVISIBLE
     }
+
     private fun showPsdError(msg: String) {
         binding.tvPsdInputError.text = msg
         binding.tvPsdInputError.visibility = View.VISIBLE
     }
+
     private fun showPsdNormal() {
         binding.tvPsdInputError.text = ""
         binding.tvPsdInputError.visibility = View.INVISIBLE
@@ -238,7 +241,7 @@ class LoginActivity : BaseActivity(), LoginNavigator {
         override fun afterTextChanged(s: Editable?) {}
     }
 
-    private fun setUserName(userName: String){
+    private fun setUserName(userName: String) {
         MMKVManagement.setMemberName(userName)
     }
 
@@ -304,6 +307,7 @@ class LoginActivity : BaseActivity(), LoginNavigator {
         }
         dialog.show()
     }
+
     override fun showLoginFailDialog(message: String) {
         showCustomDialog(
             message = message,
@@ -326,12 +330,6 @@ class LoginActivity : BaseActivity(), LoginNavigator {
         val btnConfirm = dialogView.findViewById<android.view.View>(R.id.btnConfirm)
         btnConfirm.setOnClickListener {
             dialog.dismiss()
-            if (isRegisterAction) {
-                dialog.dismiss()
-                val phoneStr = binding.edtPhone.text.toString().trim()
-                val intent = Intent(this, com.wingstars.register.RegisterActivity::class.java)
-                intent.putExtra("PHONE_NUMBER", phoneStr)
-                startActivity(intent)            }
         }
         dialog.show()
     }
