@@ -259,7 +259,7 @@ class MemberInformationActivity : BaseActivity() {
                             MMKVManagement.setMemberGender(response.data.Gender?: "")
                             MMKVManagement.setMemberIdentity(response.data.Identity?: "")
                             MMKVManagement.setMemberMail(response.data.Email?: "")
-                            MMKVManagement.setCrmMemberInvoiceNumber(response.data.ExtraData.invoice_number)
+                            MMKVManagement.setCrmMemberInvoiceNumber(response.data.ExtraData.invoice_number?: "")
                             MMKVManagement.setMemberFavMember(response.data.ExtraData.favorite_players ?: emptyList())
                         } else {
                             loadMemberInfo()
