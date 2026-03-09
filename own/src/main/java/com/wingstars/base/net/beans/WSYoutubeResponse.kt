@@ -27,8 +27,12 @@ data class VideoSnippet(
     @SerializedName("publishTime")
     val publishTime: String?, // Dạng gốc: "2025-12-22T11:30:42Z"
 
+    // Dùng cho API playlistItems mới
+    @SerializedName("publishedAt")
+    val publishedAt: String?,
+
     @SerializedName("thumbnails")
-    val thumbnails: VideoThumbnails?
+    val thumbnails: VideoThumbnails?,
 )
 
 data class VideoThumbnails(
