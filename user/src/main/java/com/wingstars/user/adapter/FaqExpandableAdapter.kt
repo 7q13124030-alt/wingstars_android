@@ -62,6 +62,7 @@ class FaqExpandableAdapter(
 
         tvNumber.text = item.titleNum
 
+        // Set Q1, Q2 color to theme pink
         tvNumber.setTextColor(context.getColor(R.color.color_DE9DBA))
         
         tvTitle.text = item.title
@@ -78,7 +79,7 @@ class FaqExpandableAdapter(
                 val ivDot = contentView.findViewById<ImageView>(R.id.tv_items_count_image)
                 val tvContent = contentView.findViewById<TextView>(R.id.tv_items_count_title)
                 
-                // Bỏ chấm đầu dòng
+                // Hide bullet points
                 ivDot.visibility = View.GONE
                 
                 tvContent.text = line
