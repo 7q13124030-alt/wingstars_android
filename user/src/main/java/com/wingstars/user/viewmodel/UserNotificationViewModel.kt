@@ -3,6 +3,7 @@ package com.wingstars.user.viewmodel
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.tencent.mmkv.MMKV
 import com.wingstars.base.net.API
 import com.wingstars.base.net.NetBase
 import com.wingstars.base.net.beans.NSInfoRequest
@@ -17,13 +18,14 @@ class UserNotificationViewModel : ViewModel() {
      * Đồng bộ cài đặt lên Server
      */
     fun syncNotificationSetting(isOn: Boolean) {
-        val deviceId = MMKVManagement.getTest() // Placeholder, ideally use a stable device ID
+        // Lấy device_id thực tế từ MMKV (đã được lưu trong PermissionRequestActivity)
+        val deviceId = MMKV.defaultMMKV().decodeString("device_id", "") ?: ""
         val fcmToken = MMKVManagement.getFcmToken()
         
         val request = NSInfoRequest(
             deviceId = deviceId.ifEmpty { "android_device" },
             fcmToken = fcmToken,
-            deviceIsPush = if (isOn) 0 else 1, // 0: Push, 1: No Push based on your data class comment
+            deviceIsPush = if (isOn) 0 else 1, // 0: Cho phép Push, 1: Không Push
             crmMemberToken = MMKVManagement.getCrmMemberAccessToken(),
             userName = MMKVManagement.getMemberName(),
             crmMemberId = MMKVManagement.getCrmMemberId(),
@@ -35,7 +37,7 @@ class UserNotificationViewModel : ViewModel() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    Log.d("NotificationSync", "Sync success: $isOn")
+                    Log.d("NotificationSync", "Sync success: $isOn với deviceId: $deviceId")
                 }, {
                     Log.e("NotificationSync", "Sync failed", it)
                 })
@@ -43,7 +45,7 @@ class UserNotificationViewModel : ViewModel() {
     }
 
     /**
-     * Lấy tin nhắn chưa đọc và hiển thị Local Notification
+     * Lấy tin nhắn chưa đọc và hiển thị Local Notification (Chỉ dùng khi vừa bật nút)
      */
     fun pushUnreadMessagesLocally(context: Context) {
         val memberId = MMKVManagement.getCrmMemberId()
@@ -55,6 +57,7 @@ class UserNotificationViewModel : ViewModel() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ response ->
                     if (response.success) {
+                        // Chỉ lọc những tin nhắn thực sự chưa đọc để tránh làm phiền người dùng
                         response.data?.filter { it.status == 0 }?.forEach { msg ->
                             NotificationHelper.showNotification(
                                 context,
