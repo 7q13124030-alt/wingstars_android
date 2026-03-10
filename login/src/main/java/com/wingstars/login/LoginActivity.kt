@@ -20,6 +20,10 @@ import com.wingstars.login.databinding.ActivityLoginBinding
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
+
+
 
 class LoginActivity : BaseActivity(), LoginNavigator {
     private lateinit var binding: ActivityLoginBinding
@@ -116,13 +120,20 @@ class LoginActivity : BaseActivity(), LoginNavigator {
         }
 
         binding.cbPsdVisible.setOnCheckedChangeListener { _, isChecked ->
-            val typeface = binding.edtPsd.typeface
-            binding.edtPsd.inputType = if (isChecked)
-                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-            else
-                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-            binding.edtPsd.typeface = typeface
-            binding.edtPsd.text?.let { binding.edtPsd.setSelection(it.length) }
+
+            val pos = binding.edtPsd.selectionStart
+
+            if (isChecked) {
+                binding.edtPsd.transformationMethod =
+                    HideReturnsTransformationMethod.getInstance()
+            } else {
+                binding.edtPsd.transformationMethod =
+                    PasswordTransformationMethod.getInstance()
+            }
+
+            binding.edtPsd.post {
+                binding.edtPsd.setSelection(pos)
+            }
         }
 
         binding.btnLogin.setOnClickListener {

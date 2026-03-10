@@ -26,7 +26,7 @@ data class WSCalendarNResponse(
             return category
         }
 
-    val st_dateF: String //start_date format
+    val st_dateF: String                    //start_date format
         get() {
             return start_date
         }

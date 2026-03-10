@@ -8,8 +8,11 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,8 +20,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.widget.NestedScrollView
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.fragment.app.viewModels
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter
 import com.journeyapps.barcodescanner.BarcodeEncoder
@@ -40,6 +45,7 @@ import com.wingstars.user.activity.StoreLocationActivity
 import com.wingstars.user.databinding.FragmentUserBinding
 import com.wingstars.user.dialog.LogoutDialog
 import com.wingstars.user.dialog.NotificationDialog
+import com.wingstars.user.viewmodel.UserNotificationViewModel
 import java.io.File
 import java.io.FileOutputStream
 import androidx.core.graphics.createBitmap
@@ -51,6 +57,9 @@ class UserFragment : BaseFragment() {
     private var isNotificationOn = false
     private var isBarcodeContentVisible = true
     private lateinit var originalConstraintSet: ConstraintSet
+    
+    private val notificationViewModel: UserNotificationViewModel by viewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -66,15 +75,23 @@ class UserFragment : BaseFragment() {
         originalConstraintSet = ConstraintSet()
         originalConstraintSet.clone(binding.barcodeMember)
 
-        // Fade gradient header based on scroll position
-        val gradientMaxScroll by lazy {
-            binding.bgHeader1.height.takeIf { it > 0 }
-                ?: resources.getDimensionPixelSize(R.dimen.dp_190)
-        }
-        binding.content.setOnScrollChangeListener { _, _, scrollY, _, _ ->
-            val alpha = 1f - (scrollY.toFloat() / gradientMaxScroll).coerceIn(0f, 1f)
-            binding.bgHeader1.alpha = alpha
-        }
+        val gradientDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.bg_review_gradient)!!
+        val whiteOverlay = ColorDrawable(Color.WHITE).also { it.alpha = 0 }
+        binding.layoutMain.rlTop.background = LayerDrawable(arrayOf(gradientDrawable, whiteOverlay))
+
+        binding.content.setOnScrollChangeListener(
+            NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, _ ->
+                val headerHeight = binding.bgHeader1.height.toFloat()
+                val ratio = (scrollY / headerHeight).coerceIn(0f, 1f)
+                binding.bgHeader1.apply {
+                    alpha = 1f - ratio
+                    scaleX = 1f + ratio * 0.1f
+                    scaleY = 1f + ratio * 0.1f
+                }
+                (binding.layoutMain.rlTop.background as? LayerDrawable)
+                    ?.getDrawable(1)?.alpha = (ratio * 255).toInt()
+            }
+        )
     }
 
     @SuppressLint("SetTextI18n")
@@ -128,9 +145,18 @@ class UserFragment : BaseFragment() {
         }
         binding.llUserNotificationSettings.setOnClickListener {
             checkLoginOrGoLogin {
-                val dialog = NotificationDialog(isNotificationOn) { isOn ->
+                val dialog = NotificationDialog(MMKVManagement.isNotificationOn()) { isOn ->
                     isNotificationOn = isOn
+                    MMKVManagement.setIsNotificationOn(isOn)
                     binding.form4Status.text = if (isOn) "已開啟" else ""
+                    
+                    // 1. Sync setting with Server
+                    notificationViewModel.syncNotificationSetting(isOn)
+                    
+                    // 2. If turned ON, fetch and push unread messages locally
+                    if (isOn) {
+                        notificationViewModel.pushUnreadMessagesLocally(requireContext())
+                    }
                 }
                 dialog.show(parentFragmentManager)
             }
@@ -175,11 +201,11 @@ class UserFragment : BaseFragment() {
             val intent = Intent(requireActivity(), ContactCustomerActivity::class.java)
             startActivity(intent)
         }
-        binding.llUserLogOut.setOnClickListener {
-            LogoutDialog(requireContext()) {
-                performLogout()
-            }.show()
-        }
+//        binding.llUserLogOut.setOnClickListener {
+//            LogoutDialog(requireContext()) {
+//                performLogout()
+//            }.show()
+//        }
         binding.llUserFacebook.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW)
             intent.data = "https://www.facebook.com/tsgwingstars/?locale=zh_TW".toUri()
@@ -207,19 +233,15 @@ class UserFragment : BaseFragment() {
             }
         }
 
-        binding.qrMember.setOnClickListener {
-            val intent = Intent(requireActivity(), CumulativeAmountActivity::class.java)
-            startActivity(intent)
-        }
+//        binding.qrMember.setOnClickListener {
+//            val intent = Intent(requireActivity(), CumulativeAmountActivity::class.java)
+//            startActivity(intent)
+//        }
         binding.llUserCheeringMode.setOnClickListener {
             checkLoginOrGoLogin {
                 val intent = Intent(requireActivity(), CheerModeActivity::class.java)
                 startActivity(intent)
             }
-        }
-        binding.qrMember.setOnClickListener {
-            val intent = Intent(requireActivity(), CumulativeAmountActivity::class.java)
-            startActivity(intent)
         }
         binding.cardGeneralMember.setOnClickListener {
             checkLoginOrGoLogin { }
@@ -272,7 +294,8 @@ class UserFragment : BaseFragment() {
         val mmkv = MMKV.defaultMMKV()
         mmkv.encode("isLogin", false)
         mmkv.removeValueForKey("crm_member_access_token")
-        mmkv.removeValueForKey("user_name")
+        mmkv.removeValueForKey("member_name")
+        mmkv.removeValueForKey("crm_member_id")
         updateLoginUI()
         val intent = Intent(requireContext(), LoginActivity::class.java)
         intent.putExtra("isFromSplash", true)
@@ -280,12 +303,48 @@ class UserFragment : BaseFragment() {
         startActivity(intent)
     }
 
+//    private fun updateLoginUI() {
+//        val isLoggedIn = MMKVManagement.isLogin()
+//        val name = MMKVManagement.getMemberName()
+////        Log.d("UserFragment", "Update UI: Login=$isLoggedIn, Name=$name")
+////        binding.cardGeneralMember.visibility = if (isLoggedIn) View.GONE else View.VISIBLE
+////        binding.cardFriendshipMember.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
+//        binding.containerLeft.isEnabled = false
+//        binding.qrMember.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
+//        binding.barcodeMember.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
+//        binding.layoutMain.tvLogin.visibility = if (isLoggedIn) View.GONE else View.VISIBLE
+//        binding.layoutMain.tvLoginGenerally.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
+//        binding.layoutMain.effectiveDateGeneral.visibility =
+//            if (isLoggedIn) View.GONE else View.VISIBLE
+//        if (isLoggedIn) {
+//            binding.layoutMain.tvUserName.text = name
+//            val expiredDate = MMKVManagement.getMemberExpiredDate()
+//            binding.layoutMain.effectiveDate.text = if (expiredDate.isNotEmpty()) {
+//                "會員到期 : ${expiredDate.replace("-", "/")}"
+//            } else {
+//                MMKVManagement.getMemberBirthday()
+//            }
+//
+//        }
+//    }
+
     private fun updateLoginUI() {
         val isLoggedIn = MMKVManagement.isLogin()
         val name = MMKVManagement.getMemberName()
-//        Log.d("UserFragment", "Update UI: Login=$isLoggedIn, Name=$name")
-//        binding.cardGeneralMember.visibility = if (isLoggedIn) View.GONE else View.VISIBLE
-//        binding.cardFriendshipMember.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
+
+        binding.userLogOut.text =
+            if (isLoggedIn) "登出帳號" else "登入帳號"
+
+        binding.llUserLogOut.setOnClickListener {
+            if (MMKVManagement.isLogin()) {
+                LogoutDialog(requireContext()) {
+                    performLogout()
+                }.show()
+            } else {
+                startActivity(Intent(requireActivity(), LoginActivity::class.java))
+            }
+        }
+
         binding.containerLeft.isEnabled = false
         binding.qrMember.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
         binding.barcodeMember.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
@@ -293,15 +352,19 @@ class UserFragment : BaseFragment() {
         binding.layoutMain.tvLoginGenerally.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
         binding.layoutMain.effectiveDateGeneral.visibility =
             if (isLoggedIn) View.GONE else View.VISIBLE
+
         if (isLoggedIn) {
+            isNotificationOn = MMKVManagement.isNotificationOn()
+            binding.form4Status.text = if (isNotificationOn) "已開啟" else ""
             binding.layoutMain.tvUserName.text = name
             val expiredDate = MMKVManagement.getMemberExpiredDate()
-            binding.layoutMain.effectiveDate.text = if (expiredDate.isNotEmpty()) {
-                "會員到期 : ${expiredDate.replace("-", "/")}"
-            } else {
-                MMKVManagement.getMemberBirthday()
-            }
 
+            binding.layoutMain.effectiveDate.text =
+                if (expiredDate.isNotEmpty()) {
+                    "會員到期 : ${expiredDate.replace("-", "/")}"
+                } else {
+                    MMKVManagement.getMemberBirthday()
+                }
         }
     }
 
