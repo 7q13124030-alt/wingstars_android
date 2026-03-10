@@ -50,6 +50,7 @@
                     android:id="@+id/iv_item_question_image"
                     android:layout_width="@dimen/dp_20"
                     android:layout_height="@dimen/dp_20"
+                    android:layout_gravity="center_vertical"
                     android:src="@drawable/ic_arrow_down" />
             </LinearLayout>
 
