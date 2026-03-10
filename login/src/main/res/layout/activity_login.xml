@@ -229,12 +229,8 @@
                             android:singleLine="true"
                             android:textColor="@color/text_tittle"
                             android:textColorHint="@color/gray_400"
-                            android:letterSpacing="0.1"
-                            android:typeface="sans"
                             android:textSize="@dimen/sp_14"
-                            android:includeFontPadding="false"
-                            android:fontFamily="sans-serif"
-                            />
+                            android:includeFontPadding="false" />
 
                     </RelativeLayout>
                     <RelativeLayout
