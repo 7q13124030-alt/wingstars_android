@@ -117,23 +117,35 @@ class HomeViewModel : ViewModel() {
     fun getNewCalendarData() {
         val date = Calendar.getInstance().get(Calendar.YEAR).toString() + "-" +
                 String.format("%02d", Calendar.getInstance().get(Calendar.MONTH) + 1) + "-" +
-                String.format("%02d",Calendar.getInstance().get(Calendar.DATE))
+                String.format("%02d", Calendar.getInstance().get(Calendar.DATE))
         val monthParam = HashMap<String, String>().apply {
             put("date", date)
         }
 
         API.shared?.api?.let {
             val observer = it.wsCalendarN(monthParam)
-            observer?.subscribeOn(Schedulers.io())?.unsubscribeOn(Schedulers.io())?.observeOn(
-                AndroidSchedulers.mainThread()
-            )?.subscribe({ next ->
-                val limitedList = next.take(3).toMutableList()
-                calendarDataList.postValue(limitedList)
-            }, { error ->
-                //Log.e("getWsCalendarsData", error.toString())
-
-                error.printStackTrace()
-            })
+            observer?.subscribeOn(Schedulers.io())
+                ?.unsubscribeOn(Schedulers.io())
+                // --- THÊM ĐOẠN NÀY ĐỂ CHỈ HIỆN NGÀY Ở HOME ---
+                ?.map { list ->
+                    list.map { item ->
+                        // Tạo bản sao (copy) và chỉ lấy 10 ký tự đầu cho start_date
+                        val formattedDate = if (item.start_date.length >= 10) {
+                            item.start_date.substring(0, 10)
+                        } else {
+                            item.start_date
+                        }
+                        item.copy(start_date = formattedDate)
+                    }
+                }
+                // --------------------------------------------
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe({ next ->
+                    val limitedList = next.take(3).toMutableList()
+                    calendarDataList.postValue(limitedList)
+                }, { error ->
+                    error.printStackTrace()
+                })
         }
     }
 
