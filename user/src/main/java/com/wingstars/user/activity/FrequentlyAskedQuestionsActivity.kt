@@ -56,6 +56,8 @@ class FrequentlyAskedQuestionsActivity : BaseActivity() {
         binding.viewPager.offscreenPageLimit = 3
         val tabLayoutMediator =
             TabLayoutMediator(binding.tabLayout, binding.viewPager, true, true) { tab, position ->
+                tab.text = tabTitleList[position]
+
                 when (position) {
                     0 -> {
                         tab.customView = getTabView(this, 0)
