@@ -51,6 +51,8 @@ class MMKVManagement {
 
         private val IS_NOTIFICATION_ON = "is_notification_on_"
 
+        private val FCM_TOKEN = "FCM_Token"
+
         //---------------------------请西安同事在下面新增MMKV相关set/get方法---------------------
 
         public fun init(context: Context) {
@@ -281,6 +283,14 @@ class MMKVManagement {
         public fun isNotificationOn(): Boolean {
             val memberId = getCrmMemberId()
             return MMKV.defaultMMKV().decodeBool(IS_NOTIFICATION_ON + memberId, false)
+        }
+
+        fun getFcmToken(): String {
+            return MMKV.defaultMMKV().decodeString(FCM_TOKEN, "")!!
+        }
+
+        fun setFcmToken(token: String) {
+            MMKV.defaultMMKV().encode(FCM_TOKEN, token)
         }
 
         //---------------------------请台湾同事在下面新增MMKV相关set/get方法---------------------
