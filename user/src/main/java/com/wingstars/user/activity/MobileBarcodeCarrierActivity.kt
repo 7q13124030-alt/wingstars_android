@@ -35,7 +35,7 @@ class MobileBarcodeCarrierActivity: BaseActivity() {
     }
     @SuppressLint("SuspiciousIndentation")
     override fun initView() {
-        val barcodeNumber = MMKVManagement.getCrmMemberBarcode()
+        val barcodeNumber = MMKVManagement.getCrmMemberInvoiceNumber()
         if(barcodeNumber.isNotEmpty())
             binding.edtMobile.setText(barcodeNumber)
 
@@ -82,7 +82,7 @@ class MobileBarcodeCarrierActivity: BaseActivity() {
 
         val loadingDialog = UpLoadingDialog.Builder(this).createDialog(this)
         loadingDialog.show()
-        val crmExtraData = CRMExtraData(invoice_number= invoiceNumber)
+        val crmExtraData = CRMExtraData(invoice_number= invoiceNumber, favorite_players = MMKVManagement.getMemberFavMember())
         val request = CRMUpdateContactRequest(
             extraData= crmExtraData
         )
@@ -99,7 +99,7 @@ class MobileBarcodeCarrierActivity: BaseActivity() {
                     { response: CRMBaseResponse<CRMMemberContactResponse> ->
                         loadingDialog.dismiss()
                         if (response.success) {
-                            MMKVManagement.setCrmMemberBarcode(invoiceNumber)
+                            MMKVManagement.setCrmMemberInvoiceNumber(invoiceNumber)
                             val intent = Intent()
                             intent.putExtra("mobile_number", invoiceNumber)
                             setResult(RESULT_OK, intent)

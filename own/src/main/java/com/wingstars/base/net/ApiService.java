@@ -145,29 +145,32 @@ public interface ApiService {
             @Query("type") String type,
             @Query("key") String apiKey
     );
-    // API mới: Lấy danh sách video cực nhanh, chỉ tốn 1 điểm Quota
-//    @GET(NetBase.HOST_GOOGLE + "/youtube/v3/playlistItems")
-//    Observable<YoutubeSearchResponse> getYoutubePlaylistItems(
-//            @Query("part") String part,
-//            @Query("playlistId") String playlistId,
-//            @Query("maxResults") int maxResults,
-//            @Query("key") String apiKey
-//    );
-    @GET(NetBase.HOST_CRM +"api/v1/basic/member/{id}/message/inapp/list")
-    Observable<List<CRMInAppMessageResponse>>getInAppMessages(
+
+    // Gọi trực tiếp đến Google, trả về thẳng YoutubeListResponse để Gson tự động parse
+    @GET("https://www.googleapis.com/youtube/v3/playlistItems")
+    Observable<YoutubeListResponse> getYoutubePlaylistItemsDirect(
+            @Query("part") String part,
+            @Query("playlistId") String playlistId,
+            @Query("maxResults") int maxResults,
+            @Query("key") String apiKey
+    );
+
+    // Sửa lại ApiService.java
+    @GET(NetBase.HOST_CRM +"/api/v1/basic/member/{id}/message/inapp")
+    Observable<CRMBaseResponse<List<CRMInAppMessageResponse>>> getInAppMessages(
             @Path("id") String memberId,
             @Query("category") String category,
             @Query("page") Integer page,
             @Query("limit") Integer limit
     );
 
-    @POST(NetBase.HOST_CRM +"api/v1/basic/member/{id}/message/inapp/list")
+    @POST(NetBase.HOST_CRM +"/api/v1/basic/member/{id}/message/inapp/read")
     Observable<CRMBaseResponse<Object>>crmInAppMessageRead(
             @Path("id") String memberId,
             @Body CRMMessageReadRequest request
     );
 
-    @POST(NetBase.HOST_CRM +"api/v1/basic/member/{id}/message/inapp/read-all")
+    @POST(NetBase.HOST_CRM +"/api/v1/basic/member/{id}/message/inapp/read-all")
     Observable<CRMBaseResponse<Object>> crmInAppMessageReadAll(@Path("id") String memberId, @Query("category") String category);
 
 

@@ -43,6 +43,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
     private lateinit var itineraryAdapter: ItineraryBannerAdapter
     private lateinit var itinerarySection: SectionWrapperAdapter
 
+    private lateinit var comingSoonSection: SectionWrapperAdapter
     private lateinit var comingSoonAdapter: ComingSoonAdapter
     private lateinit var productAdapter: ProductAdapter
     private lateinit var popularityAdapter: PopularityAdapter
@@ -157,7 +158,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener,
                }
            })
        }
-        val comingSoonSection = SectionWrapperAdapter(
+        comingSoonSection = SectionWrapperAdapter(
             title = getString(R.string.coming_soon_title),
             innerAdapter = comingSoonAdapter,
             onMoreClick = null,

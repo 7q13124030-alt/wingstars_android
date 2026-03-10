@@ -1,5 +1,6 @@
 package com.wingstars.user.fragment
 
+import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.Context
 import android.content.Intent
@@ -34,7 +35,6 @@ import com.wingstars.user.activity.CumulativeAmountActivity
 import com.wingstars.user.activity.FrequentlyAskedQuestionsActivity
 import com.wingstars.user.activity.MemberInformationActivity
 import com.wingstars.user.activity.MemberLevelActivity
-import com.wingstars.user.activity.MobileBarcodeCarrierActivity
 import com.wingstars.user.activity.PolicyTermActivity
 import com.wingstars.user.activity.StoreLocationActivity
 import com.wingstars.user.databinding.FragmentUserBinding
@@ -42,22 +42,24 @@ import com.wingstars.user.dialog.LogoutDialog
 import com.wingstars.user.dialog.NotificationDialog
 import java.io.File
 import java.io.FileOutputStream
+import androidx.core.graphics.createBitmap
+import androidx.core.net.toUri
 
-class UserFragment : BaseFragment(){
+class UserFragment : BaseFragment() {
     private var _binding: FragmentUserBinding? = null
     private val binding get() = _binding!!
-    private val TAG = "UserFragment"
     private var isNotificationOn = false
-    private var isBarcodeContentVisible = false
+    private var isBarcodeContentVisible = true
     private lateinit var originalConstraintSet: ConstraintSet
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentUserBinding.inflate(inflater, container, false)
         binding.srlUserRecord.setEnableNestedScroll(true)
         return binding.root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
@@ -74,10 +76,13 @@ class UserFragment : BaseFragment(){
             binding.bgHeader1.alpha = alpha
         }
     }
+
+    @SuppressLint("SetTextI18n")
     private fun initView() {
-        val packageManager: PackageManager =  requireActivity().packageManager
-        val packageInfo: PackageInfo = packageManager.getPackageInfo(requireActivity().packageName, 0)
-        binding.tvVersion.text = "版本 "+packageInfo.versionName
+        val packageManager: PackageManager = requireActivity().packageManager
+        val packageInfo: PackageInfo =
+            packageManager.getPackageInfo(requireActivity().packageName, 0)
+        binding.tvVersion.text = "版本 " + packageInfo.versionName
         binding.srlUserRecord.setOnRefreshListener {
             if (!NetBase.checkNetworkOrToast(requireContext())) return@setOnRefreshListener
             binding.srlUserRecord.finishRefresh()
@@ -86,8 +91,6 @@ class UserFragment : BaseFragment(){
             if (!MMKVManagement.isLogin()) {
                 val intent = Intent(requireActivity(), LoginActivity::class.java)
                 startActivity(intent)
-            } else {
-
             }
         }
         binding.barcodeNull.setOnClickListener {
@@ -155,7 +158,7 @@ class UserFragment : BaseFragment(){
             startActivity(intent)
         }
         binding.llUserShareApp.setOnClickListener {
-            val imageUri = getImageUri(requireContext(), R.drawable.ic_logo_foreground)
+            val imageUri = getImageUri()
 
             val intent = Intent(Intent.ACTION_SEND).apply {
                 type = "image/*"
@@ -179,51 +182,52 @@ class UserFragment : BaseFragment(){
         }
         binding.llUserFacebook.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW)
-            intent.data = Uri.parse("https://www.facebook.com/tsgwingstars/?locale=zh_TW")
+            intent.data = "https://www.facebook.com/tsgwingstars/?locale=zh_TW".toUri()
             startActivity(intent)
         }
         binding.llUserInstagram.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW)
-            intent.data = Uri.parse("https://www.instagram.com/wing_stars_official/")
+            intent.data = "https://www.instagram.com/wing_stars_official/".toUri()
             startActivity(intent)
         }
         binding.llUserYoutube.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW)
-            intent.data = Uri.parse("https://www.youtube.com/@WingStars-TSG")
+            intent.data = "https://www.youtube.com/@WingStars-TSG".toUri()
             startActivity(intent)
         }
         binding.srlUserRecord.setOnRefreshListener { refreshLayout ->
-            Toast.makeText(requireContext(),"loading", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "loading", Toast.LENGTH_SHORT).show()
             refreshLayout.finishRefresh(1500/*ms*/)
         }
 
-        binding.achievement.setOnClickListener{
-            checkLoginOrGoLogin{
+        binding.achievement.setOnClickListener {
+            checkLoginOrGoLogin {
                 val intent = Intent(requireActivity(), AchievementActivity::class.java)
                 startActivity(intent)
             }
         }
 
-        binding.qrMember.setOnClickListener{
+        binding.qrMember.setOnClickListener {
             val intent = Intent(requireActivity(), CumulativeAmountActivity::class.java)
             startActivity(intent)
         }
-        binding.llUserCheeringMode.setOnClickListener{
-            checkLoginOrGoLogin{
+        binding.llUserCheeringMode.setOnClickListener {
+            checkLoginOrGoLogin {
                 val intent = Intent(requireActivity(), CheerModeActivity::class.java)
                 startActivity(intent)
             }
         }
-        binding.qrMember.setOnClickListener{
+        binding.qrMember.setOnClickListener {
             val intent = Intent(requireActivity(), CumulativeAmountActivity::class.java)
             startActivity(intent)
         }
         binding.cardGeneralMember.setOnClickListener {
-            checkLoginOrGoLogin {  }
+            checkLoginOrGoLogin { }
         }
 
     }
-    private fun getImageUri(requireContext: Context, logoShare: Int): Uri {
+
+    private fun getImageUri(): Uri {
         val drawable = ContextCompat.getDrawable(requireContext(), R.drawable.logo_share)!!
         val bitmap = drawableToBitmap(drawable)
         val file = File(requireContext().cacheDir, "share_logo.png")
@@ -236,19 +240,21 @@ class UserFragment : BaseFragment(){
             file
         )
     }
+
     private fun drawableToBitmap(drawable: Drawable): Bitmap {
         return if (drawable is BitmapDrawable) {
             drawable.bitmap
         } else {
             val width = drawable.intrinsicWidth.takeIf { it > 0 } ?: 300
             val height = drawable.intrinsicHeight.takeIf { it > 0 } ?: 300
-            val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+            val bitmap = createBitmap(width, height)
             val canvas = Canvas(bitmap)
             drawable.setBounds(0, 0, canvas.width, canvas.height)
             drawable.draw(canvas)
             bitmap
         }
     }
+
     private fun performLogout() {
         val sharedPref = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
         sharedPref.edit().apply {
@@ -273,6 +279,7 @@ class UserFragment : BaseFragment(){
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
     }
+
     private fun updateLoginUI() {
         val isLoggedIn = MMKVManagement.isLogin()
         val name = MMKVManagement.getMemberName()
@@ -284,7 +291,8 @@ class UserFragment : BaseFragment(){
         binding.barcodeMember.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
         binding.layoutMain.tvLogin.visibility = if (isLoggedIn) View.GONE else View.VISIBLE
         binding.layoutMain.tvLoginGenerally.visibility = if (isLoggedIn) View.VISIBLE else View.GONE
-        binding.layoutMain.effectiveDateGeneral.visibility = if (isLoggedIn) View.GONE else View.VISIBLE
+        binding.layoutMain.effectiveDateGeneral.visibility =
+            if (isLoggedIn) View.GONE else View.VISIBLE
         if (isLoggedIn) {
             binding.layoutMain.tvUserName.text = name
             val expiredDate = MMKVManagement.getMemberExpiredDate()
@@ -296,6 +304,7 @@ class UserFragment : BaseFragment(){
 
         }
     }
+
     private fun generateQRCode(data: String): Bitmap? {
         return try {
             val bitMatrix = MultiFormatWriter().encode(data, BarcodeFormat.QR_CODE, 400, 400)
@@ -305,6 +314,7 @@ class UserFragment : BaseFragment(){
             null
         }
     }
+
     private fun showMemberQRCode() {
         if (!MMKVManagement.isLogin()) return
         val phone = MMKVManagement.getMemberPhone()
@@ -326,19 +336,34 @@ class UserFragment : BaseFragment(){
     }
 
     private fun updateBarcodeUI() {
-        val barcodeNumber = MMKVManagement.getCrmMemberBarcode()
-        val hasBarcode = !barcodeNumber.isNullOrEmpty()
-        isBarcodeContentVisible = hasBarcode
+        val invoiceNumber = MMKVManagement.getCrmMemberInvoiceNumber()
+        val hasBarcode = invoiceNumber.isNotEmpty()
         if (hasBarcode) {
-            val bitmap = generateBarcode(barcodeNumber!!)
-            bitmap?.let {
-                binding.barcode.setImageBitmap(it)
-            }
-            binding.barcode.visibility = View.VISIBLE
-            binding.tvBarcodeDesc.visibility = View.VISIBLE
-            binding.tvBarcodeDesc.text = barcodeNumber
-            binding.barcodeNull.visibility = View.GONE
+            val bitmap = generateBarcode(invoiceNumber)
+            bitmap?.let { binding.barcode.setImageBitmap(it) }
+            binding.tvBarcodeDesc.text = invoiceNumber
             binding.icArrowDown.visibility = View.VISIBLE
+            if (isBarcodeContentVisible) {
+                val params = binding.barcodeMember.layoutParams
+                params.height = resources.getDimensionPixelSize(R.dimen.dp_186)
+                binding.barcodeMember.layoutParams = params
+                originalConstraintSet.applyTo(binding.barcodeMember)
+                binding.barcode.visibility = View.VISIBLE
+                binding.tvBarcodeDesc.visibility = View.VISIBLE
+                binding.barcodeNull.visibility = View.GONE
+            } else {
+                val params = binding.barcodeMember.layoutParams
+                params.height = resources.getDimensionPixelSize(R.dimen.dp_56)
+                binding.barcodeMember.layoutParams = params
+                val set = ConstraintSet()
+                set.clone(binding.barcodeMember)
+                set.centerVertically(binding.tvMemberBarcode.id, ConstraintSet.PARENT_ID)
+                set.centerVertically(binding.icArrowDown.id, ConstraintSet.PARENT_ID)
+                set.applyTo(binding.barcodeMember)
+                binding.barcode.visibility = View.GONE
+                binding.tvBarcodeDesc.visibility = View.GONE
+                binding.barcodeNull.visibility = View.GONE
+            }
         } else {
             binding.barcode.visibility = View.GONE
             binding.tvBarcodeDesc.visibility = View.GONE
@@ -351,12 +376,13 @@ class UserFragment : BaseFragment(){
         return try {
             val bitMatrix = MultiFormatWriter()
                 .encode(data, BarcodeFormat.CODE_128, 600, 200)
-                BarcodeEncoder().createBitmap(bitMatrix)
+            BarcodeEncoder().createBitmap(bitMatrix)
         } catch (e: Exception) {
             e.printStackTrace()
             null
         }
     }
+
     private fun checkLoginOrGoLogin(action: () -> Unit) {
         if (MMKVManagement.isLogin()) {
             action()
@@ -370,6 +396,7 @@ class UserFragment : BaseFragment(){
         super.onDestroyView()
         _binding = null
     }
+
     override fun onResume() {
         super.onResume()
         updateBarcodeUI()
