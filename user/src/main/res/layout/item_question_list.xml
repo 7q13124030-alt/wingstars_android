@@ -13,7 +13,10 @@
             android:background="@drawable/bg_item_question_radius"
             android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:padding="@dimen/dp_14">
+            android:paddingLeft="@dimen/dp_14"
+            android:paddingRight="@dimen/dp_14"
+            android:paddingTop="@dimen/dp_10"
+            android:paddingBottom="@dimen/dp_10">
 
             <LinearLayout
                 android:id="@+id/ll_item_question"

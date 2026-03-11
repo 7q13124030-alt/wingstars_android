@@ -6,9 +6,7 @@ import android.os.Bundle
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.TextView
-import androidx.annotation.NonNull
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -61,12 +59,11 @@ class FrequentlyAskedQuestionsActivity : BaseActivity() {
         binding.viewPager.adapter = fragmentAdapter
         binding.viewPager.isUserInputEnabled = true
         binding.viewPager.offscreenPageLimit = 3
-
-        // Cấu hình Indicator tùy chỉnh để giảm chiều ngang
+        
         indicatorDrawable = DynamicWidthIndicatorDrawable(
             context = this,
             tabLayout = binding.tabLayout,
-            widthRatio = 1f, // Giảm chiều ngang xuống còn 50% độ rộng của text
+            widthRatio = 1f,
             heightDp = 4f,
             color = getColor(R.color.color_DE9DBA)
         )
@@ -83,7 +80,6 @@ class FrequentlyAskedQuestionsActivity : BaseActivity() {
             }
         tabLayoutMediator.attach()
 
-        // Cập nhật độ rộng indicator lần đầu
         binding.tabLayout.post {
             indicatorDrawable.updateIndicatorWidth(0, binding.tabLayout.getTabAt(0)?.customView?.findViewById(R.id.tv_team_tab))
         }
@@ -92,7 +88,6 @@ class FrequentlyAskedQuestionsActivity : BaseActivity() {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 recoverItem()
                 chooseTab(tab)
-                // Cập nhật chiều ngang indicator theo tab mới
                 tab?.let {
                     indicatorDrawable.updateIndicatorWidth(it.position, it.customView?.findViewById(R.id.tv_team_tab))
                 }
@@ -118,10 +113,11 @@ class FrequentlyAskedQuestionsActivity : BaseActivity() {
     }
 
     fun getTabView(context: Context, position: Int): View {
-        val view: View = LayoutInflater.from(context).inflate(R.layout.item_team_main_tab, null)
+        val view: View = LayoutInflater.from(context).inflate(R.layout.item_team_main_tab, binding.tabLayout, false)
         val tvTeamTab = view.findViewById<TextView>(R.id.tv_team_tab)
         tvTeamTab.text = tabTitleList[position]
-        tvTeamTab.isSingleLine = true
+        tvTeamTab.isSingleLine = true       
+        view.contentDescription = tabTitleList[position]
         return view
     }
 
@@ -131,10 +127,10 @@ class FrequentlyAskedQuestionsActivity : BaseActivity() {
         }
     }
 
-    inner class OuterPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
+    class OuterPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
         FragmentStateAdapter(fragmentManager, lifecycle) {
         private val mFragments = mutableListOf<Fragment>()
-        @NonNull
+
         override fun createFragment(position: Int): Fragment = mFragments[position]
         override fun getItemCount(): Int = mFragments.size
         fun add(fragment: Fragment) {
