@@ -15,6 +15,7 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
+import android.widget.Button
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
@@ -45,6 +46,30 @@ class TakeMomentsDisplayActivity : BaseActivity(),OnClickListener {
             navigationBarColor(R.color.color_F5F5F5)
             fitsSystemWindows(true)
         }*/
+
+        binding.downLoad2.setOnClickListener {
+            val dialogView = layoutInflater.inflate(R.layout.dialog_confirm_exit, null)
+
+            val dialog = android.app.AlertDialog.Builder(this)
+                .setView(dialogView)
+                .create()
+
+            dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+            val btnCancel = dialogView.findViewById<Button>(R.id.btn_cancel)
+            val btnOk = dialogView.findViewById<Button>(R.id.btn_ok)
+
+            btnCancel.setOnClickListener {
+                dialog.dismiss()
+            }
+
+            btnOk.setOnClickListener {
+                dialog.dismiss()
+                finish()
+            }
+
+            dialog.show()
+        }
         initView()
     }
 
