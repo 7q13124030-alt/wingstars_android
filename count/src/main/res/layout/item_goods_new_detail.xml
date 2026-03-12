@@ -60,11 +60,11 @@
             android:paddingHorizontal="@dimen/pt_5"
             android:paddingVertical="@dimen/pt_2"
             android:textColor="@color/white"
+            android:text="星會員"
             android:textSize="@dimen/sp_12"
             android:visibility="gone"
             app:layout_constraintTop_toTopOf="@id/iv_goods_image"
-            app:layout_constraintEnd_toEndOf="@id/iv_goods_image"
-            tools:text="100" />
+            app:layout_constraintEnd_toEndOf="@id/iv_goods_image" />
 
         <TextView
             android:id="@+id/tv_goods_name"
