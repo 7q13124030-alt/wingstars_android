@@ -167,8 +167,10 @@ class RegisterActivity : BaseActivity(), View.OnClickListener, BaseActivity.OnIn
     }
 
     private fun showPsdConfirmError(msg: String) {
-
         binding.tvPsdReinputError.text = msg
+        binding.tvPsdReinputError.setTextColor(
+            ContextCompat.getColor(this, R.color.color_FB2C36)
+        )
         binding.tvPsdReinputError.visibility = View.VISIBLE
     }
 
