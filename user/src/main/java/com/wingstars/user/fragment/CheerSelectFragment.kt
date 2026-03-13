@@ -2,14 +2,16 @@ package com.wingstars.user.fragment
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.wingstars.base.net.beans.CheerData
 import com.wingstars.base.net.beans.ColorData
 import com.wingstars.base.net.beans.PhrasesBean
@@ -18,7 +20,7 @@ import com.wingstars.user.adapter.PhrasesAdapter
 import com.wingstars.user.databinding.FragmentCheerSelectBinding
 import com.wingstars.user.viewmodel.CheerModeViewModel
 
-class CheerSelectFragment : BottomSheetDialogFragment() {
+class CheerSelectFragment : DialogFragment() {
 
     private var _binding: FragmentCheerSelectBinding? = null
     private val binding get() = _binding!!
@@ -31,7 +33,8 @@ class CheerSelectFragment : BottomSheetDialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NORMAL, R.style.BottomSheetDialogTheme)
+        // Áp dụng Style trượt sát đáy giống NotificationDialog
+        setStyle(STYLE_NO_TITLE, R.style.BottomDialogStyle)
     }
 
     override fun onCreateView(
@@ -50,6 +53,20 @@ class CheerSelectFragment : BottomSheetDialogFragment() {
 
         initView()
         initEvent()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // Ép Window sát đáy và hiển thị animation trượt
+        dialog?.window?.apply {
+            setBackgroundDrawableResource(android.R.color.transparent)
+            setLayout(
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.WRAP_CONTENT
+            )
+            setGravity(Gravity.BOTTOM)
+            setDimAmount(0.1f)
+        }
     }
 
     private fun initView() {
