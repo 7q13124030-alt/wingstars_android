@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -85,6 +86,11 @@ class CheerSelectFragment : DialogFragment() {
     private fun initObserver() {
         viewModel.allMembersData.observe(viewLifecycleOwner) { list ->
             memberList = list
+        }
+        viewModel.errorMessage.observe(viewLifecycleOwner) { message ->
+            if (!message.isNullOrBlank()) {
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -196,7 +202,7 @@ class CheerSelectFragment : DialogFragment() {
             )
         )
 
-        val adapter = PhrasesAdapter(list) { selectedItem ->
+        val adapter = PhrasesAdapter(list) { _ ->
             notifyChangeToActivity()
         }
         binding.rvFontSize.adapter = adapter
@@ -208,7 +214,7 @@ class CheerSelectFragment : DialogFragment() {
             PhrasesBean("1X", "", currentSpeed == "1X"),
             PhrasesBean("1.5X", "", currentSpeed == "1.5X")
         )
-        val adapter = PhrasesAdapter(list) { selectedItem ->
+        val adapter = PhrasesAdapter(list) { _ ->
             notifyChangeToActivity()
         }
         binding.rvPlaySpeed.adapter = adapter
