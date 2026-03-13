@@ -51,7 +51,7 @@ class NotificationActivity : BaseActivity() {
                 }
             }
 
-            binding.tvMarkAllRead.setTextColor("#999999".toColorInt())
+            binding.tvMarkAllRead.setTextColor("#101828".toColorInt())
             Toast.makeText(this, "已全部標示為已讀", Toast.LENGTH_SHORT).show()
         }
 
@@ -77,7 +77,7 @@ class NotificationActivity : BaseActivity() {
             if (hasUnread) {
                 binding.tvMarkAllRead.setTextColor("#E2518D".toColorInt())
             } else {
-                binding.tvMarkAllRead.setTextColor("#999999".toColorInt())
+                binding.tvMarkAllRead.setTextColor("#101828".toColorInt())
             }
         }
     }
